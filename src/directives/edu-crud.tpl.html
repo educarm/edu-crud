@@ -1,0 +1,48 @@
+<div>
+	<div ng-if="!options"><h4>Options are required</h4>
+	</div>	 
+	<div class="box" ng-if="options">
+		<div ng-hide="showForm">
+			<div class="panel-body">
+				<div edu-grid  options="options"   ></div>
+			</div>
+		</div>
+		<!-- form -->
+		<div  ng-show="showForm">
+			<div class="panel-body">
+				<div>
+					<div edu-form  result="options.formData" options="options" > </div>  
+				</div>
+            </div>
+ 		</div>
+		<!--fin form  -->
+		<!-- overlay formDelete-->
+		<div name="overlay" class="dw-loading dw-loading-overlay dw-loading-active" ng-show="options.showOverlayCrudFormDelete">
+			<div class="dw-loading-body" >
+				<div class="dw-loading-spinner">
+					<div class="panel panel-default" >
+						<div class="panel-heading" >
+							<div class="row">
+								<div class="col-md-12">
+									<h4>{{options.snippets.formDeleteTitle || 'Por favor confirme'}}</h4>
+								</div>
+							</div>
+						</div>
+						<div class="panel-body" >
+							<h4>{{options.snippets.formDeleteMessage || '¿Está seguro que quiere ELIMINAR el registro'}} {{keyRowForDelete}}</h4>
+						</div>
+						<div class="panel-footer" >
+						   <div class="row">
+								<div class="col-md-offset-6 col-md-6">  
+									<button ng-click="formDeleteContinue()"  class="btn btn-sm btn-primary" >{{options.snippets.formDeleteButtonContinue || 'Continuar'}}</button> 
+									<button ng-click="formDeleteCancel()" class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || 'Cancelar'}}</button> 
+								</div> 
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+ </div>
