@@ -25,14 +25,11 @@
     "tests"
   ],
   "dependencies": {
-    "edu-field": "educarm/edu-field#v0.0.1",
-    "edu-form": "educarm/edu-form#v0.0.1",
-    "edu-grid": "educarm/edu-grid#v0.0.1"
+    "edu-field": "educarm/edu-field#~0.x",
+    "edu-form": "educarm/edu-form#~0.x",
+    "edu-grid": "educarm/edu-grid#~0.x"
   },
   "devDependencies": {
-    "angular-mocks": "educarm/angular-mocks#v1.2.22"
-  },
-  "resolutions": {
-    "angular": "v1.2.17"
+    "angular-mocks": "educarm/angular-mocks#~1.x"
   }
 }
