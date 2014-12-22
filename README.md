@@ -4,7 +4,7 @@ edu-crud es un grid de datos desarrollado en [AngularJS](http://angularjs.org/) 
 
 El objetivo de este componente es permitir generar un 'datagrid' a partir de una url de conexi&oacute;n y una m&iacute;nima configuraci&oacute;n, sin que sea necesario escribir c&oacute;digo de ning&uacute;n tipo.
 
-
+fsdfasfasd
 
 ##Dependencias
 edu-form est&aacute; construido utilizando varias librer&iacute;as javascript:
