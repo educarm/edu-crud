@@ -98,6 +98,7 @@ eduCrudDirectives.directive('eduCrud', function () {
         // DEFAULT OPTIONS
         // ---	
         $scope.options.heading = typeof $scope.options.heading === 'undefined' ? 'EduCrud' : $scope.options.heading;
+        $scope.options.metaData.panelType = typeof $scope.options.metaData.panelType === 'undefined' ? 'default' : $scope.options.metaData.panelType;
         $scope.options.showOverlayLoading = typeof $scope.options.showOverlayLoading === 'undefined' ? false : $scope.options.showOverlayLoading;
         $scope.options.showOvelayFormDelete = typeof $scope.options.showOvelayFormDelete === 'undefined' ? false : $scope.options.showOvelayFormDelete;
         $scope.options.showRefreshButton = typeof $scope.options.showRefreshButton === 'undefined' ? true : $scope.options.showRefreshButton;

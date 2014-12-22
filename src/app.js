@@ -83,6 +83,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 				{label: 'Municipio', column: 'vmuncen', weight: '10',type:'text'}
 			],
 		metaData:{
+		    
 			limit:5,
 			orderBy:'vcodcen',
 			order:'asc'

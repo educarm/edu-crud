@@ -1,0 +1,47 @@
+{
+  "name": "edu-form",
+  "version": "0.0.3",
+  "authors": [
+    "educarm"
+  ],
+  "main": [
+    "dist/edu-form.js",
+    "dist/edu-form.css"
+  ],
+  "description": "edu-form es un formulario de datos",
+  "keywords": [
+    "AngularJs",
+    "form",
+    "grid",
+    "json",
+    "html"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "educarm/angular#~1.2.17",
+    "edu-field": "educarm/edu-field#~0.0.1"
+  },
+  "devDependencies": {
+    "angular-mocks": "educarm/angular-mocks#~1.2.17"
+  },
+  "resolutions": {
+    "angular": "1.2.27"
+  },
+  "homepage": "https://github.com/educarm/edu-form",
+  "_release": "0.0.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.3",
+    "commit": "ab4691efe3f6cbcbc8a05eb3c73675a2b970fcea"
+  },
+  "_source": "git://github.com/educarm/edu-form.git",
+  "_target": "~0.0.1",
+  "_originalSource": "educarm/edu-form"
+}

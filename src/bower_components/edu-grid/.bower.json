@@ -1,0 +1,55 @@
+{
+  "name": "edu-grid",
+  "version": "0.0.2",
+  "authors": [
+    "educarm"
+  ],
+  "main": [
+    "dist/edu-grid.js",
+    "dist/edu-grid.css"
+  ],
+  "description": "edu-grid es un grid de datos",
+  "keywords": [
+    "AngularJs",
+    "form",
+    "grid",
+    "json",
+    "html"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "educarm/jquery#~2.1.1",
+    "angular": "educarm/angular#~1.2.17",
+    "angular-sanitize": "educarm/angular-sanitize#~1.2.17",
+    "angular-resource": "educarm/angular-resource#~1.2.17",
+    "angular-ui-bootstrap3": "educarm/angular-ui-bootstrap3#~0.12.0",
+    "bootstrap": "educarm/bootstrap#~3.2.0",
+    "textAngular": "educarm/textAngular#~1.2.2",
+    "Font-Awesome": "educarm/Font-Awesome#~4.2.0",
+    "angular-file-upload": "educarm/angular-file-upload#~1.0.2",
+    "edu-field": "educarm/edu-field#~0.0.1"
+  },
+  "devDependencies": {
+    "angular-mocks": "educarm/angular-mocks#~1.2.17"
+  },
+  "resolutions:": {
+    "angular": "1.2.27"
+  },
+  "homepage": "https://github.com/educarm/edu-grid",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "23663b5efe640b08bbbb39f77f7291232692e03d"
+  },
+  "_source": "git://github.com/educarm/edu-grid.git",
+  "_target": "~0.0.1",
+  "_originalSource": "educarm/edu-grid"
+}
