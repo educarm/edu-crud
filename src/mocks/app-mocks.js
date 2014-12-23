@@ -104,7 +104,8 @@ angular.module('e2e-mocks', ['ngMockE2E'])
       console.log("llamada a POST api/v1/centros data:"+angular.toJson(data));	
       var centro = angular.fromJson(data);
       centros.push(centro);
-      return [200, centro, {}];
+	  return [200, centro, {}];
+	  
     });
     
     // UPDATE a center IN centers array
@@ -131,7 +132,8 @@ angular.module('e2e-mocks', ['ngMockE2E'])
             }
         }
         return [200, centro, {}];
-      });
+		
+		});
     
     
     

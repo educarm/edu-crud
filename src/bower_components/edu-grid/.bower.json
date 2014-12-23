@@ -1,6 +1,6 @@
 {
   "name": "edu-grid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "authors": [
     "educarm"
   ],
@@ -43,11 +43,11 @@
     "angular": "1.2.27"
   },
   "homepage": "https://github.com/educarm/edu-grid",
-  "_release": "0.0.2",
+  "_release": "0.0.3",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.2",
-    "commit": "23663b5efe640b08bbbb39f77f7291232692e03d"
+    "tag": "v0.0.3",
+    "commit": "c86bbecd936d55417e7cf67dc87884ad100801e4"
   },
   "_source": "git://github.com/educarm/edu-grid.git",
   "_target": "~0.0.1",
