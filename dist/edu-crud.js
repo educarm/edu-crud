@@ -325,6 +325,9 @@ eduCrudDirectives.directive('eduCrud', function () {
           $scope.api.get(oId, function (data) {
             $scope.options.formData = data;
             $scope.options.formFields.tabs[0].active = true;
+          }, function (data) {
+            $scope.showForm = false;
+            $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
           });
           $scope.mode = 'edit';
           $scope.showForm = true;
@@ -337,11 +340,15 @@ eduCrudDirectives.directive('eduCrud', function () {
             oId['id'] = vid;
             $scope.api.update(oId, row, function (data) {
               $scope.options.gridControl.refresh();
+            }, function (data) {
+              $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
             });
           } else if ($scope.mode == 'new') {
             $log.log('click save row:' + angular.toJson(row));
             $scope.api.insert(row, function (data) {
               $scope.options.gridControl.refresh();
+            }, function (data) {
+              $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
             });
           }
           $scope.mode = 'list';
@@ -354,6 +361,8 @@ eduCrudDirectives.directive('eduCrud', function () {
           oId['id'] = vid;
           $scope.api.remove(oId, function (data) {
             $scope.options.gridControl.refresh();
+          }, function (data) {
+            $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
           });
         };
         $scope.add = function () {
@@ -364,6 +373,8 @@ eduCrudDirectives.directive('eduCrud', function () {
           for (key in $scope.options.formData) {
             $scope.options.formData[key] = '';
           }
+        }, function (data) {
+          $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
         };
         $scope.formDeleteContinue = function () {
           $scope.remove($scope.selectedRowForDelete);
