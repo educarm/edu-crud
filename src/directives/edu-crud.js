@@ -102,6 +102,10 @@
 				  $scope.internalControl.refresh = function() {
 					$scope.options.gridControl.refresh();  
 				  }
+				  $scope.internalControl.updateFields = function () {
+					$scope.options.gridControl.updateFields();
+					$scope.updateFields();
+				  };
 				  $scope.internalControl.showOverlayLoading = function(bShow) {
 					$scope.options.gridControl.showOverlayLoading(bShow);  
 				  }
@@ -179,6 +183,18 @@
 					console.log('click extra button:');
 					$scope.add();
 				}
+				
+				
+				//Inicializa la lista de campos para que funcionen correctamente.
+				$scope.updateFields = function () {
+					if (typeof $scope.options.crudUri !== 'undefined' && $scope.options.crudUri !== '') {
+						$scope.api = dataFactoryCrud($scope.options.crudUri, typeof $scope.options.actions !== 'undefined' ? $scope.options.actions : '');
+					};
+				};
+				
+				
+				
+				
 				
 				if($scope.options.showButtonsUserPre){
 					if($scope.options.hasOwnProperty("buttonsUserPre")){
