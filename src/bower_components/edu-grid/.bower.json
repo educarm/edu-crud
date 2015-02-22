@@ -1,6 +1,6 @@
 {
   "name": "edu-grid",
-  "version": "0.0.3",
+  "version": "0.0.10",
   "authors": [
     "educarm"
   ],
@@ -33,6 +33,7 @@
     "bootstrap": "educarm/bootstrap#~3.2.0",
     "textAngular": "educarm/textAngular#~1.2.2",
     "Font-Awesome": "educarm/Font-Awesome#~4.2.0",
+    "angular-scrollable-table": "educarm/angular-scrollable-table#~1.0.0",
     "angular-file-upload": "educarm/angular-file-upload#~1.0.2",
     "edu-field": "educarm/edu-field#~0.0.1"
   },
@@ -43,11 +44,11 @@
     "angular": "1.2.27"
   },
   "homepage": "https://github.com/educarm/edu-grid",
-  "_release": "0.0.3",
+  "_release": "0.0.10",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.3",
-    "commit": "c86bbecd936d55417e7cf67dc87884ad100801e4"
+    "tag": "v0.0.10",
+    "commit": "12783efd848cf0fd2510ef890477a66a87a96100"
   },
   "_source": "git://github.com/educarm/edu-grid.git",
   "_target": "~0.0.1",

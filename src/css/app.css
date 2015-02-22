@@ -1,9 +1,10 @@
-.box-edu-grid {
+
+.box-edu-crud {
 padding: 0px;
 border: 0px solid #000;
 position: relative;
 }
-.overlay-edu-grid{
+.overlay-edu-crud{
   position: absolute;
   top: 0;
   left: 0;
@@ -13,14 +14,14 @@ position: relative;
   background-color: rgba(0,0,0,0.1); /*dim the background*/
 }
 /*centrado vertival y horizontal*/
-.centrado-edu-grid {
+.centrado-edu-crud {
   position: absolute;
   top: 50%; 
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
- div.spin.centrado-edu-grid { 
+ div.spin.centrado-edu-crud { 
 	width:66px;
     height:66px;    
     border:0px;	

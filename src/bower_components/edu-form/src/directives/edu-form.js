@@ -5,7 +5,7 @@ eduFormDirectives.directive('eduForm', function() {
 		restrict: 'AE',
 		templateUrl: 'directives/edu-form-tpl.html',
 		replace: true,
-		 transclude: true,
+		transclude: true,
 		scope: {
 		    options:'=options',
 			result: '=result'
@@ -15,14 +15,26 @@ eduFormDirectives.directive('eduForm', function() {
                 throw new Error('options are required!');
             }
 			$scope.result={};
-			//default options
-			$scope.options.formMetaData.buttonsShow=true;
-			$scope.options.formMetaData.tabsShow=true;
-		    $scope.options.formMetaData.buttonsShow=true;
-		    $scope.options.formMetaData.headerShow=true;
-		    $scope.options.formMetaData.footerShow=true;
-		    $scope.options.formMetaData.fieldSetShow=true;
 			
+			//default options
+			$scope.options.formMetaData.buttonsShow=(typeof $scope.options.formMetaData.buttonsShow==='undefined'?true:$scope.options.formMetaData.buttonsShow);
+			$scope.options.formMetaData.tabsShow=(typeof $scope.options.formMetaData.tabsShow==='undefined'?true:$scope.options.formMetaData.tabsShow);
+			$scope.options.formMetaData.headerShow=(typeof $scope.options.formMetaData.headerShow==='undefined'?true:$scope.options.formMetaData.headerShow);
+			$scope.options.formMetaData.footerShow=(typeof $scope.options.formMetaData.footerShow==='undefined'?true:$scope.options.formMetaData.footerShow);
+			$scope.options.formMetaData.fieldSetShow=(typeof $scope.options.formMetaData.fieldSetShow==='undefined'?true:$scope.options.formMetaData.fieldSetShow);
+			
+			if($scope.options.formMetaData.hasOwnProperty("inputsSize")){
+				for(var i=0;i<$scope.options.formFields.tabs.length;i++){
+					for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
+						for(var k=0;k<$scope.options.formFields.tabs[i].fieldSets[j].fields.length;k++){
+							if(!$scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('inputSize') || (!$scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('inputSize') && $scope.options.formFields.tabs[i].fieldSets[j].fields[k].fieldSize=='')){
+							  $scope.options.formFields.tabs[i].fieldSets[j].fields[k].inputSize=$scope.options.formMetaData.inputsSize;
+							}
+				        }
+				    }
+				}
+			}
+
 			$scope.options.formControl={};
 			$scope.internalControl = $scope.options.formControl || {};
 			//methods  

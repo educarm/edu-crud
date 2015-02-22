@@ -60,17 +60,21 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 
     $scope.options = {
         heading: 'Demo eduGrid',
-		showOverlayLoading:false,
+		showOverlayWhenLoading:true, //default true
 		showOverlayFormUser:false,
         showRefreshButton: true,
 		showExtraButtonTopLeft:false,
         showAddButton: true,
-        showPagination: true,
+        showPagination: true,  //default true
         showItemsPerPage: true,
+		
+		allFieldsGlobalSearch:false,
+		
+		fieldsGlobalSearch:['vdencen','vdomcen'],
 		
         showSearch: true,
 		showAvancedSearch:true,
-        showMetaData: true,
+        
         paginationWidth: 3,
 		
 		showButtonsGridUserPre:true,

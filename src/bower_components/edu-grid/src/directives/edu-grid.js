@@ -47,12 +47,45 @@
 			    $scope.options.metaData.offset=0;
 				$scope.options.showOverlayLoading=false;
 				$scope.currentPage = undefined;
+				
+				if (!$scope.options.hasOwnProperty('allFieldsGlobalSearch')){
+					$scope.options.allFieldsGlobalSearch=true;
+				}
+				
+				
+				if (!$scope.options.hasOwnProperty('showOverlayWhenLoading')){
+					$scope.options.showOverlayWhenLoading=true;
+				}
+				
+				
+				if (!$scope.options.hasOwnProperty('showPagination')){
+					$scope.options.showPagination=true;
+				}else{
+					if($scope.options.showPagination){
+						$scope.options.showItemsPerPage=true;
+						$scope.options.showMetaData=true;
+						$scope.options.paginationWidth= 3;
+					}else{
+						$scope.options.showItemsPerPage=false;
+						$scope.options.showMetaData=false;
+					}
+				}
+				
+				
+				
+			     
+				
 				$scope.currentPage={
             	                       offset:0,
             	                       label:1
             	                   };
+								   
 				$scope.gridStyle={};
                 $scope.gridStyle.height=$scope.options.height+'px';
+				
+				//height for plugin angular-scrollable-table
+				$(".scrollableContainer").css("height",$scope.options.height+'px');
+				
 				
 				//extract type of fieldKey
 				var typeFieldKey="";
@@ -71,6 +104,12 @@
 				$scope.internalControl.refresh = function() {
 					$scope.refresh();  
 				}
+				
+				$scope.internalControl.updateFields = function() {
+					$scope.updateFields();  
+					$scope.refresh();
+				}
+				
 				
 				$scope.internalControl.showOverlayLoading = function(bShow) {
 					$scope.options.showOverlayLoadingGrid=bShow;  
@@ -248,7 +287,18 @@
                 	//var oParams={};
                 	if(typeof $scope.options.metaData.limit!=='undefined' && typeof $scope.options.metaData.offset!=='undefined'){
                         oParams.limit=$scope.options.metaData.limit;
-                        oParams.filter=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
+                        if ($scope.options.allFieldsGlobalSearch){
+							oParams.filter=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
+						} else {
+							if ($scope.options.hasOwnProperty('fieldsGlobalSearch')){
+								for(field in $scope.options.fieldsGlobalSearch){															
+									oParams[$scope.options.fieldsGlobalSearch[field]]=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
+								}
+							}
+							else {
+								throw new Error('options are required!');
+							}
+						}
                         oParams.offset=$scope.options.metaData.offset;
 						oParams.orderby=$scope.options.metaData.orderBy;
 						oParams.order=$scope.options.metaData.order;
@@ -282,17 +332,28 @@
 						}
 						
 	                    $scope.pagination();
-						
-						$scope.options.showOverlayLoadingGrid=false;
+						if ($scope.options.hasOwnProperty('showOverlayWhenLoading') && $scope.options.showOverlayWhenLoading){
+							$scope.options.showOverlayLoadingGrid=false;
+						}
 	                },function(data){
-							$scope.internalControl.showOverlayFormSuccessError('0',data.data,20005);
-					
+						$scope.internalControl.showOverlayFormSuccessError('0',data.data,20005);
 					});
                 };
                 
                 $scope.refresh=function(){
 					var oParams={};
-					oParams.filter=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
+					if ($scope.options.allFieldsGlobalSearch){
+							oParams.filter=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
+					}else {
+							if ($scope.options.hasOwnProperty('fieldsGlobalSearch')){
+								for(field in $scope.options.fieldsGlobalSearch){															
+									oParams[$scope.options.fieldsGlobalSearch[field]]=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
+								}
+							}
+							else {
+								throw new Error('options are required!');
+							}
+						}
 					if($scope.options.hasOwnProperty("fieldFk") && typeof $scope.options.fieldFk!='undefined' && $scope.options.hasOwnProperty("valueFk") && typeof $scope.options.valueFk!='undefined'){
 						oParams["fieldFk"]=$scope.options.fieldFk;
 						oParams["valueFk"]=$scope.options.valueFk;
@@ -304,20 +365,27 @@
 						}
 						
 					}
-					$scope.options.showOverlayLoadingGrid=true;
-					
+					if ($scope.options.hasOwnProperty('showOverlayWhenLoading') && $scope.options.showOverlayWhenLoading){
+						$scope.options.showOverlayLoadingGrid=true;
+					}
 					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.transformParams == 'function'){
                        oParams=$scope.options.listListeners.transformParams(oParams);
 					}
 					
-					
-					$scope.api.getCount(oParams,function (data) {
-                   	    	$scope.options.metaData.total=data.count;
-                   	    	$scope.getData(oParams);
-                    },function(data){ 
+					if($scope.options.showPagination == true){
+						$scope.api.getCount(oParams,function (data) {
+								$scope.options.metaData.total=data.count;
+								$scope.getData(oParams);
+						},function(data){ 
 
-							$scope.internalControl.showOverlayFormSuccessError('0',data.data,20000);
-					});
+								$scope.internalControl.showOverlayFormSuccessError('0',data.data,20000);
+						});
+					}
+					else{
+						$scope.options.metaData.total=0;
+						$scope.getData(oParams);
+					
+					}
 					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.onButtonRefreshClick == 'function'){
                        $scope.options.listListeners.onButtonRefreshClick($scope.list);
 					}
@@ -330,7 +398,24 @@
 				
                 setTimeout(function(){
 	     	       $scope.refresh();
-	            },500); 
+	            },500);
+				
+				//Inicializa la lista de campos para que funcionen correctamente.
+				$scope.updateFields = function(){
+					for (var fieldKey in $scope.options.listFields) {
+						$scope.options.listFields.sorting = '';
+
+						if (typeof $scope.options.listFields[fieldKey].renderer !== 'function') {
+							$scope.options.listFields[fieldKey].orderByValue = $scope.options.listFields[fieldKey].column;
+							$scope.options.listFields[fieldKey].renderer = function (input, row, column,type) {
+								return input;
+							};
+						}
+					}
+						if (typeof $scope.options.crudUri !== 'undefined' && $scope.options.crudUri !== '') {
+							$scope.api = dataFactoryGrid($scope.options.crudUri, typeof $scope.options.actions !== 'undefined' ? $scope.options.actions : '');
+						}
+				};
 				
                 // ON CLICK EXTRA BUTTON
 				$scope.clickExtraButton=function(value){ 
@@ -405,7 +490,11 @@
 				 var timerOnChangeSearchQuery=null;
                  $scope.onChangeSearchQuery=function(){
 					clearInterval(timerOnChangeSearchQuery);
-					timerOnChangeSearchQuery = setInterval(function(){$scope.refresh();clearInterval(timerOnChangeSearchQuery);}, 750);
+					timerOnChangeSearchQuery = setInterval(function(){
+					$scope.refresh();
+					$scope.setFirstPage();
+					clearInterval(timerOnChangeSearchQuery)
+					;}, 750);
 
 				 };
 				 
