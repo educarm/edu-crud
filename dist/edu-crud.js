@@ -156,6 +156,13 @@ eduCrudDirectives.directive('eduCrud', function () {
         $scope.internalControl.showOverlayLoading = function (bShow) {
           $scope.options.gridControl.showOverlayLoading(bShow);
         };
+        $scope.internalControl.clearGrid = function (bShow) {
+          $scope.options.gridControl.clearGrid();
+        };
+        $scope.internalControl.clearCrud = function (bShow) {
+          $scope.options.gridControl.clearGrid();
+          $scope.options.formControl.clearForm();
+        };
         $scope.internalControl.showOverlayFormDelete = function (bShow) {
           $scope.options.showOverlayCrudFormDelete = bShow;
         };
