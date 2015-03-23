@@ -321,6 +321,9 @@ eduCrudDirectives.directive('eduCrud', function () {
             	 */
         $scope.options.formListeners = {
           onsave: function (data) {
+            if ($scope.options.crudListeners.hasOwnProperty('addValueToForm') && typeof $scope.options.crudListeners.addValueToForm == 'function') {
+              data = $scope.options.crudListeners.addValueToForm(data);
+            }
             console.log('grid form onsave()' + angular.toJson(data));
             $scope.save(data);
           },

@@ -93,6 +93,13 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 				console.log('click row:'+angular.toJson(row));
 			}
 		},
+		crudListeners: {
+               addValueToForm:function(data){
+			   // add needed fields or values to form
+				console.log('datos :'+angular.toJson(data));
+				return data;
+			   }
+            },
 		formMetaData:{
 			tabsShow:true,
 			fieldSetShow:true,
