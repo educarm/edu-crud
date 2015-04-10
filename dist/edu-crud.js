@@ -317,6 +317,20 @@ eduCrudDirectives.directive('eduCrud', function () {
         }
         ;
         /**
+            	 * internal functions form crud
+            	 */
+        function getOid(row) {
+          var vid = row[$scope.options.fieldKey];
+          var oId = {};
+          //oId[$scope.options.fieldKey]=vid;
+          oId['id'] = vid;
+          //agm88x: 10-04-2015 añadir mecanismo de transformParams
+          if ($scope.options.hasOwnProperty('crudListeners') && typeof $scope.options.crudListeners.transformParams == 'function') {
+            oId = $scope.options.crudListeners.transformParams(row);
+          }
+          return oId;
+        }
+        /**
             	 * operation form crud
             	 */
         $scope.options.formListeners = {
@@ -341,10 +355,7 @@ eduCrudDirectives.directive('eduCrud', function () {
         };
         $scope.edit = function (row) {
           console.log('Edit row:', row);
-          var vid = row[$scope.options.fieldKey];
-          var oId = {};
-          //oId[$scope.options.fieldKey]=vid;
-          oId['id'] = vid;
+          var oId = getOid(row);
           $scope.api.get(oId, function (data) {
             $scope.options.formData = data;
             $scope.options.formFields.tabs[0].active = true;
@@ -357,10 +368,7 @@ eduCrudDirectives.directive('eduCrud', function () {
         };
         $scope.save = function (row) {
           if ($scope.mode == 'edit') {
-            var vid = row[$scope.options.fieldKey];
-            var oId = {};
-            //oId[$scope.options.fieldKey]=vid;
-            oId['id'] = vid;
+            var oId = getOid(row);
             $scope.api.update(oId, row, function (data) {
               $scope.options.gridControl.refresh();
             }, function (data) {
@@ -378,10 +386,7 @@ eduCrudDirectives.directive('eduCrud', function () {
           $scope.showForm = false;
         };
         $scope.remove = function (row) {
-          var vid = row[$scope.options.fieldKey];
-          var oId = {};
-          //oId[$scope.options.fieldKey]=vid;
-          oId['id'] = vid;
+          var oId = getOid(row);
           $scope.api.remove(oId, function (data) {
             $scope.options.gridControl.refresh();
           }, function (data) {
