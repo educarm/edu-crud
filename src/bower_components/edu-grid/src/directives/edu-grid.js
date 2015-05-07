@@ -70,8 +70,19 @@
 						$scope.options.showMetaData=false;
 					}
 				}
+											
+				if (!$scope.options.hasOwnProperty('showSearch')){
+					$scope.options.showSearch=true;
+				}
+				
+				if (!$scope.options.hasOwnProperty('showTopSearch')){
+					$scope.options.showTopSearch=true;
+				}
 				
 				
+				if (!$scope.options.hasOwnProperty('showTopAdvancedSearch')){
+					$scope.options.showTopAdvancedSearch=true;
+				}
 				
 			     
 				
@@ -109,7 +120,9 @@
 					$scope.updateFields();  
 					$scope.refresh();
 				}
-				
+				$scope.internalControl.clearGrid = function() {
+					$scope.list=[];  				
+				}
 				
 				$scope.internalControl.showOverlayLoading = function(bShow) {
 					$scope.options.showOverlayLoadingGrid=bShow;  
@@ -142,6 +155,14 @@
 				$scope.internalControl.showButtonsUserPost = function(bShow) {
 					$scope.options.showButtonsGridUserPost=bShow;  
 				}
+				
+				$scope.internalControl.clearSelection = function() {
+					$scope.options.selectionRows=[];  
+                    for( var i=0;i< $scope.list.length;i++){
+							$scope.list[i].selected=false;
+					}					
+				  }
+				
 
                 // ---
                 // ENABLE DESING-ELEMENTS
@@ -206,7 +227,7 @@
 					if(typeof clickedEntry!=='undefined'){
 						for(var i=0;i<$scope.list.length;i++){
 							if($scope.list[i][$scope.options.fieldKey]==clickedEntry[$scope.options.fieldKey]){
-								clickedEntry.clicked=true;//!clickedEntry.clicked;
+								clickedEntry.clicked=true;
 							}else{
 								$scope.list[i].clicked=false;
 							}
@@ -340,8 +361,25 @@
 					});
                 };
                 
-                $scope.refresh=function(){
+                $scope.refresh=function(cleanFilters){
 					var oParams={};
+					/*
+					 * Click on button refresh, clear filters
+					 */
+					if(cleanFilters){
+						//global search
+						 $scope.searchQuery="";;
+						
+						//advanced search
+						 $scope.formAvancedSearchEventsClean();
+						 //color button advanced search to blue
+						 $scope.listFiltered=false;
+						 //clean array seleccion rows
+						 $scope.options.selectionRows=[];
+					}
+					
+					
+					
 					if ($scope.options.allFieldsGlobalSearch){
 							oParams.filter=(typeof $scope.searchQuery!=='undefined'?$scope.searchQuery.toUpperCase().trim():'');
 					}else {
@@ -353,18 +391,20 @@
 							else {
 								throw new Error('options are required!');
 							}
-						}
+					}
+					
 					if($scope.options.hasOwnProperty("fieldFk") && typeof $scope.options.fieldFk!='undefined' && $scope.options.hasOwnProperty("valueFk") && typeof $scope.options.valueFk!='undefined'){
 						oParams["fieldFk"]=$scope.options.fieldFk;
 						oParams["valueFk"]=$scope.options.valueFk;
 					}
-					if($scope.options.hasOwnProperty("formAvancedSearch") && typeof $scope.options.formAvancedSearchResult!='undefined'){
 					
+					 
+					if($scope.options.hasOwnProperty("formAvancedSearch") && typeof $scope.options.formAvancedSearchResult!='undefined'){
 						for(var key in $scope.options.formAvancedSearchResult){
 							oParams[key]=$scope.options.formAvancedSearchResult[key];
 						}
-						
 					}
+					
 					if ($scope.options.hasOwnProperty('showOverlayWhenLoading') && $scope.options.showOverlayWhenLoading){
 						$scope.options.showOverlayLoadingGrid=true;
 					}
@@ -389,15 +429,19 @@
 					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.onButtonRefreshClick == 'function'){
                        $scope.options.listListeners.onButtonRefreshClick($scope.list);
 					}
-					//CLEAN form field searchQuery
-					//$scope.searchQuery="";
-					//CLEAN formAvancedSearchResult
-					//$scope.options.formAvancedSearchResult="";
+					
 					
                 };
 				
-                setTimeout(function(){
-	     	       $scope.refresh();
+                setTimeout(function(){			
+					if (!$scope.options.hasOwnProperty('loadOnInit')){
+						$scope.refresh();
+					} else if (!$scope.options.loadOnInit){
+						$scope.list=[];
+						$scope.options.loadOnInit=true;
+					} else {
+						$scope.refresh();
+					}
 	            },500);
 				
 				//Inicializa la lista de campos para que funcionen correctamente.
@@ -516,10 +560,12 @@
 					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.onFormAvancedSearchContinueClick == 'function'){
                        $scope.options.listListeners.onFormAvancedSearchContinueClick($scope.options.formAvancedSearchResult);
 					}
-					//$scope.options.formAvancedSearchResult={};
+					
+					//color button advanced search to red
+					$scope.listFiltered=true;
 				 }
 				 
-				
+				 
 				// ---
                 // ON CANCEL BUTTON FORM AVANCED SEARCH
                 // ---	
@@ -535,6 +581,8 @@
                 // ON CLEAN BUTTON FORM AVANCED SEARCH
                 // ---	
 				 $scope.formAvancedSearchEventsClean=function(){
+				    //color button advanced search to blue
+					$scope.listFiltered=false;
 					$scope.options.formAvancedSearchResult={};
 					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.onFormAvancedSearchCleanClick == 'function'){
                        $scope.options.listListeners.onFormAvancedSearchCleanClick();

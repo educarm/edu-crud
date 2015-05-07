@@ -204,6 +204,12 @@ eduCrudDirectives.directive('eduCrud', function () {
         $scope.internalControl.showButtonsCrudDeletePost = function (bShow) {
           $scope.options.showButtonsCrudDeletePost = bShow;
         };
+        $scope.internalControl.clearSelection = function () {
+          $scope.options.gridControl.clearSelection();
+        };
+        // ---
+        // LISTENERS
+        // --- 
         if ($scope.options.hasOwnProperty('showButtonsCrudPre')) {
           $scope.options.showButtonsCrudEditPre = $scope.options.showButtonsCrudPre;
           $scope.options.showButtonsCrudDeletePre = $scope.options.showButtonsCrudPre;

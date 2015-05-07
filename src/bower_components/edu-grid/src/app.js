@@ -67,6 +67,7 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
         showAddButton: true,
         showPagination: true,  //default true
         showItemsPerPage: true,
+		loadOnInit:true,
 		
 		allFieldsGlobalSearch:false,
 		
@@ -74,6 +75,10 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 		
         showSearch: true,
 		showAvancedSearch:true,
+		showTopAdvancedSearch: true,
+		showTopSearch: true,
+		showBottomSearch: true,
+		showBottomAdvancedSearch: true,
         
         paginationWidth: 3,
 		

@@ -163,8 +163,14 @@
 				  $scope.internalControl.showButtonsCrudDeletePost = function(bShow) {
 					$scope.options.showButtonsCrudDeletePost=bShow;  
 				  }
+				  
+				  $scope.internalControl.clearSelection = function() {
+					$scope.options.gridControl.clearSelection();    
+				  }
 				 
-				 
+				// ---
+				// LISTENERS
+				// --- 
 				 
 				 
 				if ($scope.options.hasOwnProperty('showButtonsCrudPre') ) {
