@@ -311,6 +311,11 @@
             	 */
             	$scope.options.formListeners= {
                     onsave: function (data) {
+						if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onBeforeSave')&& typeof($scope.options.crudListeners.onBeforeSave)=='function') {
+								data=$scope.options.crudListeners.onBeforeSave(data);
+							}
+						}
                     	if ($scope.options.hasOwnProperty('crudListeners')){
 							if ($scope.options.crudListeners.hasOwnProperty('addValueToForm')&& typeof($scope.options.crudListeners.addValueToForm)=='function') {
 								data=$scope.options.crudListeners.addValueToForm(data);
@@ -321,7 +326,12 @@
                         $scope.save(data);
                     },
                     oncancel: function () {
-                        console.log('grid form oncancel()');
+						if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onBeforeCancel')&& typeof($scope.options.crudListeners.onBeforeCancel)=='function') {
+								$scope.options.crudListeners.onBeforeCancel();
+							}
+						}
+						
                         $scope.cancel();
                     }
                 };
@@ -331,17 +341,29 @@
             	$scope.cancel=function(){
                 	$log.log("click cancel");
                 	$scope.mode="list";
+					if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onAfterCancel')&& typeof($scope.options.crudListeners.onAfterCancel)=='function') {
+								$scope.options.crudListeners.onAfterCancel();
+							}
+					}
                 	$scope.showForm=false;
+					
                 };
                 
                 $scope.edit=function(row){
                 	   console.log('Edit row:', row);
                        var oId = getOid(row);
 					   
-                       $scope.api.get(oId,function (data) {					   
+                       $scope.api.get(oId,function (data) {		
+										   
                    	    	$scope.options.formData=data;
 							$scope.options.formFields.tabs[0].active=true;
                        },function(data){
+					        if ($scope.options.hasOwnProperty('crudListeners')){
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.crudListeners.onAfterSave)=='function') {
+									$scope.options.crudListeners.onAfterSave(false);
+								}
+							}
 							$scope.showForm=false;
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
 					   
@@ -354,17 +376,37 @@
                 	if($scope.mode=="edit"){
                        var oId = getOid(row);
 						
-						$scope.api.update(oId,row,function (data) {     
+						$scope.api.update(oId,row,function (data) {  
+                             if ($scope.options.hasOwnProperty('crudListeners')){
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.crudListeners.onAfterSave)=='function') {
+									$scope.options.crudListeners.onAfterSave(true);
+								}
+							}								
 							$scope.options.gridControl.refresh();
             	        },function(data){
+							if ($scope.options.hasOwnProperty('crudListeners')){
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.crudListeners.onAfterSave)=='function') {
+									$scope.options.crudListeners.onAfterSave(false);
+								}
+							}		
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
 						});
             	    	
                 	}else if($scope.mode=="new"){
                 		$log.log("click save row:"+  angular.toJson(row));
-            	    	$scope.api.insert(row,function (data) {     
+            	    	$scope.api.insert(row,function (data) { 
+                            if ($scope.options.hasOwnProperty('crudListeners')){
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.crudListeners.onAfterSave)=='function') {
+									$scope.options.crudListeners.onAfterSave(true);
+								}
+							}								
 							$scope.options.gridControl.refresh();
             	        },function(data){
+						    if ($scope.options.hasOwnProperty('crudListeners')){
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.crudListeners.onAfterSave)=='function') {
+									$scope.options.crudListeners.onAfterSave(false);
+								}
+							}		
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
 					});
                 	}
