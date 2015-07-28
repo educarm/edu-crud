@@ -360,13 +360,13 @@
 							}
 						}
                        $scope.api.get(oId,function (data) {		
+                   	    	$scope.options.formData=data;
+							$scope.options.formFields.tabs[0].active=true;
 							if ($scope.options.hasOwnProperty('crudListeners')){
 								if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud')&& typeof($scope.options.crudListeners.onAfterButtonEditCrud)=='function') {
 									$scope.options.crudListeners.onAfterButtonEditCrud(true);
 								}
-							}			   
-                   	    	$scope.options.formData=data;
-							$scope.options.formFields.tabs[0].active=true;
+							}
                        },function(error){
 					        if ($scope.options.hasOwnProperty('crudListeners')){
 								if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud')&& typeof($scope.options.crudListeners.onAfterButtonEditCrud)=='function') {
