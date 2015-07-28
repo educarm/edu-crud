@@ -354,18 +354,27 @@
                 	   console.log('Edit row:', row);
                        var oId = getOid(row);
 					   
+					   if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonEditCrud') && typeof($scope.options.crudListeners.onBeforeButtonEditCrud)=='function') {
+								$scope.options.crudListeners.onBeforeButtonEditCrud(oId.id);
+							}
+						}
                        $scope.api.get(oId,function (data) {		
-										   
+							if ($scope.options.hasOwnProperty('crudListeners')){
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud')&& typeof($scope.options.crudListeners.onAfterButtonEditCrud)=='function') {
+									$scope.options.crudListeners.onAfterButtonEditCrud(true);
+								}
+							}			   
                    	    	$scope.options.formData=data;
 							$scope.options.formFields.tabs[0].active=true;
-                       },function(data){
+                       },function(error){
 					        if ($scope.options.hasOwnProperty('crudListeners')){
-								if ($scope.options.crudListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.crudListeners.onAfterSave)=='function') {
-									$scope.options.crudListeners.onAfterSave(false);
+								if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud')&& typeof($scope.options.crudListeners.onAfterButtonEditCrud)=='function') {
+									$scope.options.crudListeners.onAfterButtonEditCrud(false);
 								}
 							}
 							$scope.showForm=false;
-							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
+							$scope.options.gridControl.showOverlayFormSuccessError('0',error.data,20000);
 					   
 					   });
                        $scope.mode="edit";
@@ -416,11 +425,25 @@
                 
                 $scope.remove=function(row){
                     var oId = getOid(row);
-					
-					$scope.api.remove(oId,function (data) {     
+					if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonDeleteCrud') && typeof($scope.options.crudListeners.onBeforeButtonDeleteCrud)=='function'){
+								$scope.options.crudListeners.onBeforeButtonDeleteCrud(oId.id);
+							}
+						}
+					$scope.api.remove(oId,function (data) {   
+                        if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonDeleteCrud')&& typeof($scope.options.crudListeners.onAfterButtonDeleteCrud)=='function') {
+								$scope.options.crudListeners.onAfterButtonDeleteCrud(true);
+							}
+						}					
                 	    $scope.options.gridControl.refresh();  
-                    },function(data){
-							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
+                    },function(error){
+						if ($scope.options.hasOwnProperty('crudListeners')){
+							if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonDeleteCrud')&& typeof($scope.options.crudListeners.onAfterButtonDeleteCrud)=='function') {
+								$scope.options.crudListeners.onAfterButtonDeleteCrud(false);
+							}
+						}
+						$scope.options.gridControl.showOverlayFormSuccessError('0',error.data,20000);
 					});
                 	
                 };

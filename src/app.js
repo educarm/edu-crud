@@ -94,11 +94,25 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			}
 		},
 		crudListeners: {
+		      
                addValueToForm:function(data){
 			   // add needed fields or values to form
 				console.log('datos :'+angular.toJson(data));
 				return data;
-			   }
+			   },
+			   onBeforeButtonEditCrud:function (id) {
+				console.log("onBeforeButtonEditCrud id:"+id);
+			   },
+				onAfterButtonEditCrud:function (success) {
+					console.log("onAfterButtonEditCrud success:"+success);
+					
+				},
+				onBeforeButtonDeleteCrud:	function (id) {
+					console.log("onBeforeButtonDeleteCrud id:"+id);
+				},	
+				onAfterButtonDeleteCrud:	function (success) {
+					console.log("onAfterButtonDeleteCrud success:"+success);
+				}
             },
 		formMetaData:{
 			tabsShow:true,
