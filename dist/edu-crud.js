@@ -471,6 +471,9 @@ eduCrudDirectives.directive('eduCrud', function () {
           for (key in $scope.options.formData) {
             $scope.options.formData[key] = '';
           }
+          if (typeof $scope.options.fieldFk != 'undefined' && typeof $scope.options.valueFk != 'undefined') {
+            $scope.options.formData[$scope.options.fieldFk] = $scope.options.valueFk;
+          }
         }, function (data) {
           $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
         };
