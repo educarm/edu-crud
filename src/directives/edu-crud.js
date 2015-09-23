@@ -195,9 +195,7 @@
                 $scope.options.listListeners.onExtraButtonClick=function(){
 					//console.log('click extra button:');
 					$scope.add();
-					if ($scope.options.crudListeners.hasOwnProperty('onButtonNew')&& typeof($scope.options.crudListeners.onButtonNew)=='function') {
-						$scope.options.crudListeners.onButtonNew();
-					}
+					
 				}
 				
 				
@@ -461,7 +459,9 @@
 					if(typeof $scope.options.fieldFk!='undefined' && typeof $scope.options.valueFk!='undefined'){
 						$scope.options.formData[$scope.options.fieldFk]=$scope.options.valueFk;
 					}
-					
+					if ($scope.options.crudListeners.hasOwnProperty('onButtonNew')&& typeof($scope.options.crudListeners.onButtonNew)=='function') {
+						$scope.options.formData=$scope.options.crudListeners.onButtonNew($scope.options.formData);
+					}
 					
 					
                 },function(data){
