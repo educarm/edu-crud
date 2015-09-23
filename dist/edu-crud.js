@@ -228,8 +228,11 @@ eduCrudDirectives.directive('eduCrud', function () {
           $scope.options.snippets.extraButtonTop = $scope.options.snippets.buttonAdd;
         }
         $scope.options.listListeners.onExtraButtonClick = function () {
-          console.log('click extra button:');
+          //console.log('click extra button:');
           $scope.add();
+          if ($scope.options.crudListeners.hasOwnProperty('onButtonNew') && typeof $scope.options.crudListeners.onButtonNew == 'function') {
+            $scope.options.crudListeners.onButtonNew();
+          }
         };
         //Inicializa la lista de campos para que funcionen correctamente.
         $scope.updateFields = function () {
