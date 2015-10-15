@@ -21,7 +21,7 @@
             // -------------------------------------------------- //
 			
 			
-            controller: function ($scope,$log,dataFactoryCrud) {
+            controller: function ($scope,$log,$q,dataFactoryCrud) {
 				if (!$scope.hasOwnProperty('options')) {
                     throw new Error('options are required!');
 				}
@@ -353,6 +353,7 @@
                 
                 $scope.edit=function(row){
                 	   console.log('Edit row:', row);
+					    $scope.options.formControl.showOverlayLoading(true);
                        var oId = getOid(row);
 					   
 					   if ($scope.options.hasOwnProperty('crudListeners')){
@@ -368,7 +369,9 @@
 									$scope.options.crudListeners.onAfterButtonEditCrud(true);
 								}
 							}
+							$scope.options.formControl.showOverlayLoading(false);
                        },function(error){
+					        $scope.options.formControl.showOverlayLoading(false);
 					        if ($scope.options.hasOwnProperty('crudListeners')){
 								if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud')&& typeof($scope.options.crudListeners.onAfterButtonEditCrud)=='function') {
 									$scope.options.crudListeners.onAfterButtonEditCrud(false);
@@ -381,6 +384,9 @@
                        $scope.mode="edit";
                        $scope.showForm=true;
                 };
+				
+				
+				
                           
                 $scope.save=function(row){
                 	if($scope.mode=="edit"){

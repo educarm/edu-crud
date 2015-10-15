@@ -89,8 +89,9 @@ eduCrudDirectives.directive('eduCrud', function () {
     controller: [
       '$scope',
       '$log',
+      '$q',
       'dataFactoryCrud',
-      function ($scope, $log, dataFactoryCrud) {
+      function ($scope, $log, $q, dataFactoryCrud) {
         if (!$scope.hasOwnProperty('options')) {
           throw new Error('options are required!');
         }
@@ -375,6 +376,7 @@ eduCrudDirectives.directive('eduCrud', function () {
         };
         $scope.edit = function (row) {
           console.log('Edit row:', row);
+          $scope.options.formControl.showOverlayLoading(true);
           var oId = getOid(row);
           if ($scope.options.hasOwnProperty('crudListeners')) {
             if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonEditCrud') && typeof $scope.options.crudListeners.onBeforeButtonEditCrud == 'function') {
@@ -389,7 +391,9 @@ eduCrudDirectives.directive('eduCrud', function () {
                 $scope.options.crudListeners.onAfterButtonEditCrud(true);
               }
             }
+            $scope.options.formControl.showOverlayLoading(false);
           }, function (error) {
+            $scope.options.formControl.showOverlayLoading(false);
             if ($scope.options.hasOwnProperty('crudListeners')) {
               if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud') && typeof $scope.options.crudListeners.onAfterButtonEditCrud == 'function') {
                 $scope.options.crudListeners.onAfterButtonEditCrud(false);
