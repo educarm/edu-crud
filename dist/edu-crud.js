@@ -147,8 +147,8 @@ eduCrudDirectives.directive('eduCrud', function () {
         // METHODS
         // ---
         $scope.internalControl = $scope.options.crudControl || {};
-        $scope.internalControl.refresh = function () {
-          $scope.options.gridControl.refresh();
+        $scope.internalControl.refresh = function (bCleanFilters) {
+          $scope.options.gridControl.refresh(bCleanFilters);
         };
         $scope.internalControl.updateFields = function () {
           $scope.options.gridControl.updateFields();
@@ -478,7 +478,7 @@ eduCrudDirectives.directive('eduCrud', function () {
           if (typeof $scope.options.fieldFk != 'undefined' && typeof $scope.options.valueFk != 'undefined') {
             $scope.options.formData[$scope.options.fieldFk] = $scope.options.valueFk;
           }
-          if ($scope.options.crudListeners.hasOwnProperty('onButtonNew') && typeof $scope.options.crudListeners.onButtonNew == 'function') {
+          if (typeof $scope.options.crudListeners != 'undefined' && $scope.options.crudListeners.hasOwnProperty('onButtonNew') && typeof $scope.options.crudListeners.onButtonNew == 'function') {
             $scope.options.formData = $scope.options.crudListeners.onButtonNew($scope.options.formData);
           }
         }, function (data) {
