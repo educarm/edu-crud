@@ -15,6 +15,18 @@ eduFormDirectives.directive('eduForm', function() {
                 throw new Error('options are required!');
             }
 			$scope.result={};
+			$scope.$watchCollection('result', function(newValue, oldValue) {
+				if ( newValue!== oldValue ) {
+					if ($scope.options.formListeners.onchange === undefined) return;
+						$scope.options.formListeners.onchange($scope.result);
+				   }
+			});
+			
+			$scope.$watchCollection('formFields', function(newValue, oldValue) {
+				if ( newValue!== oldValue ) {
+					console.log("change formfield:"+angular.toJson(newValue));
+				}
+			});
 			
 			//default options
 			$scope.options.formMetaData.buttonsShow=(typeof $scope.options.formMetaData.buttonsShow==='undefined'?true:$scope.options.formMetaData.buttonsShow);
@@ -22,6 +34,8 @@ eduFormDirectives.directive('eduForm', function() {
 			$scope.options.formMetaData.headerShow=(typeof $scope.options.formMetaData.headerShow==='undefined'?true:$scope.options.formMetaData.headerShow);
 			$scope.options.formMetaData.footerShow=(typeof $scope.options.formMetaData.footerShow==='undefined'?true:$scope.options.formMetaData.footerShow);
 			$scope.options.formMetaData.fieldSetShow=(typeof $scope.options.formMetaData.fieldSetShow==='undefined'?true:$scope.options.formMetaData.fieldSetShow);
+			
+			$scope.options.formMetaData.showButtonSave=(typeof $scope.options.formMetaData.showButtonSave==='undefined'?true:$scope.options.formMetaData.showButtonSave);
 			
 			if($scope.options.formMetaData.hasOwnProperty("inputsSize")){
 				for(var i=0;i<$scope.options.formFields.tabs.length;i++){

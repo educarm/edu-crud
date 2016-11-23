@@ -1,6 +1,6 @@
 {
   "name": "edu-form",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "authors": [
     "educarm"
   ],
@@ -35,11 +35,11 @@
     "angular": "1.2.27"
   },
   "homepage": "https://github.com/educarm/edu-form",
-  "_release": "0.0.5",
+  "_release": "0.0.10",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.5",
-    "commit": "3f981bbc8cb496bf3ea3e42533999fae1c229254"
+    "tag": "v0.0.10",
+    "commit": "276f3a05c5baa0f265837bf91d0a98f1ccbf920d"
   },
   "_source": "git://github.com/educarm/edu-form.git",
   "_target": "~0.0.1",

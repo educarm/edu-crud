@@ -62,9 +62,20 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 					{key: 'campo3',type: 'text',min:100,max:20000,col:'col-md-12',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: true }
 				];
 	$scope.avancedSearchFieldsFormGrid=[	  
-			        {key: 'fecha_ini',type: 'date',col:'col-md-6',label: 'Fecha inicio22',placeholder: 'Fecha inicio',autofocus:'',required: false },
-					{key: 'fecha_fin',type: 'date',col:'col-md-6',label: 'Fecha fin3',placeholder: 'Fecha fin',autofocus:'',required: false },
-					{key: 'tipo',type: 'text',col:'col-md-12',label: 'Tipo',placeholder: 'Tipo',autofocus:'',required: false }
+			        {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Fecha inicio22',placeholder: 'Denominación',autofocus:'',required: false },
+					{key: 'vloccen',type: 'text',col:'col-md-6',label: 'Fecha fin3',placeholder: 'Municipio',autofocus:'',required: false },
+					{key: 'vcodcen',type: 'text',col:'col-md-12',label: 'Tipo',placeholder: 'Código',autofocus:'',required: false,
+						fieldListeners:{
+							
+							onKeypress:function(event){
+								console.log("pulsada la tecla con código:"+event.keyCode);
+								if(event.keyCode==13){
+									$scope.options.gridControl.refresh(false);
+									$scope.options.gridControl.showOverlayFormAvancedSearch(false);
+								}
+							} 
+						}
+					}
 				];
 
 	$scope.options = {

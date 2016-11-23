@@ -1,6 +1,6 @@
 {
   "name": "edu-form",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "build": 0,
   "devDependencies": {
     "grunt-gh-pages": "~0.9.0",

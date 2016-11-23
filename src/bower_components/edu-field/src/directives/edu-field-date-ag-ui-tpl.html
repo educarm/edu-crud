@@ -1,0 +1,28 @@
+<div class="form-group   {{options.col}}" ng-class="{'has-error':  $invalid, 'has-success': !$invalid && $dirty}" style="position:relative">
+	<label for="{{id}}">
+		{{options.label}}
+		{{options.required ? '*' : ''}}
+	</label>
+	
+	<div class="input-group date-group">
+	<input type="text"
+		class="form-control input-{{options.sizeSuffix || 'sm'}}"
+		datepicker-popup="{{options.format || dd-MM-yyyy}}"
+		ng-model="value"
+		is-open="options.showPopupCalendar"
+		datepicker-options="options.dateOptions"
+		current-text="Hoy"
+		clear-text="Borrar"
+		close-text="Cerrar"/>
+	<span class="input-group-btn">
+		<button type="button" class="btn btn-{{sizeSuffix || 'sm'}} btn-info" ng-click="internalControl.showCalendar()">
+			<i class="glyphicon glyphicon-calendar"></i>
+		</button>
+	</span>
+</div>
+
+		<div class="help-block has-error" ng-show="$invalid"  style="position:absolute;top:50px">
+			<small class="error" ng-show="$invalidRequired">Campo obligatorio. Introduzca una fecha</small>
+			<small class="error" ng-show="$invalidPattern">Introduzca un fecha válida  (dd-mm-aaaa)</small>
+		</div>
+</div>

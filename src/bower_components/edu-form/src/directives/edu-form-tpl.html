@@ -42,11 +42,9 @@
 						   </div>
 					</div>
 
-					<div class="well form-actions  col-md-12" ng-show="options.formMetaData.buttonsShow " > 
-						<div class="col-md-offset-2">	
-									<button ng-click="save()"  ng-disabled="{{options.formMetaData.name+'.$invalid'}}" class="btn btn-primary">{{options.snippets.formButtonContinue||'Continuar'}}</button> 
+					<div class="well form-actions " ng-show="options.formMetaData.buttonsShow " style="text-align: right"> 
+									<button  ng-if="options.formMetaData.showButtonSave"  ng-click="save()"  ng-disabled="{{options.formMetaData.name+'.$invalid'}}" class="btn btn-primary">{{options.snippets.formButtonContinue||'Continuar'}}</button> 
 									<button ng-click="cancel()" class="btn">{{options.snippets.formButtonCancel||'Cancelar'}}</button>
-						</div>					
 					</div> 
 						
 				</form>

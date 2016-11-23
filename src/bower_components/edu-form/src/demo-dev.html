@@ -18,6 +18,9 @@
 <body ng-controller="appController">
 
 <div id="wrapper">
+<a href="#" class="btn btn-primary" ng-click="required(false)">no required</a>
+<a href="#" class="btn btn-primary" ng-click="required(true)">required</a>
+	
     <a href="#" class="btn btn-primary" ng-click="options2.formControl.selectTab(0)">selecciona Tab Pestaña1</a>
 	 
 	<a href="#" class="btn btn-primary" ng-click="options2.formControl.selectTab(1)">selecciona Tab Pestaña2</a>
@@ -38,11 +41,11 @@
 			<div >
 				<div edu-form options="options2" result="formData"> 
 					<div class="row">
-							<div edu-field options="{key: 'texto',type: 'text',col:'col-md-4',label: 'Texto1',placeholder: 'Texto1',autofocus:'',required: true }"
+							<div edu-field options="{key: 'texto',type: 'text',col:'col-md-4',label: 'Texto1',placeholder: 'Texto1',autofocus:'',required: false }"
 									value="formData['libre1']">
 							</div>
 						
-							<div edu-field options="{key: 'texto',type: 'text',col:'col-md-4',label: 'Texto2',placeholder: 'Texto2',autofocus:'',required: true }"
+							<div edu-field options="{key: 'texto',type: 'text',col:'col-md-4',label: 'Texto2',placeholder: 'Texto2',autofocus:'',required: false }"
 									value="formData['libre2']">
 							</div>
 					</div>

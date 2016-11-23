@@ -112,8 +112,8 @@
 				// ---
 				$scope.internalControl = $scope.options.gridControl || {};
 			  
-				$scope.internalControl.refresh = function() {
-					$scope.refresh();  
+				$scope.internalControl.refresh = function(bCleanFilters) {
+					$scope.refresh(bCleanFilters);  
 				}
 				
 				$scope.internalControl.updateFields = function() {
@@ -176,7 +176,7 @@
 				// ---
 			    for (var field in $scope.options.listFields) {
 					if ($scope.options.listFields[field].column.toUpperCase() == $scope.options.metaData.orderBy.toUpperCase()) {
-						$scope.options.listFields[field].order = $scope.options.metaData.order;
+						$scope.options.listFields[field].order = $scope.options.metaData.order.toLowerCase();
 					}
                 };
 				
@@ -486,18 +486,19 @@
 					if(!row.selected){
 						var bExists=false;
 						for( var i=0;i< $scope.options.selectionRows.length;i++){
-							if($scope.options.selectionRows[i]==row[$scope.options.fieldKey]){
+							if($scope.options.selectionRows[i][$scope.options.fieldKey]==row[$scope.options.fieldKey]){
 								bExists=true;
 								break;
 							}
 						}
 						if(!bExists){
-							$scope.options.selectionRows.push((typeFieldKey=='text')?row[$scope.options.fieldKey]+"":row[$scope.options.fieldKey]);
+							//$scope.options.selectionRows.push((typeFieldKey=='text')?row[$scope.options.fieldKey]+"":row[$scope.options.fieldKey]);
+							$scope.options.selectionRows.push(row);
 						}
 					}else{
 						
 						for( var i=0;i< $scope.options.selectionRows.length;i++){
-							if($scope.options.selectionRows[i]==row[$scope.options.fieldKey]){
+							if($scope.options.selectionRows[i][$scope.options.fieldKey]==row[$scope.options.fieldKey]){
 								$scope.options.selectionRows.splice( i, 1 );
 								break;
 							}
@@ -525,6 +526,7 @@
                 $scope.onChangeItemsPerPage=function(){
 					clearInterval(timerOnChangeItemsPerPage);
 					timerOnChangeItemsPerPage = setInterval(function(){$scope.refresh();clearInterval(timerOnChangeItemsPerPage);}, 750);
+					$scope.options.metaData.offset = 0;
 				};
                 
               

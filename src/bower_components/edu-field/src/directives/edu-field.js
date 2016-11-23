@@ -102,6 +102,9 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 			case 'date':
 				templateUrl = 'directives/edu-field-date-tpl.html';
 				break;
+			case 'date-ag-ui':
+				templateUrl = 'directives/edu-field-date-ag-ui-tpl.html';
+				break;
 			case 'date-time':
 				templateUrl = 'directives/edu-field-date-time-tpl.html';
 				break;
@@ -197,6 +200,12 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 				}
 			}
 			
+			$scope.onKeypress=function($event) {
+				if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onKeypress == 'function'){
+					$scope.options.fieldListeners.onKeypress($event);
+				}
+			}
+			
 			$scope.onInit=function() {
 				 var callInit=function(){
 							    	$scope.options.fieldListeners.onInit($scope.value);
@@ -264,18 +273,37 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 			// ---  
 			$scope.internalControl.upload = function(idxFile) {
 				console.log("llamada a file upload file:"+idxFile);
-				if($scope.options.type="upload"){
+				if($scope.options.type=="upload"){
 					$scope.uploader.queue[idxFile-1].upload();
 				}
 			}
+			$scope.internalControl.filesInQueue = function() {
+				
+				if($scope.options.type=="upload"){
+					return $scope.uploader.queue.length;
+				}else{
+					return 0;
+				}
+			}
+			
+			$scope.internalControl.clearQueue = function() {
+				
+				if($scope.options.type=="upload"){
+					return $scope.uploader.clearQueue();
+				}else{
+					return 0;
+				}
+			}
+			
+			
 			$scope.internalControl.refresh = function(value) {
-				if($scope.options.type="select"){
+				if($scope.options.type=="select"){
 					$scope.refreshSelect(value);
 				}
 			}
 			
 			$scope.internalControl.clean = function(value) {
-				if($scope.options.type="select"){
+				if($scope.options.type=="select"){
 					$scope.optionsSelect=[];
 				}
 			}
@@ -283,6 +311,18 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 			if (!$scope.options.hasOwnProperty('loadOnInit')&&$scope.options.type=='select'){
 				$scope.options.loadOnInit=true;
 			}
+			
+			
+			// ---
+			// CONTROL TYPE= date
+		    // ---
+			//$scope.options.showPopupCalendar=true;
+			
+			$scope.internalControl.showCalendar = function() {
+				
+				$scope.options.showPopupCalendar=true;
+			};
+			
 			// ---
 			// CONTROL TYPE= iban
 		    // ---
@@ -349,6 +389,7 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 					}
 				};
 				uploader.onAfterAddingFile = function(fileItem) {
+					$scope.value=uploader.queue[0].file.name
 					if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onAfterAddingFile == 'function'){
 						$scope.options.fieldListeners.onAfterAddingFile(fileItem);
 					}

@@ -1,5 +1,4 @@
 <div>	 
-
 	<div class="box-edu-grid">
 		<div class="panel panel-{{options.metaData.panelType}}">
 					   <div class="panel-heading" ng-show="showHeadingBar" >
@@ -58,7 +57,7 @@
 											<input type="checkbox" name="selectAll" ng-change="changeSelectAllRows(valueCheckSelectAll)" ng-model="valueCheckSelectAll"  />    
 										  --> 
 									   </th>
-									   <th ng-repeat="field in options.listFields" width="{{field.weight}}%">
+									   <th ng-repeat="field in options.listFields" width="{{field.weight}}%" title="{{field.label}}">
 										   <span ng-show="field.order=='asc'">
 											   <i class="glyphicon glyphicon-sort-by-alphabet"></i>
 											   <a ng-click="changeOrder(field, field.orderByValue, 'desc')">{{field.label}}</a>
@@ -89,8 +88,8 @@
 								   <tr ng-repeat="entry in list" ng-click="onRowClick(entry)"  >
 									   <!-- row number -->
 									   <td ng-if="options.showRowNumber">
-											<button ng-if="entry.clicked" type="button" class="btn btn-success btn-xs">{{options.metaData.offset+1+$index}}</button>
-											<button ng-if="!entry.clicked" type="button" class="btn btn-primary btn-xs">{{options.metaData.offset+1+$index}}</button>
+											<button ng-show="entry.clicked" type="button" class="btn btn-success btn-xs">{{options.metaData.offset+1+$index}}</button>
+											<button ng-show="!entry.clicked" type="button" class="btn btn-primary btn-xs">{{options.metaData.offset+1+$index}}</button>
 									   </td>
 									   
 									   <!-- buttons pre user -->    
@@ -171,24 +170,26 @@
 							   <div class="col-md-4">
 								   <ul ng-show="options.showPagination" class="pagination pagination col" style="margin: 0px 0px; font-weight: bold;">
 									   <li ng-class="{'disabled':isOnFirstPage()}">
-										   <span ng-show="isOnFirstPage()" class="glyphicon glyphicon-step-backward btn-xs"> </span>
+										   <a ng-show="isOnFirstPage()" class="glyphicon glyphicon-step-backward btn-xs"> </a>
 										   <a ng-show="!isOnFirstPage()" class="glyphicon glyphicon-step-backward  btn-xs" ng-click="setFirstPage()"> </a>
 									   </li>
 									   <li ng-class="{'disabled':isOnFirstPage()}">
-										   <span ng-show="isOnFirstPage()" class="glyphicon glyphicon-fast-backward btn-xs"> </span>
+										   <a ng-show="isOnFirstPage()" class="glyphicon glyphicon-fast-backward btn-xs"> </a>
 										   <a ng-show="!isOnFirstPage()"class="glyphicon glyphicon-backward btn-xs" ng-click="setPreviousPage()"> </a>
 									   </li>
+									   
 									   <li data-ng-repeat="page in pages"  ng-class="{'disabled':currentPage.label == page.label}" >
 										   
 										   <a ng-show="currentPage.label != page.label" ng-click="setPage(page)" class="btn-xs" >{{page.label}}</a>
-										   <span ng-show="currentPage.label == page.label"  class="btn-xs" >{{page.label}}</span>
+										   <a ng-show="currentPage.label == page.label"  class="btn-xs" >{{page.label}}</a>
 									   </li>
+									   
 									   <li ng-class="{'disabled':isOnLastPage()}">
-										   <span ng-show="isOnLastPage()" class="glyphicon glyphicon-fast-forward btn-xs"> </span>
+										   <a ng-show="isOnLastPage()" class="glyphicon glyphicon-fast-forward btn-xs"> </a>
 										   <a ng-show="!isOnLastPage()" class="glyphicon glyphicon-forward btn-xs" ng-click="setNextPage()"> </a>
 									   </li>
 									   <li ng-class="{'disabled':isOnLastPage()}">
-										   <span ng-show="isOnLastPage()" class="glyphicon glyphicon-step-forward btn-xs"> </span>
+										   <a ng-show="isOnLastPage()" class="glyphicon glyphicon-step-forward btn-xs"> </a>
 										   <a ng-show="!isOnLastPage()" class="glyphicon glyphicon-step-forward btn-xs" ng-click="setLastPage()"> </a>
 									   </li>
 								   </ul>
