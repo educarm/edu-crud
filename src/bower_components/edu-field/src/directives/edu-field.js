@@ -72,6 +72,9 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 			case 'upload':
 				templateUrl = 'directives/edu-field-upload-tpl.html';
 				break;
+			case 'upload15x':
+				templateUrl = 'directives/edu-field-upload15x-tpl.html';
+				break;
 		    case 'nifniecif':
 				templateUrl = 'directives/edu-field-nifniecif-tpl.html';
 				break;
@@ -99,10 +102,10 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 			case 'month':
 				templateUrl = 'directives/edu-field-month-tpl.html';
 				break;
-			case 'date':
+			case 'date<13':
 				templateUrl = 'directives/edu-field-date-tpl.html';
 				break;
-			case 'date-ag-ui':
+			case 'date':
 				templateUrl = 'directives/edu-field-date-ag-ui-tpl.html';
 				break;
 			case 'date-time':
@@ -142,7 +145,98 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 
 		return templateUrl;
 	};
-	
+	var getStringPattern = function(type) {
+		var stringPattern = '';
+
+		switch(type) {
+		    case 'textbutton':
+				stringPattern = '';
+				break;
+			case 'button':
+				stringPattern = '';
+				break;
+			case 'hidden':
+				stringPattern = '';
+				break;
+			case 'literal':
+				stringPattern = '';
+				break;
+			case 'upload':
+				stringPattern = '';
+				break;
+			case 'upload15x':
+				stringPattern = '';
+				break;
+		    case 'nifniecif':
+				stringPattern = '';
+				break;
+			case 'iban':
+				stringPattern = '';
+				break;
+			case 'autocomplete':
+				stringPattern = '';
+				break;
+			case 'range':
+				stringPattern = '';
+				break;
+			case 'textedit':
+				stringPattern = '';
+				break;
+			case 'url':
+				stringPattern = '';
+				break;
+			case 'time':
+				stringPattern = '';
+				break;
+			case 'week':
+				stringPattern = '';
+				break;
+			case 'month':
+				stringPattern = '^(19|20)\d\d[- \/](0[1-9]|1[012])$';
+				break;
+			case 'date<13':
+				stringPattern = '';
+				break;
+			case 'date':
+				stringPattern = '';
+				break;
+			case 'date-time':
+				stringPattern = '';
+				break;
+			case 'textarea':
+				stringPattern = '';
+				break;
+			case 'radio':
+				stringPattern = '';
+				break;
+			case 'select':
+				stringPattern = '';
+				break;
+			case 'number':
+				stringPattern = '^-?[0-9]+$';
+				break;
+			case 'checkbox':
+				stringPattern = '';
+				break;
+			case 'password' :
+				stringPattern = '';
+				break;
+			case 'hidden' :
+				stringPattern = '';
+				break;
+			case 'email':
+				stringPattern = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|es|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b$";
+				break;
+			case 'text':
+				stringPattern = '';
+				break;
+			default :
+				stringPattern = '';
+				break;
+		}
+
+		return stringPattern;
+	};
 	return {
 		restrict: 'AE',
 		transclude: true,
@@ -158,12 +252,16 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 		
 		
 		link: function fieldLink($scope, $element, $attr,ctrl) {
+			
 			if (!$scope.hasOwnProperty('options')) {
 				throw new Error('options are required!');
             }
 			
+			
+		
 		    // load the correct template
 			var templateUrl = $scope.options.templateUrl || getTemplateUrl($scope.options.type);
+			
 			if (templateUrl) {
 				$http.get(templateUrl, {
 					cache: $templateCache
@@ -261,7 +359,7 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 		
 		
 		
-		controller: function fieldController($scope,FileUploader) {
+		controller: function fieldController($scope,Upload,FileUploader) {
 			
 			// component control
 			$scope.options.fieldControl={};
@@ -275,6 +373,9 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 				console.log("llamada a file upload file:"+idxFile);
 				if($scope.options.type=="upload"){
 					$scope.uploader.queue[idxFile-1].upload();
+				}
+				if($scope.options.type=="upload15x"){
+					$scope.ngfupload();
 				}
 			}
 			$scope.internalControl.filesInQueue = function() {
@@ -312,14 +413,34 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 				$scope.options.loadOnInit=true;
 			}
 			
+			//apply pattern to types. For fix change to 1.5.x
+			$scope.pattern_validator = (function() {
+				var regexp = '';
+				if($scope.options.hasOwnProperty("pattern")){
+					regexp=$scope.options.pattern;
+					if(regexp.substr(0,1)=='/'){
+						regexp=regexp.substr(1);
+					}
+					if(regexp.substr(regexp.length-1,1)=='/'){
+						regexp=regexp.substr(0,regexp.length-1);
+					}
+					
+				}else{
+					regexp=getStringPattern($scope.options.type);
+				}
+				return regexp;
+			})();
+			
+			//Especific validator
 			
 			// ---
 			// CONTROL TYPE= date
 		    // ---
 			//$scope.options.showPopupCalendar=true;
 			
-			$scope.internalControl.showCalendar = function() {
-				
+			$scope.internalControl.showCalendar = function($event) {
+				$event.preventDefault();
+                $event.stopPropagation();
 				$scope.options.showPopupCalendar=true;
 			};
 			
@@ -363,6 +484,51 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 				};
 			})();
 			
+			
+			// ---
+			// CONTROL TYPE= uploader15x -- plugin ng-file-upload
+		    // ---
+			$scope.ngfselect=function(file){
+				if(file){
+					$scope.value=file.$ngfName || file.name;
+					if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onAfterAddingFile == 'function'){
+					$scope.options.fieldListeners.onAfterAddingFile(file);
+			  }
+				}
+			}
+			$scope.uploading=false;
+			$scope.ngfupload=function(){
+				$scope.uploading=true;
+				if($scope.file){
+					Upload.upload({
+						url: $scope.options.url,
+						data: {file: $scope.file}
+					}).then(function (resp) {
+						//console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+						$scope.uploading=false;
+						if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onSuccessItem == 'function'){
+							$scope.options.fieldListeners.onSuccessItem(resp.config.data.file);
+						}
+					}, function (resp) {
+						//console.log('Error status: ' + resp.status);
+						$scope.uploading=false;
+						if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onErrorItem == 'function'){
+							$scope.options.fieldListeners.onErrorItem(resp.status);
+						}
+					}, function (evt) {
+						$scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+						//console.log('progress: ' + $scope.progressPercentage + '% ' + evt.config.data.file.name);
+						if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onProgressItem == 'function'){
+							$scope.options.fieldListeners.onProgressItem($scope.progressPercentage,evt.config.data.file.name);
+						}
+					});
+				}
+				
+				
+				
+			}
+			
+			
 			// ---
 			// CONTROL TYPE= uploader
 		    // ---
@@ -389,7 +555,7 @@ eduFieldDirectives.directive('eduField', function formField($http, $compile, $te
 					}
 				};
 				uploader.onAfterAddingFile = function(fileItem) {
-					$scope.value=uploader.queue[0].file.name
+					$scope.value=uploader.queue[0]._file.name
 					if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onAfterAddingFile == 'function'){
 						$scope.options.fieldListeners.onAfterAddingFile(fileItem);
 					}

@@ -353,7 +353,21 @@
                 
                 $scope.edit=function(row){
                 	   console.log('Edit row:', row);
-					    $scope.options.formControl.showOverlayLoading(true);
+					   //adjust disabled property for edit
+					   for(var i=0;i<$scope.options.formFields.tabs.length;i++){
+							for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
+								for(var k=0;k<$scope.options.formFields.tabs[i].fieldSets[j].fields.length;k++){
+									if($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledEdit') && $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledEdit!=''){
+										$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledTmp=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled;
+										$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledEdit;
+									}
+								} 
+							} 
+					   }
+					   
+					   
+					   
+					   $scope.options.formControl.showOverlayLoading(true);
                        var oId = getOid(row);
 					   
 					   if ($scope.options.hasOwnProperty('crudListeners')){
@@ -459,6 +473,19 @@
                 	$scope.mode="new"
 					$scope.options.formControl.selectTab(0);
                 	$scope.showForm=true;
+					
+					//adjust disabled property for new
+					   for(var i=0;i<$scope.options.formFields.tabs.length;i++){
+							for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
+								for(var k=0;k<$scope.options.formFields.tabs[i].fieldSets[j].fields.length;k++){
+									if($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledTmp')){
+										$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledTmp;
+									}
+								} 
+							} 
+					   }
+					
+					
                 	for(key in $scope.options.formData){
                 		$scope.options.formData[key]="";
                 	}

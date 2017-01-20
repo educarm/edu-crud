@@ -1,6 +1,6 @@
 {
   "name": "edu-crud",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "authors": [
     "educarm"
   ],
@@ -33,6 +33,8 @@
     "angular-mocks": "educarm/angular-mocks#~1.2.17"
   },
   "resolutions":{
-	"angular":"1.2.27"
+	"angular":"1.5.x",
+	"angular-sanitize":"1.5.x",
+	"angular-resource":"1.5.x"
   }
 }

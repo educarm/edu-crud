@@ -113,7 +113,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 	       },
 	       onBeforeButtonEditCrud:function (id) {
 		     console.log("onBeforeButtonEditCrud id:"+id);
-		     $scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
+		     //$scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
 		},
 		onAfterButtonEditCrud:function (success) {
 			console.log("onAfterButtonEditCrud success:"+success);
@@ -140,7 +140,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 										{ fieldSetName:"fieldSetName1",
 										   fields:[	  
 												//{key: 'vcodcen',type: 'text',min:2,max:20,col:'col-md-6',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: false }, 
-													  {key: 'vcodcen',type: 'text',col:'col-md-6',label: 'Código',placeholder: 'Denominación',autofocus:'false',required: true },
+													  {key: 'vcodcen',type: 'text',col:'col-md-6',label: 'Código',placeholder: 'Denominación',autofocus:'false',required: true,disabledEdit:true },
 													 
 													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true },
 													   {key: 'vdomcen',type: 'text',col:'col-md-12',lines: 5,label:'Domicilio',placeholder: 'Domicilio',autofocus:'',required: true}, 

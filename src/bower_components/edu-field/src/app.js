@@ -8,7 +8,7 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
      $scope.selectedTema=(typeof $scope.result!=='undefined' ?$scope.result.CODIGO_TEMA:'');
 	 
 	 $scope.enter=function(){
-		 alert("hola capullo");
+		 alert("hola");
 	 }
 	
      $scope.result={};
@@ -35,7 +35,7 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 						}
 				];		
      $scope.fields=[
-	                {key: 'oculto',type: 'hidden',value:"campo oculto",name:"nombre",id:"id" },
+	                  {key: 'oculto',type: 'hidden',value:"campo oculto",name:"nombre",id:"id" },
 					//{key: 'fecha',type: 'date-ag-ui',col:'col-md-2',lines: 5,label:'Fecha',placeholder: 'Fecha',autofocus:'',required: true,showPopupCalendar:true,format:"dd/MM/yyyy"}, 
 					{key: 'literal',type: 'literal',col:'col-md-12',label:'campo literal',text:"*Nota: campo literal para que podamos colocar textos en cualquier parte del formulario",id:"id" },
 					{key: 'button',type: 'button',col:'col-md-3',label:'button',icon:'fa fa-external-link-square fa-2x',state:"danger",size:"",disabled:false,onClick:function(){ 
@@ -66,7 +66,7 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 							onKeypress:function(event){
 								console.log("pulsada la tecla con código:"+event.keyCode);
 							}
-						},col:'col-md-6',label: 'Texto',placeholder: 'Texto',autofocus:'',required: true },
+						},col:'col-md-6',label: 'Texto',placeholder: 'Texto',autofocus:'',required:false },
 					{key: 'textobtn',type: 'textbutton',inputSize:"lg",default:'texto por def.',showbutton:true,typebutton:'info',icon:'search',textbutton:'texto',
 						fieldListeners:{
 						    onClick:function(value){
@@ -98,22 +98,41 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 																		}
 																	}
 																	
-																	}
-																	}
+																},onProgressItem:function(progressPercentage,filemane){
+																	console.log("progress upload file "+filename+":"+progresssPercentage+'%');
+																	
+																}
+													}
 							,type: 'upload',typeButton:'info',inputSize:'lg',showprogressbar:true,showbuttons:true,url:"/api/v1/upload",iconButton:'folder-open',labelButton:'Sel. fichero',col:'col-md-12',label: 'Subida fichero',placeholder: 'Upload',autofocus:'' },
-					{key: 'numeroentero',type: 'number',col:'col-md-4',min:1,max:12,pattern:"",label: 'Número entero',placeholder: 'Número entero',autofocus:'',required: true },
+					
+					{key: 'upload15x',fieldListeners:{
+																onErrorItem:function(error){
+																	alert("Ha ocurrido un error subiendo el fichero "+ error)
+																},
+																onAfterAddingFile:function(item){
+																	var a = item;
+																},onSuccessItem:function(item){
+																	var a=item;
+																}
+													}
+							,type: 'upload15x',typeButton:'info',inputSize:'',showprogressbar:true,showbuttons:true,url:'/api/v1/upload',maxsize:'20MB',pattern:'.pdf,.jpg,video,image',iconButtonSelectFile:'folder-open',labelButtonSelectFile:'',iconButtonUploadFile:'upload',labelButtonUploadFile:'',col:'col-md-6',label: 'Subida fichero',placeholder: 'Upload',autofocus:'' },
+					
+					
+					
+					{key: 'numeroentero',type: 'number',col:'col-md-4',min:1,max:12,label: 'Número entero',placeholder: 'Número entero',autofocus:'',required: false },
+					
 					{key: 'numerodecimal',type: 'number',col:'col-md-4',min:1,max:12,pattern:"/^-?[0-9]+([,\.][0-9]*)?$/",label: 'Número decimal',placeholder: 'Número decimal',autofocus:'',required: true },
 					
-					{key: 'email',type: 'email',col:'col-md-4',label: 'Email',placeholder: 'Email',autofocus:'',required: true },
+					{key: 'email',type: 'email',col:'col-md-4',label: 'Email',placeholder: 'Email',autofocus:'',required: false },
 					{key: 'url',type: 'url',col:'col-md-4',label: 'Url',placeholder: 'Url',autofocus:'',required: true },
-					{key: 'password',type: 'password',col:'col-md-4',label: 'Password',placeholder: 'Password',autofocus:'',required: true },
+					{key: 'password',type: 'password',pattern:"/^123456$/",col:'col-md-4',label: 'Password (123456)',placeholder: 'Password',autofocus:'',required: true },
 				   
 					{key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',disabled:false,required: true },
 					{key: 'radio',type: 'radio',col:'col-md-4',inputSizeClass:"input-sm",label: 'Radio',options:[{"name":"perro","value":"1"},{"name":"gato","value":"2"}],placeholder: 'Checkbox',autofocus:'',required: true },
 					{key: 'rango',type: 'range',col:'col-md-6',label: 'Slider',min:100,max:500,placeholder: 'Slider',autofocus:'',required: true },
 					
 					
-					{key: 'fecha',type: 'date',col:'col-md-4',lines: 5,label:'Fecha',placeholder: 'Fecha',autofocus:'',required: true}, 
+					{key: 'fecha',type: 'date',col:'col-md-4',lines: 5,label:'Fecha',placeholder: 'Fecha',autofocus:'',required: true,showButtonCalendar:true,format:'dd/MM/yyyy',disabled:true}, 
 					{key: 'fechahora',type: 'date-time',col:'col-md-4',label:'Fecha Hora',placeholder: 'Fecha Hora',autofocus:'',required: true,disabled:false},					 
 					{key: 'mes',type: 'month',col:'col-md-4',label: 'Fecha mes',placeholder: 'Fecha mes',autofocus:'',required: true },
 					{key: 'semana',type: 'week',col:'col-md-4',label: 'Semana',placeholder: 'Semana',autofocus:'',required: true },
@@ -150,7 +169,7 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 					{key: 'CODIGO_SUBTEMA',type: 'select',autoload:false,col:'col-md-6',label: 'Subtema depende de tema',selecttypesource:'url', selectsource:'services/subtemasservice/subtemas?limit=100000&offset=0&order=asc&orderby=DESCRIPCION',optionvalue:'SUBTEMA',optionname:'DESCRIPCION',selectconcatvaluename:true,placeholder: '',autofocus:'',required: false,disabled:false },
 											
 					
-					{key: 'areatexto',type: 'textarea',col:'col-md-4',rows: 5,label: 'Área de texto',placeholder: 'Área de texto',autofocus:'',required: true	},
+					{key: 'areatexto',type: 'textarea',col:'col-md-4',rows: 5,label: 'Área de texto',placeholder: 'Área de texto',autofocus:'',required: true,minlength:5,maxlength:20	},
     	            {key: 'areatextoedit',type: 'textedit',col:'col-md-4',rows: 5,toolbar:[['bold','italics']],  label: 'Área de texto rico',placeholder: 'Área de texto rico',autofocus:'',required: true	}
     	                     
 					
