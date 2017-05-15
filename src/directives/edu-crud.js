@@ -192,7 +192,12 @@
 				if ($scope.options.hasOwnProperty('snippets') && $scope.options.snippets.hasOwnProperty('buttonAdd')) {
                     $scope.options.snippets.extraButtonTop=$scope.options.snippets.buttonAdd;
                 }
-                $scope.options.listListeners.onExtraButtonClick=function(){
+				
+				
+				if(!$scope.options.hasOwnProperty('listListeners'){
+					$scope.options.listListeners={};
+				}
+				$scope.options.listListeners.onExtraButtonClick=function(){
 					//console.log('click extra button:');
 					$scope.add();
 					
@@ -448,7 +453,7 @@
                     var oId = getOid(row);
 					if ($scope.options.hasOwnProperty('crudListeners')){
 							if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonDeleteCrud') && typeof($scope.options.crudListeners.onBeforeButtonDeleteCrud)=='function'){
-								$scope.options.crudListeners.onBeforeButtonDeleteCrud(oId.id);
+								$scope.options.crudListeners.onBeforeButtonDeleteCrud(oId.id,row);
 							}
 						}
 					$scope.api.remove(oId,function (data) {   

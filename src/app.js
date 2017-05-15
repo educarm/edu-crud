@@ -84,6 +84,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 		fieldKeyLabel:'código',
 		height:'300',
 		//showButtonsCrudPre:true,
+		showAdvancedSearchInHeader:true,
 		showAvancedSearch:true,
 		showSelectRow:true,
 		listFields: [
@@ -119,7 +120,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			console.log("onAfterButtonEditCrud success:"+success);
 					
 		},
-		onBeforeButtonDeleteCrud:function (id) {
+		onBeforeButtonDeleteCrud:function (id,row) {
 			console.log("onBeforeButtonDeleteCrud id:"+id);
 		},	
 		onAfterButtonDeleteCrud:function (success) {
@@ -141,8 +142,16 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 										   fields:[	  
 												//{key: 'vcodcen',type: 'text',min:2,max:20,col:'col-md-6',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: false }, 
 													  {key: 'vcodcen',type: 'text',col:'col-md-6',label: 'Código',placeholder: 'Denominación',autofocus:'false',required: true,disabledEdit:true },
+													  
 													 
-													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true },
+													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true,
+															fieldListeners:{
+																onChange:function(value){
+																 $scope.options.formAvancedSearch.fields[0].value="gato";	
+																 var a=$scope.options.formAvancedSearchResult["vcodcen"]="gato";
+																} 
+															}
+													   },
 													   {key: 'vdomcen',type: 'text',col:'col-md-12',lines: 5,label:'Domicilio',placeholder: 'Domicilio',autofocus:'',required: true}, 
 													  //{key: 'fecha',type: 'date',col:'col-md-12',label:'Fecha',placeholder: 'fecha',autofocus:'',required: true,disabled:false},
 													  
