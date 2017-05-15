@@ -194,7 +194,7 @@
                 }
 				
 				
-				if(!$scope.options.hasOwnProperty('listListeners'){
+				if(!$scope.options.hasOwnProperty('listListeners')){
 					$scope.options.listListeners={};
 				}
 				$scope.options.listListeners.onExtraButtonClick=function(){
