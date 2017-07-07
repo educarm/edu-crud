@@ -107,25 +107,35 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 	     },
 		crudListeners: {
 		      
-               addValueToForm:function(data){
-	            // add needed fields or values to form
-		    console.log('datos :'+angular.toJson(data));
-		    return data;
-	       },
-	       onBeforeButtonEditCrud:function (id) {
-		     console.log("onBeforeButtonEditCrud id:"+id);
-		     //$scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
-		},
-		onAfterButtonEditCrud:function (success) {
-			console.log("onAfterButtonEditCrud success:"+success);
-					
-		},
-		onBeforeButtonDeleteCrud:function (id,row) {
-			console.log("onBeforeButtonDeleteCrud id:"+id);
-		},	
-		onAfterButtonDeleteCrud:function (success) {
-			console.log("onAfterButtonDeleteCrud success:"+success);
-		}
+			addValueToForm:function(data){
+				// add needed fields or values to form
+				console.log('datos :'+angular.toJson(data));
+				return data;
+			},
+			
+			
+			
+			onButtonNew:function (formData) {
+				 console.log("onButtonNew");
+				 return formData;
+				 //$scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
+			},
+			
+			
+			onBeforeButtonEditCrud:function (id) {
+				 console.log("onBeforeButtonEditCrud id:"+id);
+				 //$scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
+			},
+			onAfterButtonEditCrud:function (success) {
+				console.log("onAfterButtonEditCrud success:"+success);
+						
+			},
+			onBeforeButtonDeleteCrud:function (id,row) {
+				console.log("onBeforeButtonDeleteCrud id:"+id);
+			},	
+			onAfterButtonDeleteCrud:function (success) {
+				console.log("onAfterButtonDeleteCrud success:"+success);
+			}
             },
 		formMetaData:{
 			tabsShow:true,
@@ -141,10 +151,10 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 										{ fieldSetName:"fieldSetName1",
 										   fields:[	  
 												//{key: 'vcodcen',type: 'text',min:2,max:20,col:'col-md-6',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: false }, 
-													  {key: 'vcodcen',type: 'text',col:'col-md-6',label: 'Código',placeholder: 'Denominación',autofocus:'false',required: true,disabledEdit:true },
-													  
+													  {key: 'vcodcen',type: 'text',col:'col-md-2',label: 'Código',placeholder: 'Código',autofocus:'false',required: true,disabledEdit:true },
+													  {key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',disabled:false,required: false,default:'S' },
 													 
-													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true,
+													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true,default:'HOLA',
 															fieldListeners:{
 																onChange:function(value){
 																 $scope.options.formAvancedSearch.fields[0].value="gato";	

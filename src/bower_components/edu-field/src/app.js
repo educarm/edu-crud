@@ -48,7 +48,38 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 																								   } 
 					},
 					
-					{key: 'iban',type: 'iban',col:'col-md-4',inputSize:"lg",typebutton:"warning",label: 'Nº cuenta cliente',placeholder: 'Texto',autofocus:'',required: true,name:"nombre",id:"id"  },
+					{key: 'iban',type: 'iban',col:'col-md-4',inputSize:"",showButton:false,typebutton:"warning",
+						fieldListeners:{
+							onChange:function(value,subitem){
+								console.log("onChange iban:"+value);
+							},
+							onFocus:function(value,subitem){
+								console.log("onFocus iban:"+value);
+							},
+							onBlur:function(value,subitem){
+								console.log("onBlur iban:"+value);
+							},
+							onKeypress:function(event){
+								console.log("pulsada la tecla con código:"+event.keyCode);
+							}
+						},label: 'Nº cuenta cliente',placeholder: 'IBAN',autofocus:'',required: true,name:"nombre"  },
+						
+						{key: 'iban2',type: 'iban2',col:'col-md-4',inputSize:"",showButton:false,typebutton:"warning",
+						fieldListeners:{
+							onChange:function(value,subitem){
+								console.log("onChange iban-"+subitem+":"+value);
+							},
+							onFocus:function(value,subitem){
+								console.log("onFocus iban-"+subitem+":"+value);
+							},
+							onBlur:function(value,subitem){
+								console.log("onBlur iban-"+subitem+":"+value);
+							},
+							onKeypress:function(event){
+								console.log("pulsada la tecla con código:"+event.keyCode);
+							}
+						},label: 'Nº cuenta cliente',placeholder: 'IBAN2',autofocus:'',required: true,name:"nombre"  },
+						
 					{key: 'nif',type: 'nifniecif',col:'col-md-4',inputSize:"sm",label: 'NIF',textbutton:'NIF',placeholder: 'NIF',autofocus:'',required: true },
 					{key: 'nie',type: 'nifniecif',col:'col-md-4',inputSize:"sm",label: 'NIE',textbutton:'NIE',placeholder: 'NIE',autofocus:'',required: true },
 					{key: 'cif',type: 'nifniecif',col:'col-md-4',inputSize:"sm",typebutton:"danger",label: 'CIF',textbutton:'Cif',placeholder: 'CIF',autofocus:'',required: true },
@@ -127,12 +158,12 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 					{key: 'url',type: 'url',col:'col-md-4',label: 'Url',placeholder: 'Url',autofocus:'',required: true },
 					{key: 'password',type: 'password',pattern:"/^123456$/",col:'col-md-4',label: 'Password (123456)',placeholder: 'Password',autofocus:'',required: true },
 				   
-					{key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',disabled:false,required: true },
+					{key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',disabled:false,required: true,default:'N' },
 					{key: 'radio',type: 'radio',col:'col-md-4',inputSizeClass:"input-sm",label: 'Radio',options:[{"name":"perro","value":"1"},{"name":"gato","value":"2"}],placeholder: 'Checkbox',autofocus:'',required: true },
 					{key: 'rango',type: 'range',col:'col-md-6',label: 'Slider',min:100,max:500,placeholder: 'Slider',autofocus:'',required: true },
 					
 					
-					{key: 'fecha',type: 'date',col:'col-md-4',lines: 5,label:'Fecha',placeholder: 'Fecha',autofocus:'',required: true,showButtonCalendar:true,format:'dd/MM/yyyy',disabled:true}, 
+					{key: 'fecha',type: 'date',col:'col-md-4',lines: 5,inputSize:'sm',label:'Fecha',placeholder: 'Fecha',autofocus:'',required: true,showButtonCalendar:true,format:'dd/MM/yyyy',disabled:false}, 
 					{key: 'fechahora',type: 'date-time',col:'col-md-4',label:'Fecha Hora',placeholder: 'Fecha Hora',autofocus:'',required: true,disabled:false},					 
 					{key: 'mes',type: 'month',col:'col-md-4',label: 'Fecha mes',placeholder: 'Fecha mes',autofocus:'',required: true },
 					{key: 'semana',type: 'week',col:'col-md-4',label: 'Semana',placeholder: 'Semana',autofocus:'',required: true },
@@ -152,14 +183,14 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 																								   } 
 					}, 
 					{key: 'selectlocal',type: 'select',inputSize:"sm",loading:false,col:'col-md-4',required:true,label: 'Select datos locales',selecttypesource:'array',selectsource: $scope.municipios,optionname:"name",optionvalue:"value",selectconcatvaluename:true},
-					{key: 'selectremoto', type: 'select',col:'col-md-4',required:true,label: 'Select datos remotos',selecttypesource:'url',selectsource: 'api/v1/municipios',optionname:"name",optionvalue:"value",selectconcatvaluename:true},
+					{key: 'selectremoto', type: 'select',col:'col-md-4',required:true,label: 'Select datos remotos',emptyOptionText:'Seleccione una opción',selecttypesource:'url',selectsource: 'api/v1/municipios',optionname:"name",optionvalue:"value",selectconcatvaluename:true},
 					
 					{key: 'CODIGO_TEMA',
 						fieldListeners:{
-							onChange:function(value){
+							onChange:function(value,item){
 								// There are a method 'clean' for empty select options.  Example:
 								// $scope.fields[23].fieldControl.clean();
-								console.log("cambio tema:"+value);
+								console.log("cambio tema:"+value+ "   item:"+angular.toJson(item));
 								$scope.fields[23].fieldControl.refresh("fieldFk=TEMA&valueFk="+value);
 							}
 						

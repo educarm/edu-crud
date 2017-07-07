@@ -1,6 +1,6 @@
 {
   "name": "edu-field",
-  "version": "0.0.29",
+  "version": "0.0.33",
   "authors": [
     "educarm"
   ],
@@ -42,11 +42,11 @@
     "angular": "1.5.x"
   },
   "homepage": "https://github.com/educarm/edu-field",
-  "_release": "0.0.29",
+  "_release": "0.0.33",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.29",
-    "commit": "91511b35db7446623d0e9ff3af35b277930d7396"
+    "tag": "v0.0.33",
+    "commit": "966d3403b590b018b9418550b69e9c36067fa79d"
   },
   "_source": "git://github.com/educarm/edu-field.git",
   "_target": "~0.0.1",

@@ -30,7 +30,10 @@
                 // DEFAULT OPTIONS
                 // ---	
 				
+				
 				$scope.options.heading=(typeof $scope.options.heading==='undefined'?'EduCrud':$scope.options.heading);
+				
+				
 				$scope.options.metaData.panelType=(typeof $scope.options.metaData.panelType==='undefined'?'default':$scope.options.metaData.panelType);
 				$scope.options.showOverlayLoading=(typeof $scope.options.showOverlayLoading==='undefined'?false:$scope.options.showOverlayLoading);
 				$scope.options.showOvelayFormDelete=(typeof $scope.options.showOvelayFormDelete==='undefined'?false:$scope.options.showOvelayFormDelete);
@@ -55,7 +58,7 @@
 				$scope.options.showSelectRow=(typeof $scope.options.showSelectRow==='undefined'?false:$scope.options.showSelectRow);
 				
 				
-				// default height
+				// default height. Changed to allow the component to resize vertically until it conforms to the contents of the records page
 				//$scope.options.height=(typeof $scope.options.height==='undefined'?'300':$scope.options.height);
 				
                 if(typeof $scope.options.metaData!=='undefined'){
@@ -65,7 +68,29 @@
 						limit:5
 					}
 				}
-			
+				
+				//For Backwards Compatibility. The properties of 'metaData' are passed to the root of the object,
+				if(typeof $scope.options.panelType!=='undefined'){
+					$scope.options.metaData.panelType=$scope.options.panelType;
+				}
+				if(typeof $scope.options.limit!=='undefined'){
+					$scope.options.metaData.limit=$scope.options.limit;
+				}
+				if(typeof $scope.options.orderBy!=='undefined'){
+					$scope.options.metaData.orderBy=$scope.options.orderBy;
+				}
+				if(typeof $scope.options.order!=='undefined'){
+					$scope.options.metaData.order=$scope.options.order;
+				}
+				/*
+				metaData:{
+				   panelType:"info",
+				   limit:50,
+				   orderBy:'vcodcen',
+				   order:'asc'
+				},*/
+				
+				
 			    // ---
 				// SETUP
 				// ---
@@ -169,10 +194,8 @@
 				  }
 				 
 				// ---
-				// LISTENERS
+				// 
 				// --- 
-				 
-				 
 				if ($scope.options.hasOwnProperty('showButtonsCrudPre') ) {
 					$scope.options.showButtonsCrudEditPre=$scope.options.showButtonsCrudPre;
 					$scope.options.showButtonsCrudDeletePre=$scope.options.showButtonsCrudPre;
@@ -186,21 +209,36 @@
 				if ($scope.options.hasOwnProperty('showAddButtonTopLeft')) {
                     $scope.options.showExtraButtonTopLeft=$scope.options.showAddButtonTopLeft;
                 }
+				
 				if ($scope.options.hasOwnProperty('showAddButtonTopRight')) {
                     $scope.options.showExtraButtonTopRight=$scope.options.showAddButtonTopRight;
                 }
+				
 				if ($scope.options.hasOwnProperty('snippets') && $scope.options.snippets.hasOwnProperty('buttonAdd')) {
                     $scope.options.snippets.extraButtonTop=$scope.options.snippets.buttonAdd;
                 }
 				
-				
+				// ---
+				// LISTENERS
+				// ---
 				if(!$scope.options.hasOwnProperty('listListeners')){
 					$scope.options.listListeners={};
 				}
+				
+				$scope.$watch("mode", function(newValue, oldValue) {
+					if (newValue === oldValue) {
+					  return;
+					}	
+					if ($scope.options.hasOwnProperty('crudListeners')){
+						if ($scope.options.crudListeners.hasOwnProperty('onChangeMode')&& typeof($scope.options.crudListeners.onChangeMode)=='function') {
+							$scope.options.crudListeners.onChangeMode(newValue, oldValue);
+						}
+					}
+				});
+				
+				
 				$scope.options.listListeners.onExtraButtonClick=function(){
-					//console.log('click extra button:');
 					$scope.add();
-					
 				}
 				
 				
@@ -210,10 +248,6 @@
 						$scope.api = dataFactoryCrud($scope.options.crudUri, typeof $scope.options.actions !== 'undefined' ? $scope.options.actions : '');
 					};
 				};
-				
-				
-				
-				
 				
 				if($scope.options.showButtonsUserPre){
 					if($scope.options.hasOwnProperty("buttonsUserPre")){
@@ -242,7 +276,8 @@
 				if($scope.options.showButtonsCrudDeletePre){
                     $scope.options.buttonsGridUserPre.push( {label: 'Eliminar', class: '', glyphicon: 'trash', button: false, onclick: function (row) {
 								 $scope.selectedRowForDelete=row;
-								 $scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
+								 //$scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
+								 $scope.keyRowForDelete= row[$scope.options.fieldKey];
 								 $scope.options.showOverlayCrudFormDelete=true;
                              }}
                          );
@@ -258,7 +293,8 @@
 				if($scope.options.showButtonsCrudDeletePost){
                     $scope.options.buttonsGridUserPost.push(  {label: 'Eliminar', class: '', glyphicon: 'trash', button: false, onclick: function (row) {
 						   $scope.selectedRowForDelete=row;
-						   $scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
+						   //$scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
+						   $scope.keyRowForDelete= row[$scope.options.fieldKey];
 						   $scope.options.showOverlayCrudFormDelete=true;
                        }}
                    );
@@ -300,7 +336,6 @@
 				
                 		var vid=row[$scope.options.fieldKey];
             	    	var oId={};
-            	    	//oId[$scope.options.fieldKey]=vid;
 						oId['id']=vid;
             	    	
 						//agm88x: 10-04-2015 añadir mecanismo de transformParams
@@ -479,33 +514,37 @@
 					$scope.options.formControl.selectTab(0);
                 	$scope.showForm=true;
 					
-					//adjust disabled property for new
-					   for(var i=0;i<$scope.options.formFields.tabs.length;i++){
-							for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
-								for(var k=0;k<$scope.options.formFields.tabs[i].fieldSets[j].fields.length;k++){
-									if($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledTmp')){
-										$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledTmp;
-									}
-								} 
-							} 
-					   }
-					
-					
-                	for(key in $scope.options.formData){
+					for(key in $scope.options.formData){
                 		$scope.options.formData[key]="";
                 	}
+					
+				    for(var i=0;i<$scope.options.formFields.tabs.length;i++){
+						for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
+							for(var k=0;k<$scope.options.formFields.tabs[i].fieldSets[j].fields.length;k++){
+								var key=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].key;
+								var defaultValue=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].default;
+								
+								//asign default value if exist
+								$scope.options.formData[key]=defaultValue?defaultValue:"";
+								
+								//adjust disabled property for new
+								if($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledTmp')){
+									$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledTmp;
+								}
+							} 
+						} 
+				    }
+					
 					if(typeof $scope.options.fieldFk!='undefined' && typeof $scope.options.valueFk!='undefined'){
 						$scope.options.formData[$scope.options.fieldFk]=$scope.options.valueFk;
 					}
-					if (typeof $scope.options.crudListeners!='undefined' && $scope.options.crudListeners.hasOwnProperty('onButtonNew')&& typeof($scope.options.crudListeners.onButtonNew)=='function') {
+					if (typeof $scope.options.crudListeners!=undefined && $scope.options.crudListeners.hasOwnProperty('onButtonNew')&& typeof($scope.options.crudListeners.onButtonNew)=='function') {
 						$scope.options.formData=$scope.options.crudListeners.onButtonNew($scope.options.formData);
 					}
 					
 					
-                },function(data){
-							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
-				};
-                
+                };
+				
 				$scope.formDeleteContinue=function(){
 				    $scope.remove( $scope.selectedRowForDelete);
 					$scope.options.showOverlayCrudFormDelete=false;

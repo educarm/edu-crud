@@ -39,7 +39,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v0.0.10",
-    "commit": "276f3a05c5baa0f265837bf91d0a98f1ccbf920d"
+    "commit": "4df66d1ee1874f7aae26678ec5e06cc7bdbef9fd"
   },
   "_source": "git://github.com/educarm/edu-form.git",
   "_target": "~0.0.1",
