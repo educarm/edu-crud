@@ -522,10 +522,18 @@
 						for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
 							for(var k=0;k<$scope.options.formFields.tabs[i].fieldSets[j].fields.length;k++){
 								var key=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].key;
+								var type=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].type;
 								var defaultValue=$scope.options.formFields.tabs[i].fieldSets[j].fields[k].default;
 								
 								//asign default value if exist
-								$scope.options.formData[key]=defaultValue?defaultValue:"";
+								if(defaultValue){
+									$scope.options.formData[key]=defaultValue
+								}else{
+									if(type=='ckeckbox'){
+										$scope.options.formData[key]='N';
+									}
+								}
+								
 								
 								//adjust disabled property for new
 								if($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledTmp')){
