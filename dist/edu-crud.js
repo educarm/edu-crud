@@ -119,13 +119,33 @@ eduCrudDirectives.directive('eduCrud', function () {
         $scope.options.showButtonsCrudDeletePost = typeof $scope.options.showButtonsCrudDeletePost === 'undefined' ? false : $scope.options.showButtonsCrudDeletePost;
         $scope.options.showRowNumber = typeof $scope.options.showRowNumber === 'undefined' ? true : $scope.options.showRowNumber;
         $scope.options.showSelectRow = typeof $scope.options.showSelectRow === 'undefined' ? false : $scope.options.showSelectRow;
-        // default height
+        // default height. Changed to allow the component to resize vertically until it conforms to the contents of the records page
         //$scope.options.height=(typeof $scope.options.height==='undefined'?'300':$scope.options.height);
         if (typeof $scope.options.metaData !== 'undefined') {
           $scope.options.metaData.limit = typeof $scope.options.metaData.limit === 'undefined' ? 5 : $scope.options.metaData.limit;
         } else {
           $scope.options.metaData = { limit: 5 };
         }
+        //For Backwards Compatibility. The properties of 'metaData' are passed to the root of the object,
+        if (typeof $scope.options.panelType !== 'undefined') {
+          $scope.options.metaData.panelType = $scope.options.panelType;
+        }
+        if (typeof $scope.options.limit !== 'undefined') {
+          $scope.options.metaData.limit = $scope.options.limit;
+        }
+        if (typeof $scope.options.orderBy !== 'undefined') {
+          $scope.options.metaData.orderBy = $scope.options.orderBy;
+        }
+        if (typeof $scope.options.order !== 'undefined') {
+          $scope.options.metaData.order = $scope.options.order;
+        }
+        /*
+				metaData:{
+				   panelType:"info",
+				   limit:50,
+				   orderBy:'vcodcen',
+				   order:'asc'
+				},*/
         // ---
         // SETUP
         // ---
@@ -209,7 +229,7 @@ eduCrudDirectives.directive('eduCrud', function () {
           $scope.options.gridControl.clearSelection();
         };
         // ---
-        // LISTENERS
+        // 
         // --- 
         if ($scope.options.hasOwnProperty('showButtonsCrudPre')) {
           $scope.options.showButtonsCrudEditPre = $scope.options.showButtonsCrudPre;
@@ -228,11 +248,23 @@ eduCrudDirectives.directive('eduCrud', function () {
         if ($scope.options.hasOwnProperty('snippets') && $scope.options.snippets.hasOwnProperty('buttonAdd')) {
           $scope.options.snippets.extraButtonTop = $scope.options.snippets.buttonAdd;
         }
+        // ---
+        // LISTENERS
+        // ---
         if (!$scope.options.hasOwnProperty('listListeners')) {
           $scope.options.listListeners = {};
         }
+        $scope.$watch('mode', function (newValue, oldValue) {
+          if (newValue === oldValue) {
+            return;
+          }
+          if ($scope.options.hasOwnProperty('crudListeners')) {
+            if ($scope.options.crudListeners.hasOwnProperty('onChangeMode') && typeof $scope.options.crudListeners.onChangeMode == 'function') {
+              $scope.options.crudListeners.onChangeMode(newValue, oldValue);
+            }
+          }
+        });
         $scope.options.listListeners.onExtraButtonClick = function () {
-          //console.log('click extra button:');
           $scope.add();
         };
         //Inicializa la lista de campos para que funcionen correctamente.
@@ -276,7 +308,8 @@ eduCrudDirectives.directive('eduCrud', function () {
             button: false,
             onclick: function (row) {
               $scope.selectedRowForDelete = row;
-              $scope.keyRowForDelete = $scope.options.fieldKeyLabel + ': ' + row[$scope.options.fieldKey] + '?';
+              //$scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
+              $scope.keyRowForDelete = row[$scope.options.fieldKey];
               $scope.options.showOverlayCrudFormDelete = true;
             }
           });
@@ -301,7 +334,8 @@ eduCrudDirectives.directive('eduCrud', function () {
             button: false,
             onclick: function (row) {
               $scope.selectedRowForDelete = row;
-              $scope.keyRowForDelete = $scope.options.fieldKeyLabel + ': ' + row[$scope.options.fieldKey] + '?';
+              //$scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
+              $scope.keyRowForDelete = row[$scope.options.fieldKey];
               $scope.options.showOverlayCrudFormDelete = true;
             }
           });
@@ -332,7 +366,6 @@ eduCrudDirectives.directive('eduCrud', function () {
         function getOid(row) {
           var vid = row[$scope.options.fieldKey];
           var oId = {};
-          //oId[$scope.options.fieldKey]=vid;
           oId['id'] = vid;
           //agm88x: 10-04-2015 añadir mecanismo de transformParams
           if ($scope.options.hasOwnProperty('crudListeners') && typeof $scope.options.crudListeners.transformParams == 'function') {
@@ -486,27 +519,29 @@ eduCrudDirectives.directive('eduCrud', function () {
           $scope.mode = 'new';
           $scope.options.formControl.selectTab(0);
           $scope.showForm = true;
-          //adjust disabled property for new
+          for (key in $scope.options.formData) {
+            $scope.options.formData[key] = '';
+          }
           for (var i = 0; i < $scope.options.formFields.tabs.length; i++) {
             for (var j = 0; j < $scope.options.formFields.tabs[i].fieldSets.length; j++) {
               for (var k = 0; k < $scope.options.formFields.tabs[i].fieldSets[j].fields.length; k++) {
+                var key = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].key;
+                var defaultValue = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].default;
+                //asign default value if exist
+                $scope.options.formData[key] = defaultValue ? defaultValue : '';
+                //adjust disabled property for new
                 if ($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledTmp')) {
                   $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledTmp;
                 }
               }
             }
           }
-          for (key in $scope.options.formData) {
-            $scope.options.formData[key] = '';
-          }
           if (typeof $scope.options.fieldFk != 'undefined' && typeof $scope.options.valueFk != 'undefined') {
             $scope.options.formData[$scope.options.fieldFk] = $scope.options.valueFk;
           }
-          if (typeof $scope.options.crudListeners != 'undefined' && $scope.options.crudListeners.hasOwnProperty('onButtonNew') && typeof $scope.options.crudListeners.onButtonNew == 'function') {
+          if (typeof $scope.options.crudListeners != undefined && $scope.options.crudListeners.hasOwnProperty('onButtonNew') && typeof $scope.options.crudListeners.onButtonNew == 'function') {
             $scope.options.formData = $scope.options.crudListeners.onButtonNew($scope.options.formData);
           }
-        }, function (data) {
-          $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
         };
         $scope.formDeleteContinue = function () {
           $scope.remove($scope.selectedRowForDelete);
@@ -523,6 +558,6 @@ angular.module('edu-crud.tpl').run([
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('directives/edu-crud.tpl.html', '<div><div ng-if=!options><h4>Options are required</h4></div><div class=box ng-if=options><div ng-hide=showForm><div class=panel-body><div edu-grid options=options></div></div></div><div ng-show=showForm><div class=panel-body><div><div edu-form result=options.formData options=options></div></div></div></div><div name=overlay class=overlay-edu-crud ng-show=options.showOverlayCrudFormDelete><div class=centrado-edu-crud><div class="panel panel-info"><div class=panel-heading><div class=row><div class=col-md-12><h4>{{options.snippets.formDeleteTitle || \'Por favor confirme\'}}</h4></div></div></div><div class=panel-body><h4>{{options.snippets.formDeleteMessage || \'\xbfEst\xe1 seguro que quiere ELIMINAR el registro\'}} {{keyRowForDelete}}</h4></div><div class=panel-footer><div class=row><div class="col-md-offset-6 col-md-6"><button ng-click=formDeleteContinue() class="btn btn-sm btn-primary">{{options.snippets.formDeleteButtonContinue || \'Continuar\'}}</button> <button ng-click=formDeleteCancel() class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || \'Cancelar\'}}</button></div></div></div></div></div></div></div></div>');
+    $templateCache.put('directives/edu-crud.tpl.html', '<div><div ng-if=!options><h4>Options are required</h4></div><div class=box ng-if=options><div ng-hide=showForm><div class=panel-body><div edu-grid options=options></div></div></div><div ng-show=showForm><div class=panel-body><div><div edu-form result=options.formData options=options></div></div></div></div><div name=overlay class=overlay-edu-crud ng-show=options.showOverlayCrudFormDelete><div class=centrado-edu-crud><div class="panel panel-info"><div class=panel-heading><div class=row><div class=col-md-12><h4>{{options.snippets.formDeleteTitle || \'Por favor confirme\'}}</h4></div></div></div><div class=panel-body><h4>{{options.snippets.formDeleteMessage || \'\xbfEst\xe1 seguro que quiere ELIMINAR el registro\'}} {{keyRowForDelete}} ?</h4></div><div class=panel-footer><div class=row><div class="col-md-offset-6 col-md-6"><button ng-click=formDeleteContinue() class="btn btn-sm btn-primary">{{options.snippets.formDeleteButtonContinue || \'Continuar\'}}</button> <button ng-click=formDeleteCancel() class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || \'Cancelar\'}}</button></div></div></div></div></div></div></div></div>');
   }
 ]);
