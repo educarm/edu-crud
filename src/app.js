@@ -151,8 +151,8 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 										{ fieldSetName:"fieldSetName1",
 										   fields:[	  
 												//{key: 'vcodcen',type: 'text',min:2,max:20,col:'col-md-6',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: false }, 
-													  {key: 'vcodcen',type: 'text',col:'col-md-2',label: 'Código',placeholder: 'Código',autofocus:'false',required: true,disabledEdit:true },
-													  {key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',disabled:false,required: false,default:'S' },
+													  {key: 'vcodcen',type: 'text',col:'col-md-2',label: 'Código',placeholder: 'Código',autofocus:'false',required: true,disabledEdit:false, readonlyEdit:true },
+													  {key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',required: false,default:'S',disabledEdit:true },
 													 
 													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true,default:'HOLA',
 															fieldListeners:{
@@ -179,7 +179,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 																			   
 											//{key: 'vmuncen',type: 'select',label: 'Municipio',selecttypesource:'array',selectsource: $scope.ciudades,optionname:"name",optionvalue:"value",selectconcatvaluename:true},
 												//{key: 'vmuncen',type: 'select',label: 'Municipio',selecttypesource:'url',selectsource: 'json/ciudades.json',optionname:"namexxxx",optionvalue:"valuex",selectconcatvaluename:true},
-												{key: 'vloccen',type: 'textarea',col:'col-md-12',rows: 15,label: 'Localidad',placeholder: 'Localidad',autofocus:'',required: true	}
+												{key: 'vloccen',type: 'textarea',col:'col-md-12',rows: 15,label: 'Localidad',placeholder: 'Localidad',autofocus:'',required: true,disabledEdit:false, readonlyEdit:true	}
 											]
 										}
 									]

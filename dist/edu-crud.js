@@ -416,9 +416,13 @@ eduCrudDirectives.directive('eduCrud', function () {
           for (var i = 0; i < $scope.options.formFields.tabs.length; i++) {
             for (var j = 0; j < $scope.options.formFields.tabs[i].fieldSets.length; j++) {
               for (var k = 0; k < $scope.options.formFields.tabs[i].fieldSets[j].fields.length; k++) {
-                if ($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledEdit') && $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledEdit != '') {
+                if ($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('disabledEdit') && $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled != '') {
                   $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledTmp = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled;
                   $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabled = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].disabledEdit;
+                }
+                if ($scope.options.formFields.tabs[i].fieldSets[j].fields[k].hasOwnProperty('readonlyEdit') && $scope.options.formFields.tabs[i].fieldSets[j].fields[k].readonly != '') {
+                  $scope.options.formFields.tabs[i].fieldSets[j].fields[k].readonlyTmp = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].readonly;
+                  $scope.options.formFields.tabs[i].fieldSets[j].fields[k].readonly = $scope.options.formFields.tabs[i].fieldSets[j].fields[k].readonlyEdit;
                 }
               }
             }
