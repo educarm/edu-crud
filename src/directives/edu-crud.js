@@ -393,6 +393,8 @@
                 
                 $scope.edit=function(row){
                 	   console.log('Edit row:', row);
+                     $scope.mode="edit";
+                     $scope.showForm=true;
 					   //adjust disabled property for edit
 					   for(var i=0;i<$scope.options.formFields.tabs.length;i++){
 							for(var j=0;j<$scope.options.formFields.tabs[i].fieldSets.length;j++){
@@ -410,8 +412,9 @@
 					   }
 					   
 					   
-					   
-					   $scope.options.formControl.showOverlayLoading(true);
+					   if($scope.options.formControl){
+							$scope.options.formControl.showOverlayLoading(true);
+					   }
                        var oId = getOid(row);
 					   
 					   if ($scope.options.hasOwnProperty('crudListeners')){
@@ -419,7 +422,7 @@
 								$scope.options.crudListeners.onBeforeButtonEditCrud(oId.id);
 							}
 						}
-                       $scope.api.get(oId,function (data) {		
+						$scope.api.get(oId,function (data) {		
                    	    	$scope.options.formData=data;
 							$scope.options.formFields.tabs[0].active=true;
 							if ($scope.options.hasOwnProperty('crudListeners')){
@@ -439,8 +442,7 @@
 							$scope.options.gridControl.showOverlayFormSuccessError('0',error.data,20000);
 					   
 					   });
-                       $scope.mode="edit";
-                       $scope.showForm=true;
+                       
                 };
 				
 				

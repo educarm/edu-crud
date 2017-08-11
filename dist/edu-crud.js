@@ -412,6 +412,8 @@ eduCrudDirectives.directive('eduCrud', function () {
         };
         $scope.edit = function (row) {
           console.log('Edit row:', row);
+          $scope.mode = 'edit';
+          $scope.showForm = true;
           //adjust disabled property for edit
           for (var i = 0; i < $scope.options.formFields.tabs.length; i++) {
             for (var j = 0; j < $scope.options.formFields.tabs[i].fieldSets.length; j++) {
@@ -427,7 +429,9 @@ eduCrudDirectives.directive('eduCrud', function () {
               }
             }
           }
-          $scope.options.formControl.showOverlayLoading(true);
+          if ($scope.options.formControl) {
+            $scope.options.formControl.showOverlayLoading(true);
+          }
           var oId = getOid(row);
           if ($scope.options.hasOwnProperty('crudListeners')) {
             if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonEditCrud') && typeof $scope.options.crudListeners.onBeforeButtonEditCrud == 'function') {
@@ -453,8 +457,6 @@ eduCrudDirectives.directive('eduCrud', function () {
             $scope.showForm = false;
             $scope.options.gridControl.showOverlayFormSuccessError('0', error.data, 20000);
           });
-          $scope.mode = 'edit';
-          $scope.showForm = true;
         };
         $scope.save = function (row) {
           if ($scope.mode == 'edit') {
@@ -569,6 +571,6 @@ angular.module('edu-crud.tpl').run([
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('directives/edu-crud.tpl.html', '<div><div ng-if=!options><h4>Options are required</h4></div><div class=box ng-if=options><div ng-hide=showForm><div class=panel-body><div edu-grid options=options></div></div></div><div ng-show=showForm><div class=panel-body><div><div edu-form result=options.formData options=options></div></div></div></div><div name=overlay class=overlay-edu-crud ng-show=options.showOverlayCrudFormDelete><div class=centrado-edu-crud><div class="panel panel-info"><div class=panel-heading><div class=row><div class=col-md-12><h4>{{options.snippets.formDeleteTitle || \'Por favor confirme\'}}</h4></div></div></div><div class=panel-body><h4>{{options.snippets.formDeleteMessage || \'\xbfEst\xe1 seguro que quiere ELIMINAR el registro\'}} {{keyRowForDelete}} ?</h4></div><div class=panel-footer><div class=row><div class="col-md-offset-6 col-md-6"><button ng-click=formDeleteContinue() class="btn btn-sm btn-primary">{{options.snippets.formDeleteButtonContinue || \'Continuar\'}}</button> <button ng-click=formDeleteCancel() class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || \'Cancelar\'}}</button></div></div></div></div></div></div></div></div>');
+    $templateCache.put('directives/edu-crud.tpl.html', '<div><div ng-if=!options><h4>Options are required</h4></div><div class=box ng-if=options><div ng-hide=showForm><div class=panel-body><div edu-grid options=options></div></div></div><div ng-if=showForm><div class=panel-body><div><div edu-form result=options.formData options=options></div></div></div></div><div name=overlay class=overlay-edu-crud ng-show=options.showOverlayCrudFormDelete><div class=centrado-edu-crud><div class="panel panel-info"><div class=panel-heading><div class=row><div class=col-md-12><h4>{{options.snippets.formDeleteTitle || \'Por favor confirme\'}}</h4></div></div></div><div class=panel-body><h4>{{options.snippets.formDeleteMessage || \'\xbfEst\xe1 seguro que quiere ELIMINAR el registro\'}} {{keyRowForDelete}} ?</h4></div><div class=panel-footer><div class=row><div class="col-md-offset-6 col-md-6"><button ng-click=formDeleteContinue() class="btn btn-sm btn-primary">{{options.snippets.formDeleteButtonContinue || \'Continuar\'}}</button> <button ng-click=formDeleteCancel() class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || \'Cancelar\'}}</button></div></div></div></div></div></div></div></div>');
   }
 ]);
