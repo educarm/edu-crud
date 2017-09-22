@@ -516,8 +516,11 @@
                 };
                 $scope.add=function(){
                 	$log.log("click new");
-                	$scope.mode="new"
+                	$scope.mode="new";
+					
+					//setTimeout(function(){$scope.options.formControl.selectTab(0); });
 					$scope.options.formControl.selectTab(0);
+					
                 	$scope.showForm=true;
 					
 					for(key in $scope.options.formData){
