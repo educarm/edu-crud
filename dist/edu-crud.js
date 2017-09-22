@@ -523,7 +523,9 @@ eduCrudDirectives.directive('eduCrud', function () {
         $scope.add = function () {
           $log.log('click new');
           $scope.mode = 'new';
-          $scope.options.formControl.selectTab(0);
+          setTimeout(function () {
+            $scope.options.formControl.selectTab(0);
+          });
           $scope.showForm = true;
           for (key in $scope.options.formData) {
             $scope.options.formData[key] = '';

@@ -518,8 +518,7 @@
                 	$log.log("click new");
                 	$scope.mode="new";
 					
-					//setTimeout(function(){$scope.options.formControl.selectTab(0); });
-					$scope.options.formControl.selectTab(0);
+					setTimeout(function(){$scope.options.formControl.selectTab(0); });
 					
                 	$scope.showForm=true;
 					
