@@ -109,6 +109,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 		      
 			addValueToForm:function(data){
 				// add needed fields or values to form
+				
 				console.log('datos :'+angular.toJson(data));
 				return data;
 			},
@@ -117,6 +118,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			
 			onButtonNew:function (formData) {
 				 console.log("onButtonNew");
+				 formData.vdomcen='Calle las Mulas, Barqueros';
 				 return formData;
 				 //$scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
 			},
