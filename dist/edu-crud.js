@@ -542,6 +542,8 @@ eduCrudDirectives.directive('eduCrud', function () {
                 } else {
                   if (type == 'ckeckbox') {
                     $scope.options.formData[key] = 'N';
+                  } else {
+                    $scope.options.formData[key] = '';
                   }
                 }
                 //adjust disabled property for new

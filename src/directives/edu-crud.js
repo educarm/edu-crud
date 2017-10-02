@@ -539,6 +539,8 @@
 								}else{
 									if(type=='ckeckbox'){
 										$scope.options.formData[key]='N';
+									}else{
+										$scope.options.formData[key]='';
 									}
 								}
 								
