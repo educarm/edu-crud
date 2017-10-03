@@ -557,7 +557,12 @@ eduCrudDirectives.directive('eduCrud', function () {
             $scope.options.formData[$scope.options.fieldFk] = $scope.options.valueFk;
           }
           if (typeof $scope.options.crudListeners != undefined && $scope.options.crudListeners.hasOwnProperty('onButtonNew') && typeof $scope.options.crudListeners.onButtonNew == 'function') {
-            $scope.options.formData = $scope.options.crudListeners.onButtonNew($scope.options.formData);
+            var formData = $scope.options.crudListeners.onButtonNew($scope.options.formData);
+            setTimeout(function () {
+              $scope.$apply(function () {
+                $scope.options.formData = formData;
+              });
+            });
           }
         };
         $scope.formDeleteContinue = function () {
