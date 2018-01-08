@@ -464,14 +464,14 @@ eduCrudDirectives.directive('eduCrud', function () {
             $scope.api.update(oId, row, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
-                  $scope.options.crudListeners.onAfterSave(true);
+                  $scope.options.crudListeners.onAfterSave(data);
                 }
               }
               $scope.options.gridControl.refresh();
             }, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
-                  $scope.options.crudListeners.onAfterSave(false);
+                  $scope.options.crudListeners.onAfterSave(data);
                 }
               }
               $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
@@ -481,14 +481,14 @@ eduCrudDirectives.directive('eduCrud', function () {
             $scope.api.insert(row, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
-                  $scope.options.crudListeners.onAfterSave(true);
+                  $scope.options.crudListeners.onAfterSave(data);
                 }
               }
               $scope.options.gridControl.refresh();
             }, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
-                  $scope.options.crudListeners.onAfterSave(false);
+                  $scope.options.crudListeners.onAfterSave(data);
                 }
               }
               $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
