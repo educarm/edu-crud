@@ -435,7 +435,7 @@ eduCrudDirectives.directive('eduCrud', function () {
           var oId = getOid(row);
           if ($scope.options.hasOwnProperty('crudListeners')) {
             if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonEditCrud') && typeof $scope.options.crudListeners.onBeforeButtonEditCrud == 'function') {
-              $scope.options.crudListeners.onBeforeButtonEditCrud(oId.id);
+              $scope.options.crudListeners.onBeforeButtonEditCrud(oId.id, row);
             }
           }
           $scope.api.get(oId, function (data) {
@@ -443,7 +443,7 @@ eduCrudDirectives.directive('eduCrud', function () {
             $scope.options.formFields.tabs[0].active = true;
             if ($scope.options.hasOwnProperty('crudListeners')) {
               if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud') && typeof $scope.options.crudListeners.onAfterButtonEditCrud == 'function') {
-                $scope.options.crudListeners.onAfterButtonEditCrud(true);
+                $scope.options.crudListeners.onAfterButtonEditCrud(true, data);
               }
             }
             $scope.options.formControl.showOverlayLoading(false);
