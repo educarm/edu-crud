@@ -416,6 +416,8 @@ eduCrudDirectives.directive('eduCrud', function () {
                 if ($scope.options.crudListeners.onBeforeSaveValidation(data)) {
                   $scope.save(data);
                 }
+              } else {
+                $scope.save(data);
               }
             } else {
               $scope.save(data);
