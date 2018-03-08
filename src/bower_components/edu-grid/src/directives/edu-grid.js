@@ -1,6 +1,18 @@
 
  eduGridDirectives
- .directive('mySortable',function(){
+ .filter('toEuros', function() {
+  return function(input,fractionDigit) {
+	var fractD=fractionDigit?fractionDigit:2;
+	var amount= Number(input).toLocaleString("es-ES", {minimumFractionDigits: fractD}) + ' €';
+	if(amount=='0,00 €' || amount=='NaN €'){
+		return; 
+	}else{
+		return amount;
+	}  
+	
+  };
+})
+.directive('mySortable',function(){
   return {
     link:function(scope,el,attrs){
       el.sortable({
@@ -556,8 +568,9 @@
 				  }
 				  
 				$scope.internalControl.clearFormAvancedSearch = function() {  
-				  $scope.formAvancedSearchEventsClean();
+					$scope.formAvancedSearchEventsClean();
 				}
+				
 				
 
                 // ---
@@ -780,14 +793,14 @@
 					
 					// for compatibility with genericRest
 					if($scope.options.hasOwnProperty("mode") && $scope.options.mode=='genericRest'){
-			//....................................................................................................................
+			        //....................................................................................................................
 						var filterAS=[];
 						var filterGS=[];
 						var filterFK='';
 						var filter='';
 						
 						// Advanced Search
-						if($scope.options.hasOwnProperty("formAvancedSearch") && typeof $scope.options.formAvancedSearchResult!=undefined){
+						if($scope.options.hasOwnProperty("formAvancedSearch") && $scope.options.formAvancedSearch.hasOwnProperty("fields") && $scope.options.formAvancedSearch.fields!=undefined && typeof $scope.options.formAvancedSearchResult!=undefined){
 							
 							$scope.options.formAvancedSearch.fields.forEach(function(v,i)
 							{
@@ -904,9 +917,8 @@
 					}
 					
                     // If loadOnInit, loads the grid
-					if ($scope.options.loadOnInit){
+					if ($scope.options.hasOwnProperty('loadOnInit') && typeof $scope.options.loadOnInit!=undefined && $scope.options.loadOnInit===true){
 						$scope.refresh();
-					
 					} else {
 						$scope.list=[];
 						$scope.options.loadOnInit=true;
@@ -954,7 +966,7 @@
 				}
 				
                 // ON CLICK SELECT ROWS CHECKBOX
-				 $scope.checkSelectRow=function(row){
+				$scope.checkSelectRow=function(row){
 					if(row.selected){
 						var bExists=false;
 						for( var i=0;i< $scope.options.selectionRows.length;i++){

@@ -1,7 +1,7 @@
 {
   "name": "edu-crud",
-  "version": "0.0.27",
-  "repository":"https://github.com/educarm/edu-crud.git",
+  "version": "0.0.28",
+  "repository": "https://github.com/educarm/edu-crud.git",
   "build": 0,
   "devDependencies": {
     "grunt-gh-pages": "~0.9.0",

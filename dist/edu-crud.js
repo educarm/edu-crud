@@ -289,56 +289,78 @@ eduCrudDirectives.directive('eduCrud', function () {
           }
         }
         if ($scope.options.showButtonsCrudEditPre) {
-          $scope.options.buttonsGridUserPre.push({
-            label: 'Editar',
-            class: '',
-            glyphicon: 'edit',
-            button: false,
-            onclick: function (row) {
-              $scope.edit(row);
+          var button = {
+              label: 'Editar',
+              class: '',
+              glyphicon: 'edit',
+              button: false,
+              onclick: function (row) {
+                $scope.edit(row);
+              }
+            };
+          if ($scope.options.hasOwnProperty('crudListeners')) {
+            if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonEditPre') && typeof $scope.options.crudListeners.hiddenButtonEditPre == 'function') {
+              button.hidden = $scope.options.crudListeners.hiddenButtonEditPre;
             }
-          });
+          }
+          $scope.options.buttonsGridUserPre.push(button);
         }
         ;
         if ($scope.options.showButtonsCrudDeletePre) {
-          $scope.options.buttonsGridUserPre.push({
-            label: 'Eliminar',
-            class: '',
-            glyphicon: 'trash',
-            button: false,
-            onclick: function (row) {
-              $scope.selectedRowForDelete = row;
-              //$scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
-              $scope.keyRowForDelete = row[$scope.options.fieldKey];
-              $scope.options.showOverlayCrudFormDelete = true;
+          var button = {
+              label: 'Eliminar',
+              class: '',
+              glyphicon: 'trash',
+              button: false,
+              onclick: function (row) {
+                $scope.selectedRowForDelete = row;
+                $scope.keyRowForDelete = row[$scope.options.fieldKey];
+                $scope.options.showOverlayCrudFormDelete = true;
+              }
+            };
+          if ($scope.options.hasOwnProperty('crudListeners')) {
+            if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonDeletePre') && typeof $scope.options.crudListeners.hiddenButtonDeletePre == 'function') {
+              button.hidden = $scope.options.crudListeners.hiddenButtonDeletePre;
             }
-          });
+          }
+          $scope.options.buttonsGridUserPre.push(button);
         }
         ;
         if ($scope.options.showButtonsCrudEditPost) {
-          $scope.options.buttonsGridUserPost.push({
-            label: 'Editar',
-            class: '',
-            glyphicon: 'edit',
-            button: false,
-            onclick: function (row) {
-              $scope.edit(row);
+          var button = {
+              label: 'Editar',
+              class: '',
+              glyphicon: 'edit',
+              button: false,
+              onclick: function (row) {
+                $scope.edit(row);
+              }
+            };
+          if ($scope.options.hasOwnProperty('crudListeners')) {
+            if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonEditPost') && typeof $scope.options.crudListeners.hiddenButtonEditPost == 'function') {
+              button.hidden = $scope.options.crudListeners.hiddenButtonEditPost;
             }
-          });
+          }
+          $scope.options.buttonsGridUserPost.push(button);
         }
         if ($scope.options.showButtonsCrudDeletePost) {
-          $scope.options.buttonsGridUserPost.push({
-            label: 'Eliminar',
-            class: '',
-            glyphicon: 'trash',
-            button: false,
-            onclick: function (row) {
-              $scope.selectedRowForDelete = row;
-              //$scope.keyRowForDelete=$scope.options.fieldKeyLabel + ": "+ row[$scope.options.fieldKey]+ "?";
-              $scope.keyRowForDelete = row[$scope.options.fieldKey];
-              $scope.options.showOverlayCrudFormDelete = true;
+          var button = {
+              label: 'Eliminar',
+              class: '',
+              glyphicon: 'trash',
+              button: false,
+              onclick: function (row) {
+                $scope.selectedRowForDelete = row;
+                $scope.keyRowForDelete = row[$scope.options.fieldKey];
+                $scope.options.showOverlayCrudFormDelete = true;
+              }
+            };
+          if ($scope.options.hasOwnProperty('crudListeners')) {
+            if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonDeletePost') && typeof $scope.options.crudListeners.hiddenButtonDeletePost == 'function') {
+              button.hidden = $scope.options.crudListeners.hiddenButtonDeletePost;
             }
-          });
+          }
+          $scope.options.buttonsGridUserPost.push(button);
         }
         $scope.options.buttonsUserPre = $scope.options.buttonsGridUserPre;
         $scope.options.buttonsUserPost = $scope.options.buttonsGridUserPost;

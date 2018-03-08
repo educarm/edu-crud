@@ -1,0 +1,44 @@
+{
+  "name": "edu-field",
+  "version": "0.0.33",
+  "authors": [
+    "educarm"
+  ],
+  "main": [
+    "dist/edu-field.js",
+    "dist/edu-field.css"
+  ],
+  "description": "edu-field es un campo de formulario para diversos tipos de datos",
+  "keywords": [
+    "AngularJs",
+    "field",
+    "json",
+    "html"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+	"jquery": "educarm/jquery#~2.1.1",
+	"angular": "1.5.x", 
+    "angular-sanitize": "1.5.x",
+    "angular-resource": "1.5.x",
+    "angular-ui-bootstrap3": "educarm/angular-ui-bootstrap3#~0.12.0",
+    "bootstrap": "educarm/bootstrap#~3.2.0",
+    "textAngular": "educarm/textAngular#~1.2.2",
+    "Font-Awesome": "educarm/Font-Awesome#~4.7.0",
+    "angular-file-upload": "educarm/angular-file-upload#~1.0.2",
+	"ng-file-upload":""
+  },
+  "devDependencies": {
+     "angular-mocks": "educarm/angular-mocks#~1.2.17"
+  },
+  "resolutions:":{
+     "angular":"1.5.x"
+  }
+}

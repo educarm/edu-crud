@@ -85,7 +85,7 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 		loadOnInit:true, // default value true. Used so that it does not load the grid at the beginning
 		
 		
-		filterOnInit:{vcodcen:'30009319'}, //default {}. Assign value to los campos del formulario de búsqueda avanzada
+		filterOnInit:{},//{vcodcen:'30009319'}, //default {}. Assign value to los campos del formulario de búsqueda avanzada
 		
 		tableBordered:true, //default false
 		mode:'normal', //default 'normal', ('normal' | 'genericRest')
@@ -113,13 +113,16 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
         fieldKey:'vcodcen',
 		fieldKeyLabel:'código',
         height:300,
+		//mode:'genericRest',
 		
         listFields: [
-                 {label: 'Código', column: 'vcodcen', weight: '10',type:'number'},
-                 {label: 'Denominación', column: 'vdencen', weight: '40',type:'text'},
-                 {label: 'Domicilio', column: 'vdomcen', weight: '30',type:'text'},
+                 {label: 'Código', column: 'vcodcen', weight: '10',type:'currency'},
+				 {label: 'Tit. públ.', column: 'vtitularidad', weight: '10',type:'checkbox'},
+                 {label: 'Denominación', column: 'vdencen', weight: '30',type:'text'},
+                 {label: 'Domicilio', column: 'vdomcen', weight: '20',type:'text'},
                  {label: 'Localidad', column: 'vloccen', weight: '10',type:'text'},
-                 {label: 'Municipio', column: 'vmuncen', weight: '10',type:'text'}
+                 {label: 'Municipio', column: 'vmuncen', weight: '20',type:'text',notOrder:true},
+				 
         ],
         metaData:{
 		   panelType:"info",
@@ -142,14 +145,46 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
         },
 		
         buttonsUserPre: [
-                  {label: 'Ejecutar', class: '', glyphicon: 'flash', button: false,
-					  onclick: function (row) {
-						  console.log('ejecutar consulta:', row);
-					  },
-					  disabled: function (row) {
-						  //console.log('disabled button:', row);
-						  return false;
-					  }
+					{   
+						label: 'Ejecutar', 
+						class: '', 
+						glyphicon: 'flash', 
+						button: false,
+						onclick: function (row) {
+							console.log('ejecutar consulta:', row);
+						},
+						disabled: function (row) {
+							//console.log('disabled button:', row);
+							return false;
+						},
+						hidden: function (row) {
+							//console.log('disabled button:', row);
+							if(row.vcodcen=='30000018'){
+								return true;
+							}else{
+								return false;
+							}
+							
+						}
+				  },
+				  {   
+						label: 'Boton2', 
+						class: '', 
+						glyphicon: 'envelope', 
+						button: false,
+						onclick: function (row) {
+							console.log('envío:', row);
+						},
+						disabled: function (row) {
+							return false;
+						},
+						hidden: function (row) {
+							if(row.vcodcen=='30000146'){
+								return true;
+							}else{
+								return false;
+							}
+						}
 				  }
 				  
               ],
@@ -176,7 +211,7 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 		},
 		formAvancedSearch:{
 			width:'1200',
-			fields:$scope.avancedSearchFieldsFormGrid,
+			fields: $scope.avancedSearchFieldsFormGrid,
 			listeners:{
 					onContinue: function (filters) {
                       

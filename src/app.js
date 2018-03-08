@@ -106,6 +106,23 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			}
 	     },
 		crudListeners: {
+			hiddenButtonEditPre:function(row){
+				//console.log('disabled button:', row);
+				if(row.vcodcen=='30000018'){
+					return true;
+				}else{
+					return false;
+				}
+				
+			},
+			hiddenButtonDeletePre:function(row){
+				if(row.vcodcen=='30000146'){
+					return true;
+				}else{
+					return false;
+				}
+				
+			},
 		      
 			addValueToForm:function(data){
 				// add needed fields or values to form
@@ -138,7 +155,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			onAfterButtonDeleteCrud:function (success) {
 				console.log("onAfterButtonDeleteCrud success:"+success);
 			}
-            },
+        },
 		formMetaData:{
 			tabsShow:true,
 			fieldSetShow:true,
