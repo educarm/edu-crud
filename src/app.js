@@ -106,6 +106,16 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			}
 	     },
 		crudListeners: {
+			onBeforeSaveValidation:function(data){
+				if(data.vcodcen!='XXX'){
+					return true;
+				}else{
+					alert('Código de centro erróneo');
+					return false;
+					
+				}
+				
+			},
 			hiddenButtonEditPre:function(row){
 				//console.log('disabled button:', row);
 				if(row.vcodcen=='30000018'){
@@ -170,7 +180,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 										{ fieldSetName:"fieldSetName1",
 										   fields:[	  
 												//{key: 'vcodcen',type: 'text',min:2,max:20,col:'col-md-6',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: false }, 
-													  {key: 'vcodcen',type: 'text',col:'col-md-2',label: 'Código',placeholder: 'Código',autofocus:'false',required: true,disabledEdit:false, readonlyEdit:true },
+													  {key: 'vcodcen',type: 'text',col:'col-md-2',label: 'Código',placeholder: 'Código',autofocus:'false',required: true,disabledEdit:false, readonlyEdit:false },
 													  {key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',required: false,default:'S',disabledEdit:true },
 													 
 													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true,default:'HOLA',

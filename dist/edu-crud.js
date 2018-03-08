@@ -410,8 +410,16 @@ eduCrudDirectives.directive('eduCrud', function () {
                 data = $scope.options.crudListeners.addValueToForm(data);
               }
             }
-            console.log('grid form onsave()' + angular.toJson(data));
-            $scope.save(data);
+            //validation form data
+            if ($scope.options.hasOwnProperty('crudListeners')) {
+              if ($scope.options.crudListeners.hasOwnProperty('onBeforeSaveValidation') && typeof $scope.options.crudListeners.onBeforeSaveValidation == 'function') {
+                if ($scope.options.crudListeners.onBeforeSaveValidation(data)) {
+                  $scope.save(data);
+                }
+              }
+            } else {
+              $scope.save(data);
+            }
           },
           oncancel: function () {
             if ($scope.options.hasOwnProperty('crudListeners')) {
@@ -499,7 +507,6 @@ eduCrudDirectives.directive('eduCrud', function () {
               $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
             });
           } else if ($scope.mode == 'new') {
-            $log.log('click save row:' + angular.toJson(row));
             $scope.api.insert(row, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
