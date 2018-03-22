@@ -3,42 +3,61 @@ angular.module('e2e-mocks', ['ngMockE2E'])
     // Do your mock
     var baseApiUrl = 'api/v1';
    
+	var municipios=null;
     var orderBy = $filter('orderBy');
-    
-    
-    //API REST FOR SUPER LOTUSLESS OF ANDRES 
 	
-    // GET all centers from centers array with filters
-   //GET modelo/?getData&query=...&order=...&start=...&count=...
-    $httpBackend.whenGET(/api\/v1\/centros\/\?getData&(([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*/).respond(function(method, url,data,headers) {
-        console.log("llamada a GET api/v1/centros/?getData& "+method + " "+ url.split('?')[1]+ " url:"+url);
-        var params={};
+	
+	// GET all instalaciones from temas array with filters
+    $httpBackend.whenGET(/api\/v1\/instalaciones(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*/).respond(function(method, url,data,headers) {
+		console.log("llamada a GET /api\/v1\/instalaciones?algo=algo "+method + " params:"+ url.split('?')[1]+ " url:"+url);
+        return [200, getAll2(url,instalaciones), {}];
+	});
+	
+	var getAll2=function(url,entities){
+		var params={};
+		var entitiesFiltered=[];
         params=queryStringToJSON(url.split('?')[1]);
-		var reverse=(params.order.toUpperCase()==='ASC')?false:true;
-        var centrosFiltered=filterFilter(centros, params.filter);
-        centrosFiltered = orderBy(centrosFiltered, params.orderby, reverse);
-        console.log("centrosFiltered:"+ centrosFiltered.length);
-        var centrosPaged=getPagedData(centrosFiltered,params.limit, params.offset, params.filter);
-        console.log("centrosPaged:"+centrosPaged.length);
-        return [200, centrosPaged, {}];
-    });
+		
+		var fieldFk =params.filter.match(new RegExp(/(?<=\[)(.*)(?=\])/g))[0];
+		var valueFk= params.filter.match(new RegExp(/(?<=\=)(.*)/g))[0];
+       
+	   for( var i=0;i<entities.length;i++){
+			if(entities[i][fieldFk]==valueFk){
+				entitiesFiltered.push(entities[i]);
+			}
+		}
+      
+		
+        return entitiesFiltered;
+	}
 	
-	// GET count centers from array
-	//modelo/?getCount &query=...
-    $httpBackend.whenGET(/api\/v1\/centros\/\?getCount&(([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*/).respond(function(method, url,data,headers) {
-        console.log("llamada a GET api/v1/centros/?getCount& "+method + " url:"+ url);
+   
+    // GET all temas from temas array with filters
+    $httpBackend.whenGET(/services\/temasservice\/temas(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*/).respond(function(method, url,data,headers) {
+		console.log("llamada a GET services/temaservice/temas?algo=algo "+method + " params:"+ url.split('?')[1]+ " url:"+url);
+        return [200, getAll(url,temas), {}];
+	});
+	// GET all subtemas from subtemas array with filters
+    $httpBackend.whenGET(/services\/subtemasservice\/subtemas(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*/).respond(function(method, url,data,headers) {
+		console.log("llamada a GET services/subtemasservice/subtemas?algo=algo "+method + " params:"+ url.split('?')[1]+ " url:"+url);
+        return [200, getAll(url,subtemas), {}];
+	});
+	
+	var getAll=function(url,entities){
 		var params={};
         params=queryStringToJSON(url.split('?')[1]);
-        var centrosFiltered=filterFilter(centros, params.filter);
-	    return [200, {"count":centrosFiltered.length}, {}]; 
-    }); 
+		if(!params.order){
+			params.order='ASC';
+		}
+		var reverse=(params.order.toUpperCase()==='ASC')?false:true;
+        var entitiesFiltered=filterFilter(entities, params.filter);
+        entitiesFiltered = orderBy(entitiesFiltered, params.orderby, reverse);
+        console.log("entitiesFiltered:"+ entitiesFiltered.length);
+        var entitiesPaged=getPagedData(entitiesFiltered,params.limit, params.offset, params.filter);
+        console.log("entitiesPaged:"+entitiesPaged.length);
+        return entitiesPaged;
+	}
 	
- 
- 
- 
- 
- 
- 
 	// GET all municipios from municipios array with filters
     $httpBackend.whenGET(/api\/v1\/municipios(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*/).respond(function(method, url,data,headers) {
         console.log("llamada a GET api/v1/municipios?algo=algo "+method + " params:"+ url.split('?')[1]+ " url:"+url);
@@ -52,12 +71,12 @@ angular.module('e2e-mocks', ['ngMockE2E'])
 			params=queryStringToJSON(querystring[1]);
 		}
         var municipiosFiltered=filterFilter(municipios, params.filter);
-		console.log(".........=params:"+angular.toJson(params) + " municipiosFiltrados:" +angular.toJson(municipiosFiltered));
+		//console.log(".........=params:"+angular.toJson(params) + " municipiosFiltrados:" +angular.toJson(municipiosFiltered));
         municipiosFiltered = orderBy(municipiosFiltered, params.orderby, false);
         console.log("municipiosFiltered:"+ municipiosFiltered.length);
+		 console.log("municipiosFiltered:"+ angular.toJson(municipiosFiltered));
         return [200, municipiosFiltered, {}];
     });
-	
 	
 	
     // GET count centers from array
@@ -104,8 +123,8 @@ angular.module('e2e-mocks', ['ngMockE2E'])
       console.log("llamada a POST api/v1/centros data:"+angular.toJson(data));	
       var centro = angular.fromJson(data);
       centros.push(centro);
-	  return [200, centro, {}];
-	  
+      
+      return [200, centro, {}];
     });
     
     // UPDATE a center IN centers array
@@ -118,6 +137,7 @@ angular.module('e2e-mocks', ['ngMockE2E'])
         }
         var centro = angular.fromJson(data);
         centros.push(centro);
+       
         return [200, centro, {}];
     });
     
@@ -131,9 +151,9 @@ angular.module('e2e-mocks', ['ngMockE2E'])
                 centros.splice(i, 1);
             }
         }
+       
         return [200, centro, {}];
-		
-		});
+      });
     
     
     
@@ -172,18 +192,24 @@ angular.module('e2e-mocks', ['ngMockE2E'])
     };
     
     var queryStringToJSON=function(queryString) {
-        var pairs = queryString.split('&');
-    
-        var result = {};
-        pairs.forEach(function(pair) {
-            pair = pair.split('=');
-            result[pair[0]] = decodeURIComponent(pair[1] || '');
-        });
+		var result = {};
+		if(typeof(queryString)=='undefined' || queryString==null || queryString==''){
+			result.limit=100;
+			result.offset=0;
+			result.filter='';
+			result.order='ASC';
+		}else{
+			var pairs = queryString.split('&');
+			pairs.forEach(function(pair) {
+				pair = pair.split('=');
+				result[pair[0]] = decodeURIComponent(pair[1] || '');
+			});
+		}
 
         return JSON.parse(JSON.stringify(result));
     }
     
-     municipios=[
+    municipios=[
 {
     "value":"ABANILLA",
 	"name": "Abanilla",

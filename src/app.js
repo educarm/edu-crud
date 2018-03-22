@@ -181,6 +181,8 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 										   fields:[	  
 												//{key: 'vcodcen',type: 'text',min:2,max:20,col:'col-md-6',label: 'Código',placeholder: 'Código',autofocus:'autofocus',required: false }, 
 													  {key: 'vcodcen',type: 'text',col:'col-md-2',label: 'Código',placeholder: 'Código',autofocus:'false',required: true,disabledEdit:false, readonlyEdit:false },
+													  
+													  
 													  {key: 'ckeckbox',type: 'checkbox',inputSizeClass:"input-lg",col:'col-md-4',label: 'Checkbox',placeholder: 'Checkbox',autofocus:'',required: false,default:'S',disabledEdit:true },
 													 
 													  {key: 'vdencen',type: 'text',col:'col-md-6',label: 'Denominación',placeholder: 'Denominación',autofocus:'',required: true,default:'HOLA',
@@ -191,8 +193,30 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 																} 
 															}
 													   },
-													   {key: 'vdomcen',type: 'text',col:'col-md-12',lines: 5,label:'Domicilio',placeholder: 'Domicilio',autofocus:'',required: true}, 
-													  //{key: 'fecha',type: 'date',col:'col-md-12',label:'Fecha',placeholder: 'fecha',autofocus:'',required: true,disabled:false},
+													   {key: 'grid',type: 'grid',height:'180',col:'col-md-6',label: 'Grid1',readonly:false,
+														fieldKey:'vcodcen',
+														uri:'api\/v1\/instalaciones/:id',
+														fieldFk:'codcen',
+														valueFk:'',
+														//gridRows:itemsG,
+														listFields:[
+																	{label: 'Código', column: 'codigo', weight: '20',type:'text'},
+																	 {label: 'Descripción', column: 'descripcion', weight: '60',type:'text'},
+																	 {label: 'Localidad', column: 'vloccen', weight: '20',type:'select',options:[
+																																					{value:'ABANILLA',descripcion:'Abanilla'},
+																																					{value:'CARAVACA DE LA CRUZ',descripcion:'Caravaca de la Cruz'},
+																																					{value:'CEHEGIN',descripcion:'Cehegín'},
+																																					{value:'LORCA',descripcion:'Lorca'},
+																																					{value:'CARTAGENA',descripcion:'Cartagena'},
+																																					{value:'CIEZA',descripcion:'Cieza'},
+																																					{value:'JUMILLA',descripcion:'Jumilla'},
+																																					{value:'TOTANA',descripcion:'Totana'},
+																	 ]}
+																]
+													   },
+													   {key: 'vdomcen',type: 'text',col:'col-md-6',lines: 5,label:'Domicilio',placeholder: 'Domicilio',autofocus:'',required: true}, 
+													  {key: 'fecha',type: 'date',col:'col-md-6',label:'Fecha',placeholder: 'fecha',autofocus:'',required: true,disabled:false}
+													  
 													  
 													]
 										}

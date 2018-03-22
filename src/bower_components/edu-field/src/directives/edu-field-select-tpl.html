@@ -4,7 +4,7 @@
 		{{options.label}}
 		{{options.required ? '*' : ''}}
 	</label>
-	<select ng-class="{'loadinggif':options.loading}"
+	<select replace-blank ng-class="{'loadinggif':options.loading}"
 			class="form-control input-{{options.inputSize}}"
 			id="{{id}}"
 			autofocus="options.autofocus"
@@ -16,9 +16,11 @@
      		ng-required="options.required"
 			ng-disabled="options.disabled"
 			ng-init="value = options.options[options.default]"
-			ng-options="option.value as option.name for option in optionsSelect">
+			<!--ng-options="option.value as option.name for option in optionsSelect"-->
+			>
 		 
-		<option value="">{{options.emptyOptionText}}</option> 
+		    <option value="">{{options.emptyOptionText}}</option> 
+			<option ng-repeat="option in optionsSelect" value="{{option.value}}">xxxx{{options.name}}</option> 
                  
 	</select>
 	

@@ -195,7 +195,7 @@ app.controller('appController', ['$scope','$http', function ($scope,$http) {
 							}
 						
 						},
-						type: 'select',col:'col-md-6',label: 'Tema',selecttypesource:'url', selectsource:'services/temasservice/temas?limit=100000&offset=0&order=asc&orderby=CODIGO' ,optionvalue:'CODIGO',optionname:'TEMA',selectconcatvaluename:true,placeholder: '',autofocus:'',required: false,disabled:false },						
+						type: 'select',col:'col-md-6',label: 'Tema',selecttypesource:'url', selectsource:'services/temasservice/temas?limit=100000&offset=0&order=asc&orderby=CODIGO' ,optionvalue:'CODIGO',optionname:'TEMA',selectconcatvaluename:false,placeholder: '',autofocus:'',required: false,disabled:false },						
 					
 					{key: 'CODIGO_SUBTEMA',type: 'select',autoload:false,col:'col-md-6',label: 'Subtema depende de tema',selecttypesource:'url', selectsource:'services/subtemasservice/subtemas?limit=100000&offset=0&order=asc&orderby=DESCRIPCION',optionvalue:'SUBTEMA',optionname:'DESCRIPCION',selectconcatvaluename:true,placeholder: '',autofocus:'',required: false,disabled:false },
 											

@@ -21,7 +21,7 @@
             // -------------------------------------------------- //
 			
 			
-            controller: function ($scope,$log,$q,dataFactoryCrud) {
+            controller: function ($rootScope,$scope,$log,$q,dataFactoryCrud) {
 				if (!$scope.hasOwnProperty('options')) {
                     throw new Error('options are required!');
 				}
@@ -116,6 +116,10 @@
 				$scope.options.showButtonsGridUserPre=$scope.options.showButtonsCrudPre || $scope.options.showButtonsCrudEditPre ||$scope.options.showButtonsCrudDeletePre || $scope.options.showButtonsUserPre;
 				$scope.options.showButtonsGridUserPost=$scope.options.showButtonsCrudPost || $scope.options.showButtonsCrudEditPost ||$scope.options.showButtonsCrudDeletePost || $scope.options.showButtonsUserPost;
 				
+				if($scope.options.state=='new'){
+						add();
+					};
+				
 				
 				// ---
 				// METHODS
@@ -123,17 +127,24 @@
 				
 				
 				 $scope.internalControl = $scope.options.crudControl || {};
+				 
+				 $scope.internalControl.stateNew = function() {
+					add(); 
+				 };
 			  
 				  $scope.internalControl.refresh = function(bCleanFilters) {
 					$scope.options.gridControl.refresh(bCleanFilters);  
-				  }
+				  };
+				  
 				  $scope.internalControl.updateFields = function () {
 					$scope.options.gridControl.updateFields();
 					$scope.updateFields();
 				  };
+				  
 				  $scope.internalControl.showOverlayLoading = function(bShow) {
 					$scope.options.gridControl.showOverlayLoading(bShow);  
 				  }
+				  
 				  $scope.internalControl.clearGrid = function(bShow) {
 					$scope.options.gridControl.clearGrid();  
 				  }
@@ -238,7 +249,7 @@
 				
 				
 				$scope.options.listListeners.onExtraButtonClick=function(){
-					$scope.add();
+					add();
 				}
 				
 				
@@ -425,7 +436,7 @@
             	
             	$scope.cancel=function(){
                 	$log.log("click cancel");
-                	$scope.mode="list";
+                	$scope.state="list";
 					if ($scope.options.hasOwnProperty('crudListeners')){
 							if ($scope.options.crudListeners.hasOwnProperty('onAfterCancel')&& typeof($scope.options.crudListeners.onAfterCancel)=='function') {
 								$scope.options.crudListeners.onAfterCancel();
@@ -437,7 +448,7 @@
                 
                 $scope.edit=function(row){
                 	   console.log('Edit row:', row);
-                     $scope.mode="edit";
+                     $scope.state="edit";
                      $scope.showForm=true;
 					   //adjust disabled property for edit
 					   for(var i=0;i<$scope.options.formFields.tabs.length;i++){
@@ -469,6 +480,23 @@
 						$scope.api.get(oId,function (data) {		
                    	    	$scope.options.formData=data;
 							$scope.options.formFields.tabs[0].active=true;
+							
+							//if type grid, set value to foreing key
+							// $scope.options.formFields.tabs[].fieldSets:[].fields:[].valueFk=oId.id;
+							for(var i=0,tab;tab=$scope.options.formFields.tabs[i];i++){
+								for(var j=0,fieldSet; fieldSet=tab.fieldSets[j];j++){
+									for(var k=0,field; field=fieldSet.fields[k];k++){
+										if(field.type=='grid'){
+											field.valueFk=oId.id;
+											field.fieldControl.refresh(oId.id);
+										}
+									}
+								}
+							}
+							
+							//$rootScope.$digest();
+							
+							// listeners
 							if ($scope.options.hasOwnProperty('crudListeners')){
 								if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonEditCrud')&& typeof($scope.options.crudListeners.onAfterButtonEditCrud)=='function') {
 									$scope.options.crudListeners.onAfterButtonEditCrud(true,data);
@@ -493,7 +521,7 @@
 				
                           
                 $scope.save=function(row){
-                	if($scope.mode=="edit"){
+                	if($scope.state=="edit"){
                        var oId = getOid(row);
 						
 						$scope.api.update(oId,row,function (data) {  
@@ -512,7 +540,7 @@
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
 						});
             	    	
-                	}else if($scope.mode=="new"){
+                	}else if($scope.state=="new"){
                 		
             	    	$scope.api.insert(row,function (data) { 
                             if ($scope.options.hasOwnProperty('crudListeners')){
@@ -528,9 +556,9 @@
 								}
 							}		
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data,20000);
-					});
+						});
                 	}
-                	$scope.mode="list";
+                	$scope.state="list";
                 	$scope.showForm=false;
                 };
                 
@@ -558,9 +586,9 @@
 					});
                 	
                 };
-                $scope.add=function(){
-                	$log.log("click new");
-                	$scope.mode="new";
+                function add(){
+                	
+                	$scope.state="new";
 					
 					setTimeout(function(){$scope.options.formControl.selectTab(0); });
 					

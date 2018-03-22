@@ -7,8 +7,8 @@ module.exports = function(grunt) {
 		componentConfig: {
 			hostname: 'localhost', // change to 0.0.0.0 to listen on all connections
 			base: 'src',
-			port: 4000,
-			livereloadport: 35701
+			port: 4001,
+			livereloadport: 35702
 		},
 		connect: {
 			dev: {
