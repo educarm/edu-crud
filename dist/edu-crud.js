@@ -512,7 +512,10 @@ eduCrudDirectives.directive('eduCrud', function () {
             $scope.options.gridControl.showOverlayFormSuccessError('0', error.data, 20000);
           });
         };
-        $scope.save = function (row) {
+        $scope.save = function (rowSource) {
+          var row = angular.copy(rowSource);
+          delete row.$dataCopy;
+          delete row.$styles;
           if ($scope.state == 'edit') {
             var oId = getOid(row);
             $scope.api.update(oId, row, function (data) {

@@ -1,5 +1,5 @@
 /*
- edu-field v0.0.42
+ edu-field v0.0.47
  (c) Educarm, http://www.educarm.es
  License: MIT
 */
@@ -54,9 +54,10 @@ eduFieldDirectives.directive('eduComplete', [
         'minLengthUser': '@minlength',
         'matchClass': '@matchclass',
         'disabled': '@disabled',
-        'readonly': '@readonly'
+        'readonly': '@readonly',
+        'widthdropdown': '=widthdropdown'
       },
-      template: '<div class="eduComplete-holder">' + '\t<input id="{{id}}" name="{{name}}" ng-disabled="{{disabled}}" ng-readonly={{readonly}} edu-focus="{{autofocus}}"  ng-blur="onblur()"  ng-focus="onfocus()"  ng-required="{{required}}" ng-model="searchStr" type="text" placeholder="{{placeholder}}" class="{{inputClass}}" onmouseup="this.select();" ng-focus="resetHideResults()" ng-blur="hideResults()" />' + '\t<div id="{{id}}_dropdown" class="eduComplete-dropdown" ng-if="showDropdown">' + '\t\t<div class="eduComplete-searching" ng-show="searching">Buscando...</div>' + '\t\t<div class="eduComplete-searching" ng-show="!searching && (!results || results.length == 0)">No hay resultados</div>' + '\t\t<div class="eduComplete-row" ng-repeat="result in results" ng-click="selectResult(result)"  ng-mouseover="hoverRow()" ng-class="{\'eduComplete-selected-row\': $index == currentIndex}">' + '\t\t\t<div ng-if="imageField" class="eduComplete-image-holder">' + '\t\t\t\t<img ng-if="result.image && result.image != \'\'" ng-src="{{result.image}}" class="eduComplete-image"/>' + '\t\t\t\t<div ng-if="!result.image && result.image != \'\'" class="eduComplete-image-default"></div>' + '\t\t\t</div>' + '\t\t\t<div class="eduComplete-title" ng-if="matchClass" ng-bind-html="result.title"></div>' + '\t\t\t<div class="eduComplete-title" ng-if="!matchClass">{{ result.title }}</div>' + '\t\t\t<div ng-if="result.description && result.description != \'\'" class="eduComplete-description">{{result.description}}</div>' + '\t\t</div>' + '\t</div>' + '</div>',
+      template: '<div class="eduComplete-holder">' + '\t<input id="{{id}}" name="{{name}}" ng-disabled="{{disabled}}" ng-readonly={{readonly}} edu-focus="{{autofocus}}"  ng-blur="onblur()"  ng-focus="onfocus()"  ng-required="{{required}}" ng-model="searchStr" type="text" placeholder="{{placeholder}}" class="{{inputClass}}" onmouseup="this.select();" ng-focus="resetHideResults()" ng-blur="hideResults()" />' + '\t<div id="{{id}}_dropdown" class="eduComplete-dropdown" ng-if="showDropdown"  ng-style="widthdropdown2"> ' + '\t\t<div class="eduComplete-searching" ng-show="searching">Buscando...</div>' + '\t\t<div class="eduComplete-searching" ng-show="!searching && (!results || results.length == 0)">No hay resultados</div>' + '\t\t<div class="eduComplete-row" ng-repeat="result in results" ng-click="selectResult(result)"  ng-mouseover="hoverRow()" ng-class="{\'eduComplete-selected-row\': $index == currentIndex}">' + '\t\t\t<div ng-if="imageField" class="eduComplete-image-holder">' + '\t\t\t\t<img ng-if="result.image && result.image != \'\'" ng-src="{{result.image}}" class="eduComplete-image"/>' + '\t\t\t\t<div ng-if="!result.image && result.image != \'\'" class="eduComplete-image-default"></div>' + '\t\t\t</div>' + '\t\t\t<div class="eduComplete-title" ng-if="matchClass" ng-bind-html="result.title"></div>' + '\t\t\t<div class="eduComplete-title" ng-if="!matchClass">{{ result.title }}</div>' + '\t\t\t<div ng-if="result.description && result.description != \'\'" class="eduComplete-description">{{result.description}}</div>' + '\t\t</div>' + '\t</div>' + '</div>',
       link: function ($scope, elem, attrs) {
         $scope.lastSearchTerm = null;
         $scope.currentIndex = null;
@@ -66,6 +67,7 @@ eduFieldDirectives.directive('eduComplete', [
         $scope.searching = false;
         $scope.pause = 500;
         $scope.minLength = 3;
+        $scope.widthdropdown2 = { width: $scope.widthdropdown };
         if ($scope.urldataloadall && $scope.urldataloadall != '') {
           $http.get($scope.urldataloadall, {}).success(function (responseData, status, headers, config) {
             $scope.localData = responseData;
@@ -328,6 +330,32 @@ eduFieldDirectives.directive('eduComplete', [
         }
     };
 })*/
+eduFieldDirectives.directive('capitalize', function () {
+  return {
+    require: 'ngModel',
+    link: function (scope, element, attrs, modelCtrl) {
+      if (attrs.capitalize == 'true') {
+        var capitalize = function (inputValue) {
+          if (inputValue == undefined)
+            inputValue = '';
+          var capitalized = inputValue.toUpperCase();
+          if (capitalized !== inputValue) {
+            // see where the cursor is before the update so that we can set it back
+            var selection = element[0].selectionStart;
+            modelCtrl.$setViewValue(capitalized);
+            modelCtrl.$render();
+            // set back the cursor after rendering
+            element[0].selectionStart = selection;
+            element[0].selectionEnd = selection;
+          }
+          return capitalized;
+        };
+        modelCtrl.$parsers.push(capitalize);
+        capitalize(scope[attrs.ngModel]);  // capitalize initial value
+      }
+    }
+  };
+});
 eduFieldDirectives.factory('dataFactoryField', [
   '$resource',
   function ($resource) {
@@ -524,6 +552,27 @@ eduFieldDirectives.directive('dateInput', [
     };
   }
 ]);
+eduFieldDirectives.directive('replaceBlank', function () {
+  return {
+    require: 'ngModel',
+    link: function (scope, elm, attrs, ngModelCtrl) {
+      ngModelCtrl.$formatters.unshift(function (modelValue) {
+        if (typeof modelValue != 'undefined') {
+          return modelValue.replace(new RegExp(' ', 'g'), 'aeiou');
+        } else {
+          return modelValue;
+        }
+      });
+      ngModelCtrl.$parsers.unshift(function (viewValue) {
+        if (typeof viewValue != 'undefined') {
+          return viewValue.replace(new RegExp('aeiou', 'g'), ' ');
+        } else {
+          return viewValue;
+        }
+      });
+    }
+  };
+});
 eduFieldDirectives.directive('dateTimeInput', [
   'dateFilter',
   function (dateFilter) {
@@ -854,8 +903,10 @@ eduFieldDirectives.directive('eduField', [
             } else if ($scope.options.type == 'autocomplete') {
               value = $scope.value;
               item = subitem;
+            } else {
+              value = $scope.value;
             }
-            $scope.options.fieldListeners.onChange(value, item);
+            $scope.options.fieldListeners.onChange(value, item, $scope.options.showPopupCalendar);
           }
         };
         $scope.onKeypress = function ($event) {
@@ -929,16 +980,17 @@ eduFieldDirectives.directive('eduField', [
             } else {
               value = $scope.value ? $scope.value : '';
             }
-            $scope.options.fieldListeners.onBlur(value, item);
+            $scope.options.fieldListeners.onBlur(value, $scope.options.showPopupCalendar);
           }
         };
       },
       controller: [
         '$scope',
+        '$http',
         'Upload',
         'FileUploader',
         'dataFactoryField',
-        function fieldController($scope, Upload, FileUploader, dataFactoryField) {
+        function fieldController($scope, $http, Upload, FileUploader, dataFactoryField) {
           // component control
           $scope.options.fieldControl = {};
           $scope.internalControl = $scope.options.fieldControl || {};
@@ -973,7 +1025,9 @@ eduFieldDirectives.directive('eduField', [
               $scope.refreshSelect(value);
             }
             if ($scope.options.type == 'grid') {
-              $scope.options.valueFk = value;
+              if (value) {
+                $scope.options.valueFk = value;
+              }
               $scope.refreshGrid();
             }
           };
@@ -1039,12 +1093,72 @@ eduFieldDirectives.directive('eduField', [
           // CONTROL TYPE= grid
           //-----------------------------------------------------------//
           if ($scope.options.type == 'grid') {
-            for (var fieldKey in $scope.options.listFields) {
-              if (typeof $scope.options.listFields[fieldKey].renderer !== 'function') {
-                $scope.options.listFields[fieldKey].orderByValue = $scope.options.listFields[fieldKey].column;
-                $scope.options.listFields[fieldKey].renderer = function (input, row, column, type) {
-                  return input;
-                };
+            $scope.options.state = 'list';
+            function configField() {
+              $scope.field = null;
+              for (var k = 0, field; field = $scope.options.listFields[k]; k++) {
+                $scope.field = field;
+                //for transform content input before render
+                for (var property in field) {
+                  if (typeof field.renderer !== 'function') {
+                    field.orderByValue = field.column;
+                    field.renderer = function (input, row, column, type) {
+                      return input;
+                    };
+                  }
+                }
+                // if item in listField is checkbox, by default, false and true value are 'N' and 'S'
+                if (field.type == 'checkbox') {
+                  if (!field.false_value) {
+                    field.false_value = '\'N\'';
+                  }
+                  if (!field.true_value) {
+                    field.true_value = '\'S\'';
+                  }
+                }
+                if (field.type == 'select') {
+                  if (field.selecttypesource == 'url') {
+                    if (field.hasOwnProperty('selectsource') && field.selectsource != '') {
+                      //****************************************************************************
+                      $http.get(field.selectsource).success(function (data, status, headers, config) {
+                        $scope.field.selectOptions = data;
+                        //for each option, adjust properties value an name
+                        for (var i = 0, option; option = $scope.field.selectOptions[i]; i++) {
+                          if (!option.hasOwnProperty('value')) {
+                            option.value = option[$scope.field.optionvalue];
+                          }
+                          if (!option.hasOwnProperty('name')) {
+                            if ($scope.field.selectconcatvaluename) {
+                              option.name = option[$scope.field.optionvalue] + ' - ' + option[$scope.field.optionname];
+                            } else {
+                              option.name = option[$scope.field.optionname];
+                            }
+                          } else {
+                            if ($scope.field.selectconcatvaluename) {
+                              option.name = option['value'] + ' - ' + option['name'];
+                            } else {
+                              option.name = option[$scope.field.optionname];
+                            }
+                          }
+                        }
+                        //guarda la descripción de la opción del select correspondiente con el código en select.option.value
+                        //para poder mostarla cuando la fila esté en edición
+                        if ($scope.gridRows) {
+                          for (var i = 0, row; row = $scope.gridRows[i]; i++) {
+                            row.$optionSelectedName = {};
+                            for (var key in row) {
+                              if (key == $scope.field.column) {
+                                row.$optionSelectedName[key] = _.find($scope.field.selectOptions, { 'value': row[key] }).name;
+                              }
+                            }
+                          }
+                        }
+                      }).error(function (data, status, headers, config) {
+                        console.log('Error getting options select:' + data);
+                      });  //****************************************************************************
+                    }
+                  }
+                }
               }
             }
             var apiField = null;
@@ -1065,6 +1179,7 @@ eduFieldDirectives.directive('eduField', [
                 apiField.getAll(oParamGrid, function (data) {
                   $scope.options.loading = false;
                   $scope.gridRows = data;
+                  configField();
                 }, function (data) {
                   $scope.options.loading = false;
                   $scope.internalControl.showOverlayFormSuccessError('0', data.data, 20005);
@@ -1078,12 +1193,24 @@ eduFieldDirectives.directive('eduField', [
               item.$dataCopy = dataCopy;
               item.$visible = true;
               item.$inserted = false;
+              if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onChangeState == 'function') {
+                $scope.options.fieldListeners.onChangeState($scope.options.state, 'edit');
+                $scope.options.state = 'edit';
+              } else {
+                $scope.options.state = 'edit';
+              }
             };
             // button grid cancel
             $scope.gridCancel = function (item) {
               angular.extend(item, item.$dataCopy);
               item.$visible = false;
               item.$inserted = false;
+              if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onChangeState == 'function') {
+                $scope.options.fieldListeners.onChangeState($scope.options.state, 'list');
+                $scope.options.state = 'list';
+              } else {
+                $scope.options.state = 'list';
+              }
             };
             // button grid delete
             $scope.gridDelete = function (item, index) {
@@ -1092,6 +1219,12 @@ eduFieldDirectives.directive('eduField', [
                 item: item,
                 index: index
               };
+              if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onChangeState == 'function') {
+                $scope.options.fieldListeners.onChangeState($scope.options.state, 'list');
+                $scope.options.state = 'list';
+              } else {
+                $scope.options.state = 'list';
+              }
             };
             // button grid add new
             $scope.gridNew = function () {
@@ -1102,21 +1235,51 @@ eduFieldDirectives.directive('eduField', [
               $scope.gridRows.unshift(newItem);
               newItem.$visible = true;
               newItem.$inserted = true;
+              if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onChangeState == 'function') {
+                $scope.options.fieldListeners.onChangeState($scope.options.state, 'new');
+                $scope.options.state = 'new';
+              } else {
+                $scope.options.state = 'new';
+              }
             };
             // button grid save
             $scope.gridSave = function (item) {
               console.log('gridLocalSave: ' + angular.toJson(item));
               var dataTemp = {};
               angular.copy(item, dataTemp);
+              delete dataTemp.$optionSelectedName;
               delete dataTemp.$dataCopy;
               delete dataTemp.$visible;
               delete dataTemp.$inserted;
               if (item.$inserted) {
-                apiField.insert(item, function (data) {
+                dataTemp[$scope.options.fieldFk] = $scope.options.valueFk;
+                apiField.insert(dataTemp, function (data) {
+                  item.$visible = false;
+                  if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onSaveSuccess == 'function') {
+                    $scope.options.fieldListeners.onSaveSuccess(data);
+                  }
+                  if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onChangeState == 'function') {
+                    $scope.options.fieldListeners.onChangeState($scope.options.state, 'list');
+                    $scope.options.state = 'list';
+                  } else {
+                    $scope.options.state = 'list';
+                  }
+                  $scope.refreshGrid();
                 }, function (data) {
                 });
               } else {
-                apiField.update(item, function (data) {
+                var oId = getOid(dataTemp);
+                apiField.update(oId, dataTemp, function (data) {
+                  item.$visible = false;
+                  if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onUpdateSuccess == 'function') {
+                    $scope.options.fieldListeners.onUpdateSuccess(data);
+                  }
+                  if ($scope.options.hasOwnProperty('fieldListeners') && typeof $scope.options.fieldListeners.onChangeState == 'function') {
+                    $scope.options.fieldListeners.onChangeState($scope.options.state, 'list');
+                    $scope.options.state = 'list';
+                  } else {
+                    $scope.options.state = 'list';
+                  }
                 }, function (data) {
                 });
               }
@@ -1133,6 +1296,12 @@ eduFieldDirectives.directive('eduField', [
             $scope.inputGridFormDeleteCancel = function () {
               $scope.options.showOverlayInputGridFormDelete = false;
             };
+            function getOid(row) {
+              var vid = row[$scope.options.fieldKey];
+              var oId = {};
+              oId['id'] = vid;
+              return oId;
+            }
           }
           //Especific validator
           // ----------------------------------------------------------//
@@ -1319,7 +1488,12 @@ eduFieldDirectives.directive('eduField', [
                 $scope.optionsSelect = data;
                 for (var i = 0; i < $scope.optionsSelect.length; i++) {
                   if (!$scope.optionsSelect[i].hasOwnProperty('value')) {
-                    $scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue];
+                    var val = $scope.optionsSelect[i][$scope.options.optionvalue];
+                    //if(typeof(val)=='string'){
+                    //	$scope.optionsSelect[i].value=val.replace(new RegExp(' ', 'g'), 'aeiou');
+                    //}else{
+                    $scope.optionsSelect[i].value = val;  //}
+                                                          //$scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue].replace(' ','|');
                   }
                   if (!$scope.optionsSelect[i].hasOwnProperty('name')) {
                     if ($scope.options.selectconcatvaluename) {
@@ -1346,7 +1520,12 @@ eduFieldDirectives.directive('eduField', [
               if (typeof $scope.optionsSelect != 'undefined') {
                 for (var i = 0; i < $scope.optionsSelect.length; i++) {
                   if (!$scope.optionsSelect[i].hasOwnProperty('value')) {
-                    $scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue];
+                    var val = $scope.optionsSelect[i][$scope.options.optionvalue];
+                    //if(typeof(val)=='string'){
+                    //	$scope.optionsSelect[i].value=val.replace(new RegExp(' ', 'g'), 'aeiou');
+                    //}else{
+                    $scope.optionsSelect[i].value = val;  //}
+                                                          //$scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue].replace(' ','|');
                   }
                   if (!$scope.optionsSelect[i].hasOwnProperty('name')) {
                     if ($scope.options.selectconcatvaluename) {
@@ -1369,7 +1548,12 @@ eduFieldDirectives.directive('eduField', [
                   $scope.optionsSelect = data;
                   for (var i = 0; i < $scope.optionsSelect.length; i++) {
                     if (!$scope.optionsSelect[i].hasOwnProperty('value')) {
-                      $scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue];
+                      var val = $scope.optionsSelect[i][$scope.options.optionvalue];
+                      //if(typeof(val)=='string'){
+                      //	$scope.optionsSelect[i].value=val.replace(new RegExp(' ', 'g'), 'aeiou');
+                      //}else{
+                      $scope.optionsSelect[i].value = val;  //}
+                                                            //$scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue].replace(' ','|');
                     }
                     if (!$scope.optionsSelect[i].hasOwnProperty('name')) {
                       if ($scope.options.selectconcatvaluename) {
@@ -1398,7 +1582,12 @@ eduFieldDirectives.directive('eduField', [
                 if (typeof $scope.optionsSelect != 'undefined' && !$scope.optionsSelect[0].hasOwnProperty('value')) {
                   for (var i = 0; i < $scope.optionsSelect.length; i++) {
                     if (!$scope.optionsSelect[i].hasOwnProperty('value')) {
-                      $scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue];
+                      var val = $scope.optionsSelect[i][$scope.options.optionvalue];
+                      //if(typeof(val)=='string'){
+                      //	$scope.optionsSelect[i].value=val.replace(new RegExp(' ', 'g'), 'aeiou');
+                      //}else{
+                      $scope.optionsSelect[i].value = val;  //}
+                                                            //$scope.optionsSelect[i].value = $scope.optionsSelect[i][$scope.options.optionvalue].replace(' ','|');
                     }
                     if (!$scope.optionsSelect[i].hasOwnProperty('name')) {
                       if ($scope.options.selectconcatvaluename) {
@@ -1429,17 +1618,17 @@ angular.module('edu-field.tpl').run([
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('directives/edu-field-autocomplete-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><edu-complete id_={{id}} name={{name}} onblur=onBlur() onfocus=onFocus() edu-focus=options.autofocus required placeholder={{options.placeholder}} pause={{autocpause}} selectedobject=value disabled readonly url={{options.autocurldata}} urldataloadall={{options.autocurldataloadall}} localdata=options.autoclocaldata searchfields={{options.autocsearchfields}} datafield={{options.autocfieldvalue}} titlefield={{options.autocfieldtitle}} descriptionfield={{options.autocfielddescription}} imagefield={{options.autocfieldimg}} minlength={{options.autocminlength}} inputclass="form-control input-{{options.inputSize}}"><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
+    $templateCache.put('directives/edu-field-autocomplete-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><edu-complete id_={{id}} name={{name}} onblur=onBlur() onfocus=onFocus() edu-focus=options.autofocus required placeholder={{options.placeholder}} pause={{autocpause}} selectedobject=value disabled readonly url={{options.autocurldata}} urldataloadall={{options.autocurldataloadall}} localdata=options.autoclocaldata searchfields={{options.autocsearchfields}} datafield={{options.autocfieldvalue}} titlefield={{options.autocfieldtitle}} descriptionfield={{options.autocfielddescription}} imagefield={{options.autocfieldimg}} minlength={{options.autocminlength}} inputclass="form-control input-{{options.inputSize}}" widthdropdown="options.widthdropdown"><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-button-tpl.html', '<div title={{options.title}} class="form-group {{options.col}}" style=position:relative style="border-style: dotted;height:40px;vertical-align:text-bottom"><label for={{id}}>{{options.labelButton}} {{options.required ? \'*\' : \'\'}}</label><div class=form-control style="border: 0px solid #ccc; -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,.075); box-shadow: inset 0 0px 0px rgba(0,0,0,.075)"><button id={{id}} name={{name}} ng-click=options.onClick() class="btn btn-{{options.state}} btn-{{options.size}}" ng-disabled=options.disabled><i class={{options.icon}}></i><span>{{options.label}}</span></button></div></div>');
-    $templateCache.put('directives/edu-field-checkbox-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>&nbsp;</label><div class="form-control input-{{options.inputSize}}" style="border:solid 0px"><input type=checkbox id={{id}} name=name autofocus ng-false-value={{options.false_value}} ng-true-value={{options.true_value}} ng-readonly=options.readonly ng-disabled=options.disabled ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()> {{options.label}} {{options.required ? \'*\' : \'\'}}</div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small></div></div>');
+    $templateCache.put('directives/edu-field-checkbox-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>&nbsp;</label><div class="form-control input-{{options.inputSize}}" style="border:solid 0px"><input type=checkbox id={{id}} name={{options.name}} autofocus ng-false-value={{options.false_value}} ng-true-value={{options.true_value}} ng-readonly=options.readonly ng-disabled=options.disabled ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()> {{options.label}} {{options.required ? \'*\' : \'\'}}</div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small></div></div>');
     $templateCache.put('directives/edu-field-cif-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=input-group><span class=input-group-btn><button class="btn btn-{{options.typebutton || \'default\'}} btn-{{options.inputSize || \'default\'}}" type=button>CIF</button></span><div class=input-group><input style=min-width:250px class="form-control input-{{options.inputSize || \'default\'}}" id={{id}} name={{name}} edu-focus=options.autofocus placeholder={{options.placeholder}} ng-required=options.required ng-readonly=options.readonly ng-disabled=options.disabled ng-minlength=options.min ng-maxlength=options.max ng-pattern="nifniecifValidator(\'cif\')" ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()></div></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un CIF</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un NIF/NIE v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-currency-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input currency class="form-control input-{{options.inputSize}}" id={{id}} placeholder={{options.placeholder}} autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-pattern=pattern_validator ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor.</small> <small class=error ng-show=$invalidPattern>Introduzca un n\xfamero v\xe1lido.</small></div></div>');
-    $templateCache.put('directives/edu-field-date-ag-ui-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class="input-group date-group"><input class="form-control input-{{options.inputSize}}" datepicker-localdate ng-click="(options.disabled || options.readonly)?angular.noop():internalControl.showCalendar($event)" datepicker-popup="{{options.format || \'dd-MM-yyyy\'}}" ng-model=value ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly is-open=options.showPopupCalendar datepicker-options=options.dateOptions edu-focus=options.autofocus current-text=Hoy clear-text=Borrar close-text="Cerrar"> <span class=input-group-btn ng-show=options.showButtonCalendar><button type=button ng-disabled=options.disabled class="btn btn-{{options.inputSize || \'sm\'}} btn-info" ng-click="(options.disabled || options.readonly)?angular.noop():internalControl.showCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca una fecha</small> <small class=error ng-show=$invalidPattern>Introduzca un fecha v\xe1lida (dd-mm-aaaa)</small></div></div>');
+    $templateCache.put('directives/edu-field-date-ag-ui-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class="input-group date-group"><input class="form-control input-{{options.inputSize}}" datepicker-localdate ng-click="(options.disabled || options.readonly)?angular.noop():internalControl.showCalendar($event)" datepicker-popup="{{options.format || \'dd-MM-yyyy\'}}" ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-keypress=onKeypress($event) ng-model=value ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly is-open=options.showPopupCalendar datepicker-options=options.dateOptions edu-focus=options.autofocus current-text=Hoy clear-text=Borrar close-text="Cerrar"> <span class=input-group-btn ng-show=options.showButtonCalendar><button type=button ng-disabled=options.disabled class="btn btn-{{options.inputSize || \'sm\'}} btn-info" ng-click="(options.disabled || options.readonly)?angular.noop():internalControl.showCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca una fecha</small> <small class=error ng-show=$invalidPattern>Introduzca un fecha v\xe1lida (dd-mm-aaaa)</small></div></div>');
     $templateCache.put('directives/edu-field-date-time-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input date-time-input class="form-control {{options.inputSize}}" id={{id}} name={{name}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca una fecha y una hora</small> <small class=error ng-show=$invalidPattern>Introduzca un fecha y una hora v\xe1lida</small></div></div>');
     $templateCache.put('directives/edu-field-date-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input type=date date-input class="form-control {{options.inputSize}}" id={{id}} name={{name}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca una fecha</small> <small class=error ng-show=$invalidPattern>Introduzca un fecha v\xe1lida (dd-mm-aaaa)</small></div></div>');
     $templateCache.put('directives/edu-field-email-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input class="form-control input-{{options.inputSize}}" id={{id}} name={{name}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-minlength=options.min ng-maxlength=options.max ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un email</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un email v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-file-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div id={{id}}><div class=input-group><input type=file class="form-control input-{{options.inputSize}}" aria-describedby=basic-addon1 readonly file-model=value autofocus ng-required=options.required ng-disabled=options.disabled edu-focus="options.autofocus"> <span class=input-group-btn><label class="btn btn-{{options.typeButton || \'default\'}} btn-{{options.inputSize}}" type=button ng-click=upload(value)><i class="fa fa-{{options.iconButton}}"></i> {{options.labelButton}}</label></span></div></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small></div></div>');
-    $templateCache.put('directives/edu-field-grid-tpl.html', '<style>.input-grid table {\r' + '\n' + '\t\tborder-collapse: collapse;\r' + '\n' + '\t}\r' + '\n' + '\r' + '\n' + '\tinput-grid table, th, td {\r' + '\n' + '\t\tborder: 1px solid #DCDCDC;\r' + '\n' + '\t}</style><div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}"><label for=input-grid-{{options.key}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div style=overflow:auto;height:{{(options.height*1+40)}}px id=input-grid-{{options.key}} style=position:relative><scrollable-table watch=options.gridRows><table border=1 width=100% height=100% class=input-grid><thead><tr><th width=60px title="Nuevo elemento"><button ng-click=gridNew() class="btn btn-sm btn-info"><span class="fa fa-plus"></span></button></th><th ng-repeat="field in options.listFields" class=noFixedColumn width={{field.weight}}% title=&nbsp style="text-align: center" id={{$index}}><span ng-click="changeOrder(field, field.orderByValue, \'desc\')" ng-show="field.order==\'asc\'" class=header-column title="Ordenar por {{field.label}}"><i class="glyphicon glyphicon-sort-by-alphabet"></i> <a>&nbsp{{field.label}}</a></span> <span ng-click="changeOrder(field, field.orderByValue, \'asc\')" ng-show="field.order==\'desc\'" class=header-column title="Ordenar por {{field.label}}"><i class="glyphicon glyphicon-sort-by-alphabet-alt"></i> <a>&nbsp{{field.label}}</a></span> <span ng-click="changeOrder(field, field.orderByValue, \'desc\')" ng-hide="field.order.length>0" class=header-column title="Ordenar por {{field.label}}"><a>&nbsp{{field.label}}</a></span></th></tr></thead><tbody><tr ng-repeat="item in gridRows" ng-click=options.gridOnRowClick(item)><td style="white-space: nowrap"><form ng-show=item.$visible class="form-buttons form-inline" shown=item.$inserted><button ng-click=gridSave(item) ng-disabled=item.$waiting class="btn btn-sm btn-warning"><span class="fa fa-save"></span></button> <button type=button ng-disabled=item.$waiting ng-click=gridCancel(item) class="btn btn-sm btn-default"><span class="fa fa-undo"></span></button></form><div class=buttons ng-show=!item.$visible><button class="btn btn-sm btn-primary" ng-click=gridEdit(item)><span class="fa fa-edit"></span></button> <button class="btn btn-sm btn-danger" ng-click=gridDelete(item,$index)><span class="fa fa-remove"></span></button></div></td><td ng-repeat="field in options.listFields" ng-click=options.gridOnRowClick()><div ng-switch on=field.type><div ng-switch-when=text><span ng-show=!item.$visible>{{item[field.column]}}</span> <span ng-show=item.$visible><input style=width:100% ng-model="item[field.column]"></span></div><div ng-switch-when=number class=pull-right style=margin-right:10px><span ng-show=!item.$visible>{{field.renderer(item[field.column], entry, field.column,field.type)}}</span> <span ng-show=item.$visible><input style=width:100% ng-model="item[field.column]"></span></div><div ng-switch-when=date><span ng-show=!item.$visible>{{item[field.column] | date:field.format ||\'dd/MM/yyyy\'}}</span> <span ng-show=item.$visible><input style=width:100% type=date ng-model="item[field.column]"></span></div><div ng-switch-when=currency><span ng-show=!item.$visible>{{item[field.column] | toEuros}}</span> <span ng-show=item.$visible><input style=width:100% ng-model="item[field.column]"></span></div><div ng-switch-when=checkbox><span ng-show=!item.$visible><input type=checkbox ng-model=item[field.column] ng-false-value="\'N\'" ng-true-value="\'S\'" onclick="return false"></span> <span ng-show=item.$visible><input style=width:100% type=checkbox ng-model=item[field.column] ng-false-value="\'N\'" ng-true-value="\'S\'"></span></div><div ng-switch-when=select><span ng-show=!item.$visible>{{field.renderer(item[field.column], entry, field.column,field.type)}}</span> <span ng-show=item.$visible><select style=width:100% ng-model=item[field.column]><option></option><option ng-repeat="option in field.options" value={{option.value}}>{{option.descripcion}}</option></select></span></div><div ng-switch-default><span ng-show=!item.$visible>{{item[field.column]}}</span> <span ng-show=item.$visible><input style=width:100% ng-model="item[field.column]"></span></div></div></td></tr></tbody></table></scrollable-table></div><div ng-show=options.inputGridLoading class=overlay-edu-grid><div class="spin centrado-edu-grid"></div></div><div name=overlay class=overlay-edu-crud ng-show=options.showOverlayInputGridFormDelete><div class=centrado-edu-crud><div class="panel panel-info"><div class=panel-heading><div class=row><div class=col-md-12><h4>{{options.snippets.formDeleteTitle || \'Por favor confirme\'}}</h4></div></div></div><div class=panel-body><h4>{{options.snippets.formDeleteMessage || \'\xbfEst\xe1 seguro que quiere ELIMINAR el registro\'}} {{keyRowForDelete}} ?</h4></div><div class=panel-footer><div class=row><div class="col-md-offset-6 col-md-6"><button ng-click=inputGridFormDeleteContinue() class="btn btn-sm btn-primary">{{options.snippets.formDeleteButtonContinue || \'Continuar\'}}</button> <button ng-click=inputGridFormDeleteCancel() class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || \'Cancelar\'}}</button></div></div></div></div></div></div></div>');
+    $templateCache.put('directives/edu-field-grid-tpl.html', '<style>.input-grid table {\r' + '\n' + '\t\tborder-collapse: collapse;\r' + '\n' + '\t}\r' + '\n' + '\r' + '\n' + '\tinput-grid table, th, td {\r' + '\n' + '\t\tborder: 1px solid #DCDCDC;\r' + '\n' + '\t}</style><div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}"><label for=input-grid-{{options.key}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div style=overflow:auto;height:{{(options.height*1+40)}}px id=input-grid-{{options.key}} style=position:relative><scrollable-table watch=options.gridRows><table border=1 width=100% height=100% class=input-grid><thead><tr><th width=60px title="Nuevo elemento"><button ng-click=gridNew() class="btn btn-sm btn-info" ng-disabled="options.state!=\'list\'"><span class="fa fa-plus"></span></button></th><th ng-repeat="field in options.listFields" class=noFixedColumn width={{field.weight}}% title=&nbsp style="text-align: center" id={{$index}}><span ng-click="changeOrder(field, field.orderByValue, \'desc\')" ng-show="field.order==\'asc\'" class=header-column title="Ordenar por {{field.label}}"><i class="glyphicon glyphicon-sort-by-alphabet"></i> <a>&nbsp{{field.label}}</a></span> <span ng-click="changeOrder(field, field.orderByValue, \'asc\')" ng-show="field.order==\'desc\'" class=header-column title="Ordenar por {{field.label}}"><i class="glyphicon glyphicon-sort-by-alphabet-alt"></i> <a>&nbsp{{field.label}}</a></span> <span ng-click="changeOrder(field, field.orderByValue, \'desc\')" ng-hide="field.order.length>0" class=header-column title="Ordenar por {{field.label}}"><a>&nbsp{{field.label}}</a></span></th></tr></thead><tbody><tr ng-repeat="item in gridRows" ng-click=options.gridOnRowClick(item)><td style="white-space: nowrap"><form ng-show=item.$visible class="form-buttons form-inline" shown=item.$inserted><button ng-click=gridSave(item) ng-disabled=item.$waiting class="btn btn-sm btn-warning"><span class="fa fa-save"></span></button> <button type=button ng-disabled=item.$waiting ng-click=gridCancel(item) class="btn btn-sm btn-default"><span class="fa fa-undo"></span></button></form><div class=buttons ng-show=!item.$visible><button class="btn btn-sm btn-primary" ng-click=gridEdit(item)><span class="fa fa-edit"></span></button> <button class="btn btn-sm btn-danger" ng-click=gridDelete(item,$index)><span class="fa fa-remove"></span></button></div></td><td ng-repeat="field in options.listFields" ng-click=options.gridOnRowClick()><div ng-switch on=field.type><div ng-switch-when=text><span ng-show=!item.$visible>{{item[field.column]}}</span> <span ng-show=item.$visible><input style=width:100% ng-model=item[field.column] class="form-control"></span></div><div ng-switch-when=number class=pull-right style=margin-right:10px><span ng-show=!item.$visible>{{field.renderer(item[field.column], entry, field.column,field.type)}}</span> <span ng-show=item.$visible><input style=width:100% ng-model=item[field.column] class="form-control"></span></div><div ng-switch-when=date><span ng-show=!item.$visible>{{item[field.column] | date:field.format ||\'dd/MM/yyyy\'}}</span> <span ng-show=item.$visible><input style=width:100% type=date ng-model=item[field.column] class="form-control"></span></div><div ng-switch-when=currency><span ng-show=!item.$visible>{{item[field.column] | toEuros}}</span> <span ng-show=item.$visible><input style=width:100% ng-model=item[field.column] class="form-control"></span></div><div ng-switch-when=checkbox><span ng-show=!item.$visible><input type=checkbox ng-model=item[field.column] ng-false-value={{options.false_value}} ng-true-value={{options.true_value}} onclick="return false"></span> <span ng-show=item.$visible><input style=width:100% type=checkbox ng-model=item[field.column] ng-false-value="\'N\'" ng-true-value="\'S\'"></span></div><div ng-switch-when=select><span ng-show=!item.$visible>{{item.$optionSelectedName[field.column]}}</span> <span ng-show=item.$visible><select style=width:100% ng-model=item[field.column] class=form-control><option></option><option ng-repeat="option in field.selectOptions" value={{option.value}}>{{option.name}}</option></select></span></div><div ng-switch-default><span ng-show=!item.$visible>{{item[field.column]}}</span> <span ng-show=item.$visible><input style=width:100% ng-model="item[field.column]"></span></div></div></td></tr></tbody></table></scrollable-table></div><div ng-show=options.inputGridLoading class=overlay-edu-grid><div class="spin centrado-edu-grid"></div></div><div name=overlay class=overlay-edu-crud ng-show=options.showOverlayInputGridFormDelete><div class=centrado-edu-crud><div class="panel panel-info"><div class=panel-heading><div class=row><div class=col-md-12><h4>{{options.snippets.formDeleteTitle || \'Por favor confirme\'}}</h4></div></div></div><div class=panel-body><h4>{{options.snippets.formDeleteMessage || \'\xbfEst\xe1 seguro que quiere ELIMINAR el registro\'}} {{keyRowForDelete}} ?</h4></div><div class=panel-footer><div class=row><div class="col-md-offset-6 col-md-6"><button ng-click=inputGridFormDeleteContinue() class="btn btn-sm btn-primary">{{options.snippets.formDeleteButtonContinue || \'Continuar\'}}</button> <button ng-click=inputGridFormDeleteCancel() class="btn btn-sm">{{options.snippets.formDeleteButtonCancel || \'Cancelar\'}}</button></div></div></div></div></div></div></div>');
     $templateCache.put('directives/edu-field-hidden-tpl.html', '<input type=hidden class=form-control id={{id}} name={{name}} ng-model=value ng-change=onChange()>');
     $templateCache.put('directives/edu-field-iban-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=input-group><span class=input-group-btn><button class="btn btn-{{options.typebutton || \'default\' }} btn-{{options.inputSize || \'default\'}}" type=button>IBAN</button></span> <input style=width:250px class="form-control input-{{options.inputSize || \'default\'}}" id={{id}} name={{name}} autofocus placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-pattern=ibanValidator ng-minlength=options.min ng-maxlength=options.max ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un IBAN</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un IBAN v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-iban2-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><style>.iban-sm::-webkit-input-placeholder{\r' + '\n' + '\t\tfont-size: 8px;\t\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t.input-sm.dp{\r' + '\n' + '\t\twidth:40px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-sm.dc1{\r' + '\n' + '\t\twidth:20px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-sm.entidad{\r' + '\n' + '\t\twidth:35px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-sm.oficina{\r' + '\n' + '\t\twidth:35px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-sm.dc2{\r' + '\n' + '\t\twidth:20px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t.input-sm.cuenta{\r' + '\n' + '\t\twidth:77px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t\r' + '\n' + '\t\r' + '\n' + '\t.iban-lg::-webkit-input-placeholder{\r' + '\n' + '\t\tfont-size: 13px;\t\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t.input-lg.dp{\r' + '\n' + '\t\twidth:56px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-lg.dc1{\r' + '\n' + '\t\twidth:28px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-lg.entidad{\r' + '\n' + '\t\twidth:50px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-lg.oficina{\r' + '\n' + '\t\twidth:50px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-lg.dc2{\r' + '\n' + '\t\twidth:28px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t.input-lg.cuenta{\r' + '\n' + '\t\twidth:110px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t\r' + '\n' + '\t\r' + '\n' + '\t.iban-default::-webkit-input-placeholder{\r' + '\n' + '\t\tfont-size: 10px;\t\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\r' + '\n' + '\t\r' + '\n' + '\t.input-default.dp{\r' + '\n' + '\t\twidth:44px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-default.dc1{\r' + '\n' + '\t\twidth:22px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-default.entidad{\r' + '\n' + '\t\twidth:40px;\r' + '\n' + '\t\tpadding:1px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-default.oficina{\r' + '\n' + '\t\twidth:40px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t.input-default.dc2{\r' + '\n' + '\t\twidth:22px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}\r' + '\n' + '\t\r' + '\n' + '\t.input-default.cuenta{\r' + '\n' + '\t\twidth:87px;\r' + '\n' + '\t\tpadding:2px;\r' + '\n' + '\t}</style><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=input-group><span class=input-group-btn ng-if=options.showbutton><button class="btn btn-{{options.typebutton || \'default\' }} btn-{{options.inputSize || \'def\'}}" type=button>IBAN</button></span><form><input maxlength=4 class="form-control dp iban-{{options.inputSize || \'default\'}} input-{{options.inputSize || \'default\'}}" id={{options.key}}-pais name={{options.key}}-pais placeholder=DP autofocus ng-required=options.required ng-disabled=options.disabled ng-model="value[\'IBANDP\']" ng-blur="onBlur(\'IBANDP\')" ng-focus="onFocus(\'IBANDP\')" ng-change="onChange(\'IBANDP\')" ng-keypress=onKeypress($event) validate-iban ng-style=border> <input maxlength=4 class="form-control entidad iban-{{options.inputSize || \'default\'}} input-{{options.inputSize || \'default\'}}" id={{options.key}}-entidad name={{options.key}}-entidad placeholder=Entidad ng-required=options.required ng-disabled=options.disabled ng-model="value[\'IBANEntidad\']" ng-blur="onBlur(\'IBANEntidad\')" ng-focus="onFocus(\'IBANEntidad\')" ng-change="onChange(\'IBANEntidad\')" ng-keypress=onKeypress($event) validate-iban ng-style=border> <input maxlength=4 class="form-control oficina iban-{{options.inputSize || \'default\'}} input-{{options.inputSize || \'default\'}}" id={{options.key}}-oficina name={{options.key}}-oficina placeholder=Oficina ng-required=options.required ng-disabled=options.disabled ng-model="value[\'IBANOficina\']" ng-blur="onBlur(\'IBANOficina\')" ng-focus="onFocus(\'IBANOficina\')" ng-change="onChange(\'IBANOficina\')" ng-keypress=onKeypress($event) validate-iban ng-style=border> <input maxlength=2 class="form-control dc2 iban-{{options.inputSize || \'default\'}} input-{{options.inputSize || \'default\'}}" id={{options.key}}-control2 name={{options.key}}-control2 placeholder=DC ng-required=options.required ng-disabled=options.disabled ng-model="value[\'IBANDC2\']" ng-blur="onBlur(\'IBANDC2\')" ng-focus="onFocus(\'IBANDC2\')" ng-change="onChange(\'IBANDC2\')" ng-keypress=onKeypress($event) validate-iban ng-style=border> <input maxlength=10 class="form-control cuenta iban-{{options.inputSize || \'default\'}} input-{{options.inputSize || \'default\'}}" id={{options.key}}-cuenta name={{options.key}}-cuenta placeholder="N\xba Cuenta" ng-required=options.required ng-disabled=options.disabled ng-model="value[\'IBANCuenta\']" ng-blur="onBlur(\'IBANCuenta\')" ng-focus="onFocus(\'IBANCuenta\')" ng-change="onChange(\'IBANCuenta\')" ng-keypress=onKeypress($event) validate-iban ng-style=border></form></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un IBAN</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un IBAN v\xe1lido</small></div></div>');
@@ -1450,11 +1639,11 @@ angular.module('edu-field.tpl').run([
     $templateCache.put('directives/edu-field-nifniecif-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=input-group><span class=input-group-btn><button class="btn btn-{{options.typebutton || \'default\' }} btn-{{options.inputSize || \'default\'}}" type=button>{{options.textbutton}}</button></span> <input style=min-width:250px class="form-control input-{{options.inputSize || \'default\'}}" id={{id}} name={{name}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-minlength=options.min ng-maxlength=options.max ng-pattern=nifniecifValidator ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un {{options.textbutton|| \'N\xfamero de documento\'}}</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un {{options.textbutton|| \'N\xfamero de documento\'}} v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-number-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input class="form-control input-{{options.inputSize}}" id={{id}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-pattern=pattern_validator ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor.</small> <small class=error ng-show=$invalidPattern>Introduzca un n\xfamero v\xe1lido.</small></div></div>');
     $templateCache.put('directives/edu-field-password-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input type=password class="form-control input-{{options.inputSize}}" id={{id}} edu-focus=options.autofocus ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-pattern=pattern_validator ng-model=value><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
-    $templateCache.put('directives/edu-field-radio-tpl.html', '<div class="radio-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label class=control-label>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=radio ng-repeat="(key, option) in options.options"><label><input type=radio id="{{id + \'_\'+ $index}}" edu-focus=options.autofocus ng-value=option.value ng-required=options.required ng-model=$parent.value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()> {{option.name}}</label></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor.</small></div></div>');
+    $templateCache.put('directives/edu-field-radio-tpl.html', '<div class="radio-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label class=control-label>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=radio ng-repeat="(key, option) in options.options"><label><input type=radio id="{{id + \'_\'+ $index}}" name={{options.name}} edu-focus=options.autofocus ng-value=option.value ng-required=options.required ng-model=$parent.value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()> {{option.name}}</label></div><div class="help-block has-error" ng-show=$invalid><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor.</small></div></div>');
     $templateCache.put('directives/edu-field-range-tpl.html', '<div class="form-group {{options.col}}"><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}} : {{value}}</label><div><div style=clear:both><span class=pull-left><strong>{{options.min}}</strong></span> <span class=pull-right><strong>{{options.max}}</strong></span></div><div style=clear:both><div style=float:left;margin:3px;width:10%><button type=button class="btn btn-xs btn-primary pull-left" ng-click="value=(value>options.min)?(value*1-1):options.min"><i class="fa fa-minus"></i></button></div><div style=float:left;width:70%><input type=range id={{id}} edu-focus=options.autofocus placeholder={{options.placeholder}} ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly min=options.min max=options.max ng-model=value></div><div style=float:left;margin:3px;width:10%><button type=button class="btn btn-xs btn-primary pull-right" ng-click="value=(value<options.max)?(value*1+1):options.max"><i class="fa fa-plus"></i></button></div></div></div></div>');
     $templateCache.put('directives/edu-field-select-remote-tpl.html', '<div class="form-group {{options.col}}"><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div edu-select-remote inputclass="form-control input-{{options.inputSize}}" ng-model=value edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly uri-data=options.uridata field-value=options.fieldvalue field-name=options.fieldname></div></div>');
-    $templateCache.put('directives/edu-field-select-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><select ng-show=options.groupBy ng-class="{\'loadinggif\':options.loading}" class="form-control input-{{options.inputSize}}" id={{id}} dependent-control=options.dependentControl edu-focus=options.autofocus ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-model=value ng-required=options.required ng-disabled=options.disabled ng-init="value = options.options[options.default]" ng-options="option.value as option.name group by option[options.groupBy] for option in optionsSelect"><option value="">{{options.emptyOptionText}}</option></select><select ng-show=!options.groupBy ng-class="{\'loadinggif\':options.loading}" class="form-control input-{{options.inputSize}}" id={{id}} dependent-control=options.dependentControl edu-focus=options.autofocus ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-model=value ng-required=options.required ng-disabled=options.disabled ng-init="value = options.options[options.default]"><option value="">{{options.emptyOptionText}}</option><option ng-repeat="option in optionsSelect" value={{option.value}}>{{option.value}}</option></select><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
-    $templateCache.put('directives/edu-field-text-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input class="form-control input-{{options.inputSize}}" id={{id}} name={{name}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-pattern=pattern_validator ng-minlength=options.min ng-maxlength=options.max ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-keypress=onKeypress($event)><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
+    $templateCache.put('directives/edu-field-select-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><select ng-show=options.groupBy ng-class="{\'loadinggif\':options.loading}" class="form-control input-{{options.inputSize}}" id=1-{{id}} dependent-control=options.dependentControl edu-focus=options.autofocus ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-model=value ng-required=options.required ng-disabled=options.disabled ng-options="option.value as option.name group by option[options.groupBy] for option in optionsSelect"><option value="">{{options.emptyOptionText}}</option></select><select ng-show=!options.groupBy ng-class="{\'loadinggif\':options.loading}" class="form-control input-{{options.inputSize}}" id=2-{{id}} dependent-control=options.dependentControl edu-focus=options.autofocus ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-model=value ng-required=options.required ng-disabled=options.disabled ng-options="option.value as option.name for option in optionsSelect">><option value="">{{options.emptyOptionText}}</option></select><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
+    $templateCache.put('directives/edu-field-text-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><input capitalize={{options.uppercase}} class="form-control input-{{options.inputSize}}" id={{id}} name={{name}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-disabled=options.disabled ng-readonly=options.readonly ng-pattern=pattern_validator ng-minlength=options.min ng-maxlength=options.max ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange() ng-keypress=onKeypress($event)><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-textarea-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><textarea type=text class=form-control id={{id}} rows={{options.rows}} placeholder={{options.placeholder}} edu-focus=options.autofocus ng-required=options.required ng-readonly=options.readonly ng-disabled=options.disabled ng-minlength=options.minlength ng-maxlength=options.maxlength ng-pattern=pattern_validator ng-trim=options.trim ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()>\r' + '\n' + '</textarea><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>No alcanza el n\xfamero m\xednimo de caracteres ({{options.minlength}})</small> <small class=error ng-show=$invalidMaxlength>Excede el n\xfamero m\xe1ximo de caracteres ({{options.maxlength}})</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-textbutton-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}}>{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div class=input-group><span class=input-group-btn><a ng-click=onClick() class="btn btn-{{options.typebutton||\'default\'}} btn-{{options.inputSize || \'default\'}}"><i class="fa fa-{{options.icon}}"></i> {{options.textbutton}}</a></span> <input class="form-control input-{{options.inputSize || \'default\'}}" id={{id}} name={{name}} placeholder={{options.placeholder}} autofocus ng-required=options.required ng-disabled=options.disabled ng-pattern=options.pattern ng-minlength=options.min ng-maxlength=options.max ng-model=value ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small> <small class=error ng-show=$invalidMinlength>Debe tener al menos {{options.min}} caracteres</small> <small class=error ng-show=$invalidMaxlength>No puede tener m\xe1s de {{options.max}} caracteres</small> <small class=error ng-show=$invalidPattern>Introduzca un valor v\xe1lido</small></div></div>');
     $templateCache.put('directives/edu-field-textedit-tpl.html', '<div class="form-group {{options.col}}" ng-class="{\'has-error\':  $invalid, \'has-success\': !$invalid && $dirty}" style=position:relative><label for={{id}} ng-click="options.readonly=true">{{options.label}} {{options.required ? \'*\' : \'\'}}</label><div text-angular id={{id}} name={{name}} ta-toolbar="options.toolbar || [[\'h1\',\'h2\',\'h3\'],[\'bold\',\'italics\']] " ng-model=value ng-required=options.required ta-disabled="options.disabled || options.readonly" autofocus ng-blur=onBlur() ng-focus=onFocus() ng-change=onChange()></div><div class="help-block has-error" ng-show=$invalid style=position:absolute;top:50px><small class=error ng-show=$invalidRequired>Campo obligatorio. Introduzca un valor</small></div></div>');

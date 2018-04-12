@@ -520,7 +520,10 @@
 				
 				
                           
-                $scope.save=function(row){
+                $scope.save=function(rowSource){
+					var row=angular.copy(rowSource);
+					delete row.$dataCopy;
+					delete row.$styles;
                 	if($scope.state=="edit"){
                        var oId = getOid(row);
 						
