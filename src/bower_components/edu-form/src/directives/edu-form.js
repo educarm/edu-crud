@@ -22,12 +22,12 @@ eduFormDirectives.directive('eduForm', function() {
 				   }
 			});
 			
-			$scope.$watchCollection('formFields', function(newValue, oldValue) {
-				if ( newValue!== oldValue ) {
-					console.log("change formfield:"+angular.toJson(newValue));
-				}
+			$scope.$watchCollection('options.formFields', function(newValue, oldValue) {
+				
 			});
 			
+		    $scope.options.formData=$scope.result;	
+			 
 			//default options
 			$scope.options.formMetaData.buttonsShow=(typeof $scope.options.formMetaData.buttonsShow==='undefined'?true:$scope.options.formMetaData.buttonsShow);
 			$scope.options.formMetaData.tabsShow=(typeof $scope.options.formMetaData.tabsShow==='undefined'?true:$scope.options.formMetaData.tabsShow);
@@ -36,6 +36,7 @@ eduFormDirectives.directive('eduForm', function() {
 			$scope.options.formMetaData.fieldSetShow=(typeof $scope.options.formMetaData.fieldSetShow==='undefined'?true:$scope.options.formMetaData.fieldSetShow);
 			
 			$scope.options.formMetaData.showButtonSave=(typeof $scope.options.formMetaData.showButtonSave==='undefined'?true:$scope.options.formMetaData.showButtonSave);
+			$scope.options.formMetaData.showButtonCancel=(typeof $scope.options.formMetaData.showButtonCancel==='undefined'?true:$scope.options.formMetaData.showButtonCancel);
 			
 			if($scope.options.formMetaData.hasOwnProperty("inputsSize")){
 				for(var i=0;i<$scope.options.formFields.tabs.length;i++){
@@ -69,6 +70,18 @@ eduFormDirectives.directive('eduForm', function() {
 				 for( var key in $scope.result){
 					$scope.result[key]="";
 				}
+			}
+			
+			$scope.internalControl.showTab = function(indexTab) {
+				if($scope.options.formFields.hasOwnProperty('tabs')){
+					$scope.options.formFields.tabs[indexTab].show = true;
+				} 
+			}
+			
+			$scope.internalControl.hideTab = function(indexTab) {
+				if($scope.options.formFields.hasOwnProperty('tabs')){
+					$scope.options.formFields.tabs[indexTab].show = false;
+				} 
 			}
 			
 			$scope.internalControl.showOverlayLoading = function(bShow) {

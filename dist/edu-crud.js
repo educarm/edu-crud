@@ -204,6 +204,12 @@ eduCrudDirectives.directive('eduCrud', function () {
         $scope.internalControl.selectTab = function (indexTab) {
           $scope.options.formControl.selectTab(indexTab);
         };
+        $scope.internalControl.showTab = function (indexTab) {
+          $scope.options.formControl.showTab(indexTab);
+        };
+        $scope.internalControl.hideTab = function (indexTab) {
+          $scope.options.formControl.hideTab(indexTab);
+        };
         $scope.internalControl.showButtonsUserPre = function (bShow) {
           $scope.options.gridControl.showButtonsUserPre(bShow);
         };
@@ -595,7 +601,7 @@ eduCrudDirectives.directive('eduCrud', function () {
                 if (defaultValue) {
                   $scope.options.formData[key] = defaultValue;
                 } else {
-                  if (type == 'ckeckbox') {
+                  if (type == ' ') {
                     $scope.options.formData[key] = 'N';
                   } else {
                     $scope.options.formData[key] = '';

@@ -16,7 +16,7 @@
 				<form class="formedu" role="form" novalidate autocomplete="off" name="{{options.formMetaData.name}}" id="{{options.formMetaData.id}}"><div ng-transclude></div>
 					<div ng-if="options.formMetaData.tabsShow">
 					<tabset>
-						<tab heading="{{tab.tabname}}" ng-repeat="tab in options.formFields.tabs" active="tab.active">
+						<tab heading="{{tab.tabname}}" ng-repeat="tab in options.formFields.tabs" ng-if="tab.show!=false" active="tab.active">
 							<fieldset ng-if="options.formMetaData.fieldSetShow" ng-repeat="fieldset in tab.fieldSets">
 								<legend class="scheduler-border">{{fieldset.fieldSetName}}</legend>
 								<div ng-repeat="field in fieldset.fields">
@@ -25,7 +25,7 @@
 							</fieldset>
 							<div ng-if="!options.formMetaData.fieldSetShow" ng-repeat="fieldset in tab.fieldSets"> 
 								<div edu-field options="field" value="result[field.key]"    ng-repeat="field in fieldset.fields"> </div>										
-						   </div>
+						    </div>
 						</tab>
 					</tabset>
 					</div>
@@ -43,8 +43,8 @@
 					</div>
 
 					<div class="well form-actions " ng-show="options.formMetaData.buttonsShow " style="text-align: right"> 
-									<button  ng-if="options.formMetaData.showButtonSave"  ng-click="save()"  ng-disabled="{{options.formMetaData.name+'.$invalid'}}" class="btn btn-primary">{{options.snippets.formButtonContinue||'Continuar'}}</button> 
-									<button ng-click="cancel()" class="btn">{{options.snippets.formButtonCancel||'Cancelar'}}</button>
+						<button  ng-if="options.formMetaData.showButtonSave"  ng-click="save()"  ng-disabled="{{options.formMetaData.name+'.$invalid'}}" class="btn btn-primary">{{options.snippets.formButtonContinue||'Continuar'}}</button> 
+						<button  ng-if="options.formMetaData.showButtonCancel" ng-click="cancel()" class="btn">{{options.snippets.formButtonCancel||'Cancelar'}}</button>
 					</div> 
 						
 				</form>
