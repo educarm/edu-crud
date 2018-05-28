@@ -515,7 +515,7 @@ eduCrudDirectives.directive('eduCrud', function () {
               }
             }
             $scope.showForm = false;
-            $scope.options.gridControl.showOverlayFormSuccessError('0', error.data, 20000);
+            $scope.options.gridControl.showOverlayFormSuccessError('0', error.data || error.message, 20000);
           });
         };
         $scope.save = function (rowSource) {
@@ -530,14 +530,18 @@ eduCrudDirectives.directive('eduCrud', function () {
                   $scope.options.crudListeners.onAfterSave(data);
                 }
               }
-              $scope.options.gridControl.refresh();
+              if (data.success) {
+                $scope.options.gridControl.refresh();
+              } else {
+                $scope.options.gridControl.showOverlayFormSuccessError('0', data.message, 20000);
+              }
             }, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
                   $scope.options.crudListeners.onAfterSave(data);
                 }
               }
-              $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
+              $scope.options.gridControl.showOverlayFormSuccessError('0', data.data || data.message, 20000);
             });
           } else if ($scope.state == 'new') {
             $scope.api.insert(row, function (data) {
@@ -546,14 +550,18 @@ eduCrudDirectives.directive('eduCrud', function () {
                   $scope.options.crudListeners.onAfterSave(data);
                 }
               }
-              $scope.options.gridControl.refresh();
+              if (data.success) {
+                $scope.options.gridControl.refresh();
+              } else {
+                $scope.options.gridControl.showOverlayFormSuccessError('0', data.message, 20000);
+              }
             }, function (data) {
               if ($scope.options.hasOwnProperty('crudListeners')) {
                 if ($scope.options.crudListeners.hasOwnProperty('onAfterSave') && typeof $scope.options.crudListeners.onAfterSave == 'function') {
                   $scope.options.crudListeners.onAfterSave(data);
                 }
               }
-              $scope.options.gridControl.showOverlayFormSuccessError('0', data.data, 20000);
+              $scope.options.gridControl.showOverlayFormSuccessError('0', data.data || data.message, 20000);
             });
           }
           $scope.state = 'list';
@@ -572,14 +580,18 @@ eduCrudDirectives.directive('eduCrud', function () {
                 $scope.options.crudListeners.onAfterButtonDeleteCrud(true);
               }
             }
-            $scope.options.gridControl.refresh();
+            if (data.success) {
+              $scope.options.gridControl.refresh();
+            } else {
+              $scope.options.gridControl.showOverlayFormSuccessError('0', data.message, 20000);
+            }
           }, function (error) {
             if ($scope.options.hasOwnProperty('crudListeners')) {
               if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonDeleteCrud') && typeof $scope.options.crudListeners.onAfterButtonDeleteCrud == 'function') {
                 $scope.options.crudListeners.onAfterButtonDeleteCrud(false);
               }
             }
-            $scope.options.gridControl.showOverlayFormSuccessError('0', error.data, 20000);
+            $scope.options.gridControl.showOverlayFormSuccessError('0', error.data || error.message, 20000);
           });
         };
         function add() {

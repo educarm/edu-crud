@@ -4,7 +4,7 @@
   return function(input,fractionDigit) {
 	var fractD=fractionDigit?fractionDigit:2;
 	var amount= Number(input).toLocaleString("es-ES", {minimumFractionDigits: fractD}) + ' €';
-	if(amount=='0,00 €' || amount=='NaN €'){
+	if(amount=='0,00 €' || amount=='NaN €' || amount=='NaN'){
 		return; 
 	}else{
 		return amount;
@@ -100,6 +100,8 @@
                     }
                 }
 				
+				
+				
 		        
             },
 			
@@ -119,24 +121,18 @@
 				
 				
 				
-				
-				
-				//*
-				// fixed first columns
-				//*
-				
-				//current object edu-grid 
-				var objsEduGrid=angular.element('.wrapper-table-edu-grid:last');
-				//number of object edu-grid
-				$scope.idGrid=angular.element('.wrapper-table-edu-grid').length;
-				
 				//set id of current object edu-grid to object position in page
-				objsEduGrid.attr("id",$scope.idGrid + '-table-edu-grid');
+				if($scope.options.metaData && !$scope.options.metaData.id){
+					$scope.options.metaData.id='grid'+ Math.floor((Math.random() * 100000) + 1);	
+				}
 				
 				
 				
 				$timeout(function() {
+					//height for plugin angular-scrollable-table
+					$("#"+$scope.options.metaData.id+" .scrollableContainer").css("height",$scope.options.height+'px');
 					
+						
 					//*
 					// resize columns
 					//*
@@ -144,7 +140,7 @@
 					var start = undefined;
 					var startX, startWidth;
 					
-					angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea thead tr th.noFixedColumn .resizable').mousedown(function(e) {
+					angular.element('#' + $scope.options.metaData.id+'  .scrollArea thead tr th.noFixedColumn .resizable').mousedown(function(e) {
 						
 						start = $(this);
 						pressed = true;
@@ -173,8 +169,8 @@
 							
 							//redimendiona la celda actual
 							//angular.element(start).parents('.th-inner').width(startWidth+(e.pageX-startX));
-				//			angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+id).width(startWidth+(e.pageX-startX));
-				//			angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+id+ '.th-inner').width(startWidth+(e.pageX-startX));
+				//			angular.element('#' + $scope.options.metaData.id+' #table-grid thead tr th#'+id).width(startWidth+(e.pageX-startX));
+				//			angular.element('#' + $scope.options.metaData.id+' #table-grid thead tr th#'+id+ '.th-inner').width(startWidth+(e.pageX-startX));
 							
 							
 				//.............................................................................................................			
@@ -185,7 +181,7 @@
 							
 							
 							//cambia porcentajes por pixeles
-							/*var ths=angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th')
+							/*var ths=angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th')
 							for(var i=0;i<ths.length;i++){
 								$scope.$apply(function () {
 									angular.element(ths[i]).attr('width',angular.element(ths[i]).width());
@@ -196,7 +192,7 @@
 							
 							
 							for(var i=0;i<$scope.options.listFields.length;i++){
-								//$scope.options.listFields[i].width=angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+i).width();
+								//$scope.options.listFields[i].width=angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th#'+i).width();
 							}
 							
 							for(var i=0;i<$scope.options.listFields.length;i++){
@@ -206,18 +202,18 @@
 							}
 							
 							
-							var widthCurrentElement=angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+id).width();
-							//var widthNextElement=angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+nextId).width();
-							//var leftNextElement=angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+nextId).position().left;
+							var widthCurrentElement=angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th#'+id).width();
+							//var widthNextElement=angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th#'+nextId).width();
+							//var leftNextElement=angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th#'+nextId).position().left;
 							
 							//console.log("current:"+(startWidth+(e.pageX-startX)) + " next:" + (widthNextElement-(e.pageX-startX)))
 							
-							//var a=angular.element('#' + $scope.idGrid+'-table-edu-grid TABLE.dragtarget#'+id).parents('.box').width();
-							var a2=angular.element('#' + $scope.idGrid+'-table-edu-grid TH.droptarget#'+id).attr('width');
+							//var a=angular.element('#' + $scope.options.metaData.id+'  TABLE.dragtarget#'+id).parents('.box').width();
+							var a2=angular.element('#' + $scope.options.metaData.id+'  TH.droptarget#'+id).attr('width');
 							
 							
-							//var b=angular.element('#' + $scope.idGrid+'-table-edu-grid TABLE.dragtarget#'+nextId).parents('.box').width();
-							var b2=angular.element('#' + $scope.idGrid+'-table-edu-grid TH.droptarget#'+nextId).attr('width');
+							//var b=angular.element('#' + $scope.options.metaData.id+'  TABLE.dragtarget#'+nextId).parents('.box').width();
+							var b2=angular.element('#' + $scope.options.metaData.id+'  TH.droptarget#'+nextId).attr('width');
 							var a22=a2.replace('%','');
 							
 							var advance=(e.pageX-startX);
@@ -231,12 +227,12 @@
 										$scope.options.listFields[id].weight=porcentaje;//widthCurrentElement+advance;
 							})
 							console.log("id" +id+" avance:" + advance+" current a22:"+porcCurrent + "% next newPorc:" + porcentaje);
-							//angular.element('#' + $scope.idGrid+'-table-edu-grid TABLE.dragtarget#'+nextId).parents('.box').width(widthNextElement-(e.pageX-startX));
-							//angular.element('#' + $scope.idGrid+'-table-edu-grid TABLE.dragtarget#'+nextId).parents('.box').css('position','relative');
-							//angular.element('#' + $scope.idGrid+'-table-edu-grid TABLE.dragtarget#'+nextId).parents('.box').css('left',leftNextElement +(e.pageX-startX));
+							//angular.element('#' + $scope.options.metaData.id+'  TABLE.dragtarget#'+nextId).parents('.box').width(widthNextElement-(e.pageX-startX));
+							//angular.element('#' + $scope.options.metaData.id+'  TABLE.dragtarget#'+nextId).parents('.box').css('position','relative');
+							//angular.element('#' + $scope.options.metaData.id+'  TABLE.dragtarget#'+nextId).parents('.box').css('left',leftNextElement +(e.pageX-startX));
 							
-							//angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+id).attr('width',(startWidth+(e.pageX-startX)));//width(startWidth+(e.pageX-startX));
-							//angular.element('#' + $scope.idGrid+'-table-edu-grid #table-grid thead tr th#'+nextId).attr('width',(widthNextElement-(e.pageX-startX)));
+							//angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th#'+id).attr('width',(startWidth+(e.pageX-startX)));//width(startWidth+(e.pageX-startX));
+							//angular.element('#' + $scope.options.metaData.id+'  #table-grid thead tr th#'+nextId).attr('width',(widthNextElement-(e.pageX-startX)));
 						}
 					});
 					
@@ -252,10 +248,10 @@
 					// fixed columns tools    
 					//*
 					
-					angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea').on('scroll' ,function( evt ) {
+					angular.element('#' + $scope.options.metaData.id+'  .scrollArea').on('scroll' ,function( evt ) {
 						
-						var pixelsScrolledLeft =angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea')[0].scrollLeft;
-							var objs1=angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea thead tr th.preFixedColumn');
+						var pixelsScrolledLeft =angular.element('#' + $scope.options.metaData.id+'  .scrollArea')[0].scrollLeft;
+							var objs1=angular.element('#' + $scope.options.metaData.id+'  .scrollArea thead tr th.preFixedColumn');
 							var pos=0;
 							for(var i=0;i<objs1.length;i++){
 								
@@ -265,7 +261,7 @@
 							}
 							
 							for(var i=1;i<=objs1.length;i++){
-								var objs2=angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea tbody tr td.preFixedColumn:nth-child('+i+')');
+								var objs2=angular.element('#' + $scope.options.metaData.id+'  .scrollArea tbody tr td.preFixedColumn:nth-child('+i+')');
 								var pos=0;
 								for(var j=0;j<objs2.length;j++){
 									
@@ -294,7 +290,7 @@
 					});
 						
 					
-					angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea thead tr th.noFixedColumn').on("dragenter dragover dragend dragleave drop ", function (event) {	
+					angular.element('#' + $scope.options.metaData.id+'  .scrollArea thead tr th.noFixedColumn').on("dragenter dragover dragend dragleave drop ", function (event) {	
 		
 						event.preventDefault();
 						
@@ -302,20 +298,20 @@
 							
 							if (origin !='' && origin!=null &&   origin!= event.currentTarget.id ) {
 								if ( event.target.className == "box" || event.target.nodeName == "TD"  || event.target.nodeName == "SPAN" || event.target.nodeName == "A") {
-									angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea thead tr th#'+event.currentTarget.id+'.noFixedColumn div.th-inner').css('border', '3px dotted #dddddd');
+									angular.element('#' + $scope.options.metaData.id+'  .scrollArea thead tr th#'+event.currentTarget.id+'.noFixedColumn div.th-inner').css('border', '3px dotted #dddddd');
 								}
 							}	
 						}
 						
 						if (event.type === 'dragleave') {
 							if ( event.target.className == "box" || event.target.nodeName == "TD"  || event.target.nodeName == "SPAN" || event.target.nodeName == "A") {
-								angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea thead tr th#'+event.currentTarget.id+'.noFixedColumn div.th-inner').css('border', '');
+								angular.element('#' + $scope.options.metaData.id+'  .scrollArea thead tr th#'+event.currentTarget.id+'.noFixedColumn div.th-inner').css('border', '');
 							}
 						}
 						
 						if (event.type === 'drop') {
 							if(event.currentTarget.className.indexOf('noFixedColumn')>=0){
-								angular.element('#' + $scope.idGrid+'-table-edu-grid .scrollArea thead tr th#'+event.currentTarget.id+'.noFixedColumn div.th-inner').css('border', '');
+								angular.element('#' + $scope.options.metaData.id+'  .scrollArea thead tr th#'+event.currentTarget.id+'.noFixedColumn div.th-inner').css('border', '');
 								
 								var dest=event.currentTarget.id;
 								//var orig=event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
@@ -411,6 +407,11 @@
 					$scope.options.showExtraButtonTopLeft=false;
 				}
 				
+				// By default not show extra button in top right
+				if (!$scope.options.hasOwnProperty('showExtraButtonTopRight')){
+					$scope.options.showExtraButtonTopRight=false;
+				}
+				
 				// By default show input search							
 				if (!$scope.options.hasOwnProperty('showSearch')){
 					$scope.options.showSearch=true;
@@ -495,11 +496,8 @@
             	                       label:1
             	                   };
 								   
-				$scope.gridStyle={};
-                $scope.gridStyle.height=$scope.options.height+'px';
-				
 				//height for plugin angular-scrollable-table
-				$(".scrollableContainer").css("height",$scope.options.height+'px');
+				$("#"+$scope.options.metaData.id+" .scrollableContainer").css("height",$scope.options.height+'px');
 				
 				
 				//extract type of fieldKey
@@ -650,8 +648,7 @@
                 };
 				
 				$scope.onPageLoadComplete = function(rows) {
-                    if (!$scope.options.hasOwnProperty('listListeners')
-                        || typeof $scope.options.listListeners.onPageLoadComplete !== 'function')
+                    if (!$scope.options.hasOwnProperty('listListeners') || typeof $scope.options.listListeners.onPageLoadComplete !== 'function')
                         return;
 					$scope.options.listListeners.onPageLoadComplete($scope.list);
                 };
@@ -742,9 +739,10 @@
 						oParams["valueFk"]=$scope.options.valueFk;
 					}*/
 					
-					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.transformParams == 'function'){
+					/*if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.transformParams == 'function'){
                        oParams=$scope.options.listListeners.transformParams(oParams);
 					}
+					*/
 					
 	                $scope.api.getAll(oParams,function (data) {  
                         //$scope.searchQuery="";					
@@ -769,9 +767,57 @@
 							$scope.options.showOverlayLoadingGrid=false;
 						}
 	                },function(data){
-						$scope.internalControl.showOverlayFormSuccessError('0',data.data,20005);
+						$scope.internalControl.showOverlayFormSuccessError('0',data.data || data.message,20005);
 					});
                 };
+				/**
+            	 * internal functions form crud
+            	 */
+				 
+				function getOid(row){
+				
+                		var vid=row[$scope.options.fieldKey];
+            	    	var oId={};
+						oId['id']=vid;
+            	    	
+						//agm88x: 10-04-2015 añadir mecanismo de transformParams
+						if ($scope.options.hasOwnProperty('gridListeners') && typeof $scope.options.gridListeners.transformParams == 'function'){
+							oId=$scope.options.gridListeners.transformParams(row);
+						}
+						
+						return oId;
+				}
+				
+				$scope.onInputEditableChange=function(row,options){
+					console.log('checkbox changed value:'+row[options.column]);
+					if(options.editable){
+					    console.log('checkbox editable:'+row);
+						var oId = getOid(row);
+						
+						$scope.api.update(oId,row,function (data) {  
+                             if ($scope.options.hasOwnProperty('gridListeners')){
+								if ($scope.options.gridListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.gridListeners.onAfterSave)=='function') {
+									$scope.options.gridListeners.onAfterSave(data);
+								}
+							}
+								
+							if(!data.success){
+								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);
+							}
+							
+            	        },function(data){
+							if ($scope.options.hasOwnProperty('gridListeners')){
+								if ($scope.options.gridListeners.hasOwnProperty('onAfterSave')&& typeof($scope.options.gridListeners.onAfterSave)=='function') {
+									$scope.options.gridListeners.onAfterSave(data);
+								}
+							}		
+							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000);
+						});
+					
+					}
+				}
+				
+				
                 
                 $scope.refresh=function(cleanFilters){
 					var oParams={};
@@ -799,6 +845,7 @@
 						var filterFK='';
 						var filter='';
 						
+						
 						// Advanced Search
 						if($scope.options.hasOwnProperty("formAvancedSearch") && $scope.options.formAvancedSearch.hasOwnProperty("fields") && $scope.options.formAvancedSearch.fields!=undefined && typeof $scope.options.formAvancedSearchResult!=undefined){
 							
@@ -806,20 +853,96 @@
 							{
 								if ($scope.options.formAvancedSearchResult.hasOwnProperty(v.key))
 								{
-									var valor = v.valuefilter?v.valuefilter($scope.options.formAvancedSearchResult[v.key]):$scope.options.formAvancedSearchResult[v.key];
-									var campo = v.keyfilter || v.key;
-									var aux;
-									if (v.operator !== "checknull") {
-										 aux = '[' + campo + ']' + v.operator + valor;
-									} else if (valor === 'S' || valor === 's') {
-										 aux = '[' + campo + '] IS NULL';
-									} else if (valor === 'N' || valor === 'n') {
-										aux = '[' + campo + '] IS NOT NULL';
-									} else {
-									   return;
+									
+									if (v.hasOwnProperty('betweenFields')){
+											var bNullLeft=false;
+											var bNullRight=false;
+											if(v.betweenFields.hasOwnProperty('fieldRight') && v.betweenFields.hasOwnProperty('fieldLeft')){
+												var optionsBF={
+																operatorLeft:'<=',
+																operatorRight:'>='
+												}
+												
+												angular.extend(optionsBF,v.betweenFields);
+												
+												optionsBF.operatorLeft=optionsBF.operatorLeft.toUpperCase();
+												optionsBF.operatorRight=optionsBF.operatorRight.toUpperCase();
+												
+												if(optionsBF.operatorLeft.indexOf('NULL')>=0){
+													optionsBF.operatorLeft=optionsBF.operatorLeft.replace('NULL','');
+													bNullLeft=true;
+												}
+												
+												/*if(optionsBF.operatorLeft.indexOf('null')>=0){
+													optionsBF.operatorLeft=optionsBF.operatorLeft.replace('null','');
+													bNullLeft=true;
+												}*/
+												
+												if(optionsBF.operatorRight.indexOf('NULL')>=0){
+													optionsBF.operatorRight=optionsBF.operatorRight.replace('NULL','');
+													bNullRight=true;
+												}
+												
+												/*if(optionsBF.operatorRight.indexOf('null')>=0){
+													optionsBF.operatorRight=optionsBF.operatorRight.replace('null','');
+													bNullRight=true;
+												}*/
+												
+												var filterBF="(left_OR_NULL) AND (right_OR_NULL)";
+												
+												
+												var filterBFLeft=[];
+												if(optionsBF.operatorLeft!=''){
+													filterBFLeft.push("["+optionsBF.fieldLeft +"]"+ optionsBF.operatorLeft + $scope.options.formAvancedSearchResult[v.key]);
+												}
+												
+												if(bNullLeft){
+													filterBFLeft.push("["+ optionsBF.fieldLeft +"] IS NULL");	
+												}
+												
+												
+												var leftOrNull=filterBFLeft.join(' OR ');
+												
+												filterBF=filterBF.replace('left_OR_NULL',leftOrNull);
+															 
+												
+												var filterBFRight=[];
+												
+												if(optionsBF.operatorRight!=''){
+													filterBFRight.push("["+optionsBF.fieldRight +"]"+ optionsBF.operatorRight + $scope.options.formAvancedSearchResult[v.key]);
+												}
+												
+												if(bNullRight){
+													filterBFRight.push("["+ optionsBF.fieldRight +"] IS NULL");
+												}
+													
+												
+												var rightOrNull=filterBFRight.join(' OR ');
+												
+												filterBF=filterBF.replace('right_OR_NULL',rightOrNull);	
+												
+												filterAS.push(	filterBF);											
+													
+											}
+											
+									}else{
+										var valor = v.valuefilter?v.valuefilter($scope.options.formAvancedSearchResult[v.key]):$scope.options.formAvancedSearchResult[v.key];
+										var campo = v.keyfilter || v.key;
+										var aux;
+										angular.extend(v, {operator:'='});
+										if (v.operator !== "checknull") {
+											 aux = '[' + campo + ']' + v.operator + valor;
+										} else if (valor === 'S' || valor === 's') {
+											 aux = '[' + campo + '] IS NULL';
+										} else if (valor === 'N' || valor === 'n') {
+											aux = '[' + campo + '] IS NOT NULL';
+										} else {
+										   return;
+										}
+										filterAS.push(aux);
 									}
-									filterAS.push(aux);
 								}
+								
 							});
 							
 							
@@ -846,7 +969,7 @@
 						if($scope.options.hasOwnProperty("fieldFk") && typeof $scope.options.fieldFk!=undefined && $scope.options.hasOwnProperty("valueFk") && typeof $scope.options.valueFk!=undefined){
 							filterFK= '[' + $scope.options.fieldFk + ']=' + $scope.options.valueFk;
 							
-							filter=filter!=''?filterFK + ' AND ' + filter:filterFK;
+							filter=filter!=''?filterFK + ' AND ' + filter : filterFK;
 						}
 						
 						oParams.filter=filter;
@@ -893,7 +1016,7 @@
 								$scope.getData(oParams);
 						},function(data){ 
 
-								$scope.internalControl.showOverlayFormSuccessError('0',data.data,20000);
+								$scope.internalControl.showOverlayFormSuccessError('0',data.data || data.message,20000);
 						});
 					}
 					else{
@@ -949,6 +1072,13 @@
 				$scope.clickExtraButton=function(value){ 
 					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.onExtraButtonClick == 'function'){
                        $scope.options.listListeners.onExtraButtonClick();
+					}
+				}
+				
+				// ON CLICK EXTRA BUTTON RIGHT
+				$scope.clickExtraButtonRight=function(value){ 
+					if ($scope.options.hasOwnProperty('listListeners') && typeof $scope.options.listListeners.onExtraButtonRightClick == 'function'){
+                       $scope.options.listListeners.onExtraButtonRightClick();
 					}
 				}
 				

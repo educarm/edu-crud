@@ -47,18 +47,23 @@
 	<div class="box-edu-grid">
 		<div class="panel panel-{{options.metaData.panelType}}">
 					   <div class="panel-heading" ng-show="showHeadingBar" >
-						   <div class="row" >
+							<div class="row">
+								<div class="col-md-12 col-sm-12"><strong>{{options.heading}}</strong></div>
+						    </div>
+						    <div class="row" >
 							
-							  <div class="col-md-1">
+								<div class="col-md-3 col-sm-3">
 									<a href="" class="btn btn-primary btn-xs" ng-show="options.showExtraButtonTopLeft" ng-click="clickExtraButton()"><span class="glyphicon glyphicon-{{options.iconExtraButtonTopLeft || 'plus-sign'}}"></span> {{options.snippets.extraButtonTop || 'Nuevo'}}</a>
-							   </div>
-							   <div class="col-md-3"><strong>{{options.heading}}</strong></div>
-							   <div class="col-md-2">
-								<span ng-show="options.showMetaData">{{options.snippets.showingItems || 'Filas'}} {{options.metaData.offset+1}} - {{(options.metaData.offset+options.metaData.limit > options.metaData.total) ? (options.metaData.total) : (options.metaData.offset + options.metaData.limit)}} {{options.snippets.of || 'de'}} {{options.metaData.total}}</span>	
-							   </div>
+								</div>
+							   
+								<div class="col-md-2 col-sm-2">
+									<span ng-show="options.showMetaData">{{options.snippets.showingItems || 'Filas'}} {{options.metaData.offset+1}} - {{(options.metaData.offset+options.metaData.limit > options.metaData.total) ? (options.metaData.total) : (options.metaData.offset + options.metaData.limit)}} {{options.snippets.of || 'de'}} {{options.metaData.total}}
+									</span>	
+									
+								</div>
 							   
 							    <!-- global search -->
-							    <div class="col-md-3" >
+							    <div class="col-md-3 col-sm-2" >
 								   <div ng-show="options.showSearch && options.showTopSearch">
 									   <label for="ag_search">{{options.snippets.search || 'Buscar:'}}</label>
 									   <input type="text" class="form-inline" ng-model="searchQuery" ng-change="onChangeSearchQuery()"/>
@@ -67,17 +72,18 @@
 							    </div>
 								
 							     <!-- avanced search  -->
-							    <div class="col-md-2" >
+							    <div class="col-md-2 col-sm-2" >
 								  
-								   <div ng-show="options.showAvancedSearch && options.showTopAdvancedSearch && !options.showAdvancedSearchInHeader" >
+									<div ng-show="options.showAvancedSearch && options.showTopAdvancedSearch && !options.showAdvancedSearchInHeader" >
 									   <a class="btn  btn-sm" ng-class="{'btn-primary':!listFiltered,'btn-danger':listFiltered}"  ng-click="onClickAvancedSearch()"><i class="glyphicon glyphicon-search"></i> {{options.snippets.avancedSearch || ' Avanzada'}}  </a>
-								   </div>
-							   </div>
-							   <div class="col-md-1">
+									</div>
+								</div>
+								<div class="col-md-2 col-sm-2">
 								   <span class="btn  btn-xs" ng-show="options.showRefreshButton" ng-click="refresh(true)"><i class="glyphicon glyphicon-refresh"></i></span>
-								   <a href="" class="btn btn-primary  btn-xs" ng-show="options.showExtraButtonTopRight" ng-click="clickExtraButton()"><span class="glyphicon glyphicon-plus-sign"></span> {{options.snippets.extraButtonTop || 'Nuevo'}}</a>
-							   </div>
-						   </div>
+								   <a href="" title="{{options.snippets.titleExtraButtonTopRight}}" class="btn btn-primary  btn-xs" ng-show="options.showExtraButtonTopRight" ng-click="clickExtraButtonRight()"><span class="glyphicon glyphicon-{{options.iconExtraButtonTopRight || 'plus-sign'}}"></span> {{options.snippets.extraButtonTopRight}}</a>
+								</div>
+							</div>
+						   
 						   
 						   <div ng-if="options.showAdvancedSearchInHeader" class="row">
 							
@@ -95,7 +101,7 @@
 								</fieldset>	
 						   </div>
 						   <div ng-if="options.showAdvancedSearchInHeader" class="row">
-								<div class="col-md-offset-9 col-md-3">  
+								<div class="col-md-offset-9 col-md-3  col-sm-offset-9 col-sm-3">  
 									<button ng-click="formAvancedSearchEventsContinue()"  ng-disabled="formAvancedSearch.$invalid"  class="btn btn-sm btn-primary" >{{options.snippets.formAvancedSearchButtonContinue || 'Buscar'}}</button> 
 									<!--<button ng-click="formAvancedSearchEventsCancel()" class="btn btn-sm">{{options.snippets.formAvancedSearchButtonCancel || 'Cancelar'}}</button> -->
 									<button ng-click="formAvancedSearchEventsClean()" class="btn btn-sm">{{options.snippets.formAvancedSearchButtonClean || 'Limpiar'}}</button>
@@ -106,7 +112,8 @@
 					    <div class="panel-body" >
 					   
 					    <!-- grid --> 
-						<div  style="overflow-x:scroll;" id="{{idGrid}}-table-edu-grid" class="wrapper-table-edu-grid"> 
+						<!-- <div  style="overflow-x:scroll;" id="{{idGrid}}-table-edu-grid" class="wrapper-table-edu-grid">  -->
+						<div  style="overflow-x:scroll;" id={{options.metaData.id}} class="wrapper-table-edu-grid">
 						
 						<scrollable-table watch="list">
 						   <table id="table-grid" class="table table-condensed table-hover table-striped"   ng-class="{'table-bordered':options.tableBordered,'table_layout_fixed':options.table_layout_fixed, 'table_layout_auto':!options.table_layout_fixed}" >
@@ -236,8 +243,8 @@
 											   
 									   </td>
 									   <!-- fields -->
-									   <td ng-repeat="field in options.listFields" ng-click="onRowClick()" ng-class="{'nowrap_overflow_hidden_ellipsis':options.overflow_hidden}">
-										   <div ng-if="field.type!='currency' && field.type!='number' && field.type!='date' && field.type!='date-time'  && field.type!='checkbox' && field.type!='input-text' && field.type!='input-date' && field.type!='input-select' && field.type!='input-radio'">
+									   <td ng-repeat="field in options.listFields" ng-click="onRowClick()" ng-class="{'nowrap_overflow_hidden_ellipsis':options.overflow_hidden}" ng-style="entry.$styles">
+										   <div ng-if="field.type!='currency' && field.type!='number' && field.type!='date' && field.type!='date-time'  && field.type!='checkbox' && field.type!='select' && field.type!='input-text' && field.type!='input-date' && field.type!='input-select' && field.type!='input-radio'">
 										   {{field.renderer(entry[field.column], entry, field.column,field.type)}}
 										   </div>
 										   <div ng-if="field.type=='number'"  class="pull-right">
@@ -249,8 +256,12 @@
 										   <div ng-if="field.type=='currency'">
 										   {{entry[field.column]  | toEuros}}
 										   </div>
-										   <div ng-if="field.type=='checkbox'">
-												<input type="checkbox" ng-model="entry[field.column]" ng-false-value="'N'" ng-true-value="'S'" onclick="javascript: return false;" >
+										   <div ng-if="field.type=='checkbox'"> <!--onclick="javascript: return false;"-->
+												<input type="checkbox" ng-model="entry[field.column]" ng-false-value="'N'" ng-true-value="'S'"  ng-change="onInputEditableChange(entry,field)" ng-disabled="!field.editable" >
+										   </div>
+										   <div ng-if="field.type=='image'"> <!--onclick="javascript: return false;"-->
+												<!-- <img height="{{field.height || '40'}}px" width="{{field.width || '35'}}px" ng-src="{{entry[field.column]}}"/> -->
+												<img height="{{field.height || '40'}}px" width="{{field.width || '35'}}px" data-ng-src="data:image/png;base64,{{entry[field.column]}}" data-err-src="{{field.whenNotImg}}"/>
 										   </div>
 										   <div ng-if="field.type=='input-text'">
 												<input type="text" ng-model="entry[field.column]">
@@ -258,8 +269,22 @@
 										   <div ng-if="field.type=='input-date'">
 												<input type="date"  ng-model="entry[field.column]">
 										   </div>
-										   <div ng-if="field.type=='input-select'">
-												<select> <option>1</option><option>2</option></select>
+										   <div ng-if="field.type=='select'">
+												<select 
+														class="form-control input-{{field.inputSize}}"
+														
+														ng-change="onInputEditableChange(entry,field)"
+														ng-model="entry[field.column]"
+														
+														
+														ng-disabled="options.disabled"
+														
+														ng-options="option.value as option.name for option in field.options">
+												>
+													 
+													<option ng-if="field.emptyOption" value="">{{field.emptyOptionText}}</option> 
+															 
+												</select>
 										   </div>
 									   </td>
 									   

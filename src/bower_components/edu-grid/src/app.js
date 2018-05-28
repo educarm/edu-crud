@@ -16,7 +16,14 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 				];
 	
 	$scope.avancedSearchFieldsFormGrid=[	  
-			        {key: 'fecha_ini_1',type: 'date',col:'col-md-3',label: 'Fecha inicio',placeholder: 'Fecha inicio',autofocus:'',required: false,size:'sm' },
+			        /*{key: 'fecha_ini_1',type: 'date',col:'col-md-3',label: 'Fecha inicio',placeholder: 'Fecha inicio',autofocus:'',required: false,size:'sm',betweenFields:{
+																																											  fieldLeft:'campoIzquierda',
+																																											  operatorLeft:'<=null',
+																																											  fieldRight:'campoDerecha',
+																																											  operatorRight:'NULL'
+																																											  
+																																											} },
+					*/
 					{key: 'fecha_fin_1',type: 'date',col:'col-md-3',label: 'Fecha fin',placeholder: 'Fecha fin',autofocus:'',required: false,size:'sm' },
 					{key: 'fecha_ini_2',type: 'date',col:'col-md-3',label: 'Fecha inicio',placeholder: 'Fecha inicio',autofocus:'',required: false,size:'sm' },
 					{key: 'fecha_fin_2',type: 'date',col:'col-md-3',label: 'Fecha fin',placeholder: 'Fecha fin',autofocus:'',required: false,size:'sm' },
@@ -65,8 +72,11 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 		showOverlayFormUser:false, //default false
         showRefreshButton: true, //default true
 		showExtraButtonTopLeft:true, //default false
+		showExtraButtonTopRight:true,
 		iconExtraButtonTopLeft:'pencil', //default 'plus-sing
-        showPagination: true,  //default true
+		iconExtraButtonTopRight:'file',
+        showPagination: false,  //default true
+		
 		
 		showSearch: true, //default true
 		allFieldsGlobalSearch:true, //default true. Esta y la siguiente son excluyentes. Si la propiedad allFieldsGlobalSearch está definida ignora la propiedad fieldsGlobalSearch
@@ -108,30 +118,51 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
 		//		 getCount: {method:'GET', url: 'api\/v1\/centros\/\?getCount', params:{}, headers:{'Access-Control-Allow-Credentials': true}, isArray:false}
 		//		},
 		
-		fieldFk:'codigo',
-		valueFk:'30000018',
+		//fieldFk:'codigo',
+		//valueFk:'30000018',
         fieldKey:'vcodcen',
 		fieldKeyLabel:'código',
-        height:300,
-		//mode:'genericRest',
+        height:150,
+		mode:'genericRest',
 		
         listFields: [
-                 {label: 'Código', column: 'vcodcen', weight: '10',type:'currency'},
-				 {label: 'Tit. públ.', column: 'vtitularidad', weight: '10',type:'checkbox'},
+				 {label: 'Código', column: 'vcodcen', weight: '10',type:'number'},
+                 {label: 'Presupuesto', column: 'presupuesto', weight: '10',type:'currency'},
+				 {label: 'Tit. públ.', column: 'vtitularidad', weight: '10',type:'checkbox','editable':false},
+				 {label: 'Tit. públ.', column: 'vtitularidad', weight: '10',
+						type:'select',
+						options:[{'value':'S','name':'SÍ'},{'value':'N','name':'NO'}],
+				        listeners:{
+									onChange:function(row){
+														   console.log('changed:'+row);
+				                                          }
+				                   }
+				 },
                  {label: 'Denominación', column: 'vdencen', weight: '30',type:'text'},
                  {label: 'Domicilio', column: 'vdomcen', weight: '20',type:'text'},
                  {label: 'Localidad', column: 'vloccen', weight: '10',type:'text'},
-                 {label: 'Municipio', column: 'vmuncen', weight: '20',type:'text',notOrder:true},
+                 {label: 'Municipio', column: 'vmuncen', weight: '20',type:'text',notOrder:true}
 				 
         ],
         metaData:{
-		   panelType:"info",
-           limit:50,
-		   orderBy:'vcodcen',
-		   order:'asc'
+			panelType:"info",
+			limit:50,
+			orderBy:'vcodcen',
+			order:'asc'
         },
         listListeners: {
+			onExtraButtonRightClick:function(){
+				alert('button right clicked');
+			},
 		    onPageLoadComplete:function(rows){
+				
+				for(var i=0;i<rows.length;i++){
+					if(i%2==0){
+						rows[i].$styles={'background':'green'};
+					}else{
+						rows[i].$styles={'background':'red'};
+					}
+				}
             	//console.log('onPageLoadComplete rows:'+angular.toJson(rows));
             },
             onRowClick:function(row){
@@ -224,7 +255,12 @@ app.controller('appController', ['$scope','$http','dataFactoryGrid', function ($
                     }
 			  }
 			
-		}
+		},
+		snippets:{
+					titleExtraButtonTopRight:'Informes',
+					extraButtonTopRight:'Informes'
+					
+				}
     };
 }])
 

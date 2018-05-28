@@ -1,6 +1,6 @@
 {
   "name": "edu-crud",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "repository": "https://github.com/educarm/edu-crud.git",
   "build": 0,
   "devDependencies": {
