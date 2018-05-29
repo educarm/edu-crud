@@ -544,7 +544,7 @@
 								}
 							}	
 							
-							if(data.success){							
+							if(!data.hasOwnProperty('success') || (data.hasOwnProperty('success') && data.success==true)){							
 								$scope.options.gridControl.refresh();
 							}else{
 								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);
@@ -568,7 +568,7 @@
 								}
 							}	
 							
-							if(data.success){							
+							if(!data.hasOwnProperty('success') || (data.hasOwnProperty('success') && data.success==true)){							
 								$scope.options.gridControl.refresh();
 							}else{
 								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);
@@ -601,7 +601,7 @@
 							}
 						}					
                 	     
-						if(data.success){							
+						if(!data.hasOwnProperty('success') || (data.hasOwnProperty('success') && data.success==true)){						
 							$scope.options.gridControl.refresh();
 						}else{
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);

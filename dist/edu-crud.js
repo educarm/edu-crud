@@ -530,7 +530,7 @@ eduCrudDirectives.directive('eduCrud', function () {
                   $scope.options.crudListeners.onAfterSave(data);
                 }
               }
-              if (data.success) {
+              if (!data.hasOwnProperty('success') || data.hasOwnProperty('success') && data.success == true) {
                 $scope.options.gridControl.refresh();
               } else {
                 $scope.options.gridControl.showOverlayFormSuccessError('0', data.message, 20000);
@@ -550,7 +550,7 @@ eduCrudDirectives.directive('eduCrud', function () {
                   $scope.options.crudListeners.onAfterSave(data);
                 }
               }
-              if (data.success) {
+              if (!data.hasOwnProperty('success') || data.hasOwnProperty('success') && data.success == true) {
                 $scope.options.gridControl.refresh();
               } else {
                 $scope.options.gridControl.showOverlayFormSuccessError('0', data.message, 20000);
@@ -580,7 +580,7 @@ eduCrudDirectives.directive('eduCrud', function () {
                 $scope.options.crudListeners.onAfterButtonDeleteCrud(true);
               }
             }
-            if (data.success) {
+            if (!data.hasOwnProperty('success') || data.hasOwnProperty('success') && data.success == true) {
               $scope.options.gridControl.refresh();
             } else {
               $scope.options.gridControl.showOverlayFormSuccessError('0', data.message, 20000);
