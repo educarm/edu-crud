@@ -446,7 +446,7 @@
             	
             	$scope.cancel=function(){
                 	$log.log("click cancel");
-                	$scope.state="list";
+                	$scope.options.state="list";
 					if ($scope.options.hasOwnProperty('crudListeners')){
 							if ($scope.options.crudListeners.hasOwnProperty('onAfterCancel')&& typeof($scope.options.crudListeners.onAfterCancel)=='function') {
 								$scope.options.crudListeners.onAfterCancel();
@@ -458,7 +458,7 @@
                 
                 $scope.edit=function(row){
                 	   console.log('Edit row:', row);
-                     $scope.state="edit";
+                     $scope.options.state="edit";
                      $scope.showForm=true;
 					   //adjust disabled property for edit
 					   for(var i=0;i<$scope.options.formFields.tabs.length;i++){
@@ -534,7 +534,7 @@
 					var row=angular.copy(rowSource);
 					delete row.$dataCopy;
 					delete row.$styles;
-                	if($scope.state=="edit"){
+                	if($scope.options.state=="edit"){
                        var oId = getOid(row);
 						
 						$scope.api.update(oId,row,function (data) {  
@@ -559,7 +559,7 @@
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000);
 						});
             	    	
-                	}else if($scope.state=="new"){
+                	}else if($scope.options.state=="new"){
                 		
             	    	$scope.api.insert(row,function (data) { 
                             if ($scope.options.hasOwnProperty('crudListeners')){
@@ -583,7 +583,7 @@
 							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000);
 						});
                 	}
-                	$scope.state="list";
+                	$scope.options.state="list";
                 	$scope.showForm=false;
                 };
                 
@@ -618,7 +618,7 @@
                 };
                 function add(){
                 	
-                	$scope.state="new";
+                	$scope.options.state="new";
 					
 					setTimeout(function(){$scope.options.formControl.selectTab(0); });
 					
