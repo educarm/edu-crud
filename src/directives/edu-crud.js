@@ -131,6 +131,10 @@
 				 $scope.internalControl.stateNew = function() {
 					add(); 
 				 };
+				 
+				 $scope.internalControl.stateEdit = function(row) {
+					$scope.edit(row); 
+				 };
 			  
 				  $scope.internalControl.refresh = function(bCleanFilters) {
 					$scope.options.gridControl.refresh(bCleanFilters);  
