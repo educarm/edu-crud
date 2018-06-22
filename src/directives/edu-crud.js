@@ -128,6 +128,14 @@
 				
 				 $scope.internalControl = $scope.options.crudControl || {};
 				 
+				 $scope.internalControl.stateList = function(bSave) {
+					 if(bSave==true){
+						$scope.save($scope.options.formData);
+					 }else{
+						$scope.cancel();
+					 }
+				 };
+				 
 				 $scope.internalControl.stateNew = function() {
 					add(); 
 				 };

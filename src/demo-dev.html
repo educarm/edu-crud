@@ -41,6 +41,13 @@
 	<a href="#" class="btn btn-primary" ng-click="options.crudControl.hideTab(0)">Ocultar tab 0</a>
 	<a href="#" class="btn btn-primary" ng-click="options.crudControl.showTab(0)">Mostrar tab 0</a>
 	
+	<a href="#" class="btn btn-primary" ng-click="options.crudControl.stateNew()">Estado nuevo</a>
+	<a href="#" class="btn btn-primary" ng-click="options.crudControl.stateEdit({})">Estado edit</a>
+	<a href="#" class="btn btn-primary" ng-click="options.crudControl.stateList(false)">Estado list cancel</a>
+	<a href="#" class="btn btn-primary" ng-click="options.crudControl.stateList(true)">Estado list save</a>
+	
+	
+	
 	<h3>Form user:{{options.formUser.result}}</h3>
 	<h3>Selection rows:{{options.selectionRows}}</h3>
 	<h3>Form avanz. search:{{options.formAvancedSearchResult}}</h3>
