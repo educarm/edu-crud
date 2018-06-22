@@ -158,11 +158,18 @@
 				  }
 				  
 				  $scope.internalControl.clearGrid = function(bShow) {
-					$scope.options.gridControl.clearGrid();  
+					  if($scope.options.gridControl){
+						  $scope.options.gridControl.clearGrid();
+					  }
+					  
 				  }
 				  $scope.internalControl.clearCrud = function(bShow) {
-					$scope.options.gridControl.clearGrid();
-					$scope.options.formControl.clearForm();					
+					  if($scope.options.gridControl){
+							$scope.options.gridControl.clearGrid();
+					  }
+					  if($scope.options.formControl){
+							$scope.options.formControl.clearForm();	
+                      }							
 				  }
 				  $scope.internalControl.showOverlayFormDelete = function(bShow) {
 					$scope.options.showOverlayCrudFormDelete=bShow;  
