@@ -127,7 +127,7 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 				}
 				
 			},
-			hiddenButtonEditPre:function(row){
+			disabledButtonEditPre:function(row){
 				//console.log('disabled button:', row);
 				if(row.vcodcen=='30000018'){
 					return true;

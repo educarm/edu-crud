@@ -332,6 +332,9 @@ eduCrudDirectives.directive('eduCrud', function () {
             if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonEditPre') && typeof $scope.options.crudListeners.hiddenButtonEditPre == 'function') {
               button.hidden = $scope.options.crudListeners.hiddenButtonEditPre;
             }
+            if ($scope.options.crudListeners.hasOwnProperty('disabledButtonEditPre') && typeof $scope.options.crudListeners.disabledButtonEditPre == 'function') {
+              button.disabled = $scope.options.crudListeners.disabledButtonEditPre;
+            }
           }
           $scope.options.buttonsGridUserPre.push(button);
         }
@@ -352,6 +355,9 @@ eduCrudDirectives.directive('eduCrud', function () {
             if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonDeletePre') && typeof $scope.options.crudListeners.hiddenButtonDeletePre == 'function') {
               button.hidden = $scope.options.crudListeners.hiddenButtonDeletePre;
             }
+            if ($scope.options.crudListeners.hasOwnProperty('disabledButtonDeletePre') && typeof $scope.options.crudListeners.disabledButtonDeletePre == 'function') {
+              button.disabled = $scope.options.crudListeners.disabledButtonDeletePre;
+            }
           }
           $scope.options.buttonsGridUserPre.push(button);
         }
@@ -369,6 +375,9 @@ eduCrudDirectives.directive('eduCrud', function () {
           if ($scope.options.hasOwnProperty('crudListeners')) {
             if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonEditPost') && typeof $scope.options.crudListeners.hiddenButtonEditPost == 'function') {
               button.hidden = $scope.options.crudListeners.hiddenButtonEditPost;
+            }
+            if ($scope.options.crudListeners.hasOwnProperty('disabledButtonEditPost') && typeof $scope.options.crudListeners.disabledButtonEditPost == 'function') {
+              button.disabled = $scope.options.crudListeners.disabledButtonEditPost;
             }
           }
           $scope.options.buttonsGridUserPost.push(button);
@@ -388,6 +397,9 @@ eduCrudDirectives.directive('eduCrud', function () {
           if ($scope.options.hasOwnProperty('crudListeners')) {
             if ($scope.options.crudListeners.hasOwnProperty('hiddenButtonDeletePost') && typeof $scope.options.crudListeners.hiddenButtonDeletePost == 'function') {
               button.hidden = $scope.options.crudListeners.hiddenButtonDeletePost;
+            }
+            if ($scope.options.crudListeners.hasOwnProperty('disabledButtonDeletePost') && typeof $scope.options.crudListeners.disabledButtonDeletePost == 'function') {
+              button.disabled = $scope.options.crudListeners.disabledButtonDeletePost;
             }
           }
           $scope.options.buttonsGridUserPost.push(button);
