@@ -83,6 +83,10 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 		fieldKey:'vcodcen',
 		fieldKeyLabel:'código',
 		height:'300',
+		showAddButtonTopLeft:false,
+		//showMetaData:false,
+		//showItemsPerPage:false,
+		//showPagination:true,
 		//showButtonsCrudPre:true,
 		showAdvancedSearchInHeader:true,
 		showAvancedSearch:true,
@@ -117,6 +121,15 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
             }
 	     },
 		crudListeners: {
+			
+			onBeforeShowFormError:function(data){
+				data.type='1';
+				data.text='Custom text';
+				data.duration=3000;
+				
+				return data;
+				
+			},
 			onBeforeSaveValidation:function(data){
 				if(data.vcodcen!='XXX'){
 					return true;
@@ -164,11 +177,12 @@ app.controller('appController', ['$scope','$http','dataFactoryCrud', function ($
 			
 			onBeforeButtonEditCrud:function (id) {
 				 console.log("onBeforeButtonEditCrud id:"+id);
-				 //$scope.options.formFields.tabs[0].fieldSets[0].fields[0].disabled=true;
+				 
 			},
 			onAfterButtonEditCrud:function (success) {
 				console.log("onAfterButtonEditCrud success:"+success);
-						
+				var a=$scope.options.formFields.tabs[0].fieldSets[0].fields[3];
+				 var b=a;		
 			},
 			onBeforeButtonDeleteCrud:function (id,row) {
 				console.log("onBeforeButtonDeleteCrud id:"+id);

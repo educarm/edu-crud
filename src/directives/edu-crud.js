@@ -565,6 +565,14 @@
 					var row=angular.copy(rowSource);
 					delete row.$dataCopy;
 					delete row.$styles;
+					
+					var preHook_onBeforeShowFormError;
+					
+					if ($scope.options.hasOwnProperty('crudListeners') && typeof $scope.options.crudListeners.onBeforeShowFormError == 'function'){
+					    
+						preHook_onBeforeShowFormError=$scope.options.crudListeners.onBeforeShowFormError;
+					}
+					
                 	if($scope.options.state=="edit"){
                        var oId = getOid(row);
 						
@@ -578,7 +586,7 @@
 							if(!data.hasOwnProperty('success') || (data.hasOwnProperty('success') && data.success==true)){							
 								$scope.options.gridControl.refresh();
 							}else{
-								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);
+								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000, preHook_onBeforeShowFormError);
 							}
 							
             	        },function(data){
@@ -587,7 +595,7 @@
 									$scope.options.crudListeners.onAfterSave(data);
 								}
 							}		
-							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000);
+							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000, preHook_onBeforeShowFormError);
 						});
             	    	
                 	}else if($scope.options.state=="new"){
@@ -602,7 +610,7 @@
 							if(!data.hasOwnProperty('success') || (data.hasOwnProperty('success') && data.success==true)){							
 								$scope.options.gridControl.refresh();
 							}else{
-								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);
+								$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000, preHook_onBeforeShowFormError);
 							}
 							
             	        },function(data){
@@ -611,7 +619,7 @@
 									$scope.options.crudListeners.onAfterSave(data);
 								}
 							}		
-							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000);
+							$scope.options.gridControl.showOverlayFormSuccessError('0',data.data || data.message,20000, preHook_onBeforeShowFormError);
 						});
                 	}
                 	$scope.options.state="list";
@@ -620,6 +628,13 @@
                 
                 $scope.remove=function(row){
                     var oId = getOid(row);
+					
+					var preHook_onBeforeShowFormError;
+					
+					if ($scope.options.hasOwnProperty('crudListeners') && typeof $scope.options.crudListeners.onBeforeShowFormError == 'function'){
+						preHook_onBeforeShowFormError=$scope.options.crudListeners.onBeforeShowFormError;
+					}
+					
 					if ($scope.options.hasOwnProperty('crudListeners')){
 							if ($scope.options.crudListeners.hasOwnProperty('onBeforeButtonDeleteCrud') && typeof($scope.options.crudListeners.onBeforeButtonDeleteCrud)=='function'){
 								$scope.options.crudListeners.onBeforeButtonDeleteCrud(oId.id,row);
@@ -630,12 +645,13 @@
 							if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonDeleteCrud')&& typeof($scope.options.crudListeners.onAfterButtonDeleteCrud)=='function') {
 								$scope.options.crudListeners.onAfterButtonDeleteCrud(true);
 							}
-						}					
-                	     
+						}	
+						
+						           	     
 						if(!data.hasOwnProperty('success') || (data.hasOwnProperty('success') && data.success==true)){						
 							$scope.options.gridControl.refresh();
 						}else{
-							$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000);
+							$scope.options.gridControl.showOverlayFormSuccessError('0',data.message,20000, preHook_onBeforeShowFormError);
 						}
                     },function(error){
 						if ($scope.options.hasOwnProperty('crudListeners')){
@@ -643,7 +659,7 @@
 								$scope.options.crudListeners.onAfterButtonDeleteCrud(false);
 							}
 						}
-						$scope.options.gridControl.showOverlayFormSuccessError('0',error.data || error.message,20000);
+						$scope.options.gridControl.showOverlayFormSuccessError('0',error.data || error.message,20000, preHook_onBeforeShowFormError);
 					});
                 	
                 };
