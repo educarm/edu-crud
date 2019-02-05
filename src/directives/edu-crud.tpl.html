@@ -4,14 +4,14 @@
 	<div class="box" ng-if="options">
 	    <!-- grid -->
 		<div ng-hide="showForm">
-			<div class="panel-body">
+			<div class="panel-body"  style="padding-left:0px;padding-right:0px;padding-bottom:0px">
 				<div edu-grid  options="options"   ></div>
 			</div>
 		</div>
 		<!-- end grid -->
 		<!-- form -->
 		<div  ng-if="showForm">
-			<div class="panel-body">
+			<div class="panel-body" style="padding-left:0px;padding-right:0px;padding-bottom:0px">
 				<div>
 					<div edu-form  result="options.formData" options="options" > </div>  
 				</div>
