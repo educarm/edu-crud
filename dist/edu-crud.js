@@ -613,7 +613,10 @@ eduCrudDirectives.directive('eduCrud', function () {
           $scope.api.remove(oId, function (data) {
             if ($scope.options.hasOwnProperty('crudListeners')) {
               if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonDeleteCrud') && typeof $scope.options.crudListeners.onAfterButtonDeleteCrud == 'function') {
-                $scope.options.crudListeners.onAfterButtonDeleteCrud(true);
+                $scope.options.crudListeners.onAfterButtonDeleteCrud(data);
+              }
+              if ($scope.options.crudListeners.hasOwnProperty('onAfterDelete') && typeof $scope.options.crudListeners.onAfterDelete == 'function') {
+                $scope.options.crudListeners.onAfterDelete(data);
               }
             }
             if (!data.hasOwnProperty('success') || data.hasOwnProperty('success') && data.success == true) {
@@ -624,7 +627,10 @@ eduCrudDirectives.directive('eduCrud', function () {
           }, function (error) {
             if ($scope.options.hasOwnProperty('crudListeners')) {
               if ($scope.options.crudListeners.hasOwnProperty('onAfterButtonDeleteCrud') && typeof $scope.options.crudListeners.onAfterButtonDeleteCrud == 'function') {
-                $scope.options.crudListeners.onAfterButtonDeleteCrud(false);
+                $scope.options.crudListeners.onAfterButtonDeleteCrud(error);
+              }
+              if ($scope.options.crudListeners.hasOwnProperty('onAfterDelete') && typeof $scope.options.crudListeners.onAfterDelete == 'function') {
+                $scope.options.crudListeners.onAfterDelete(error);
               }
             }
             $scope.options.gridControl.showOverlayFormSuccessError('0', error.data || error.message, 20000, preHook_onBeforeShowFormError);
